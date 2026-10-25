@@ -1,0 +1,236 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions for authentication and security
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwnerUser(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isAppAdmin() {
+      return isAuthenticated() && (
+        (request.auth.token.keys().hasAll(['email']) && request.auth.token.email == 'nsralnaty93@gmail.com') ||
+        (request.auth.token.keys().hasAll(['role']) && request.auth.token.role == 'admin') ||
+        (request.auth.token.keys().hasAll(['admin']) && request.auth.token.admin == true) ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin')
+      );
+    }
+
+    // =========================================================
+    // 1. PUBLIC CATALOG DATA (Products, Categories, Stores, Banners)
+    // =========================================================
+    
+    // Products: Public read for all users; create/update/delete strictly for Admins
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if isAppAdmin();
+    }
+
+    // Categories: Public read; write strictly for Admins
+    match /categories/{categoryId} {
+      allow read: if true;
+      allow write: if isAppAdmin();
+    }
+
+    // Brands: Public read; write strictly for Admins (Completely independent from Categories)
+    match /brands/{brandId} {
+      allow read: if true;
+      allow write: if isAppAdmin();
+    }
+
+    // Stores: Public read; write strictly for Admins
+    match /stores/{storeId} {
+      allow read: if true;
+      allow write: if isAppAdmin();
+    }
+
+    // Currency Settings (YER North / South exchange rates)
+    match /currencySettings/{settingId} {
+      allow read: if true;
+      allow write: if isAppAdmin();
+    }
+
+    // Application Settings (general config, home buttons, contact info)
+    match /appSettings/{settingId} {
+      allow read: if true;
+      allow write: if isAppAdmin();
+    }
+
+    // Footer Configuration & Bottom Bar Links (Dynamic)
+    match /footer_config/{configId} {
+      allow read: if true;
+      allow write: if isAppAdmin();
+    }
+
+    // Store Banners & Promotional Sliders
+    match /banners/{bannerId} {
+      allow read: if true;
+      allow write: if isAppAdmin();
+    }
+
+    // Coupons & Vouchers
+    match /coupons/{couponId} {
+      allow read: if true;
+      allow write: if isAppAdmin();
+    }
+
+    // Payment Methods (Dynamic)
+    match /paymentMethods/{methodId} {
+      allow read: if true;
+      allow write: if isAppAdmin();
+    }
+
+    // Shipping Zones & Fees (Dynamic)
+    match /shippingZones/{zoneId} {
+      allow read: if true;
+      allow write: if isAppAdmin();
+    }
+
+    // Policies & Legal Content (Dynamic)
+    match /policies/{policyId} {
+      allow read: if true;
+      allow write: if isAppAdmin();
+    }
+
+    // Social Media Channels (Dynamic)
+    match /socialMedia/{socialId} {
+      allow read: if true;
+      allow write: if isAppAdmin();
+    }
+
+    // AI Knowledge Base (Dynamic)
+    match /aiKnowledge/{knowledgeId} {
+      allow read: if true;
+      allow write: if isAppAdmin();
+    }
+
+    // Store Branches & Maps Locations (Dynamic)
+    match /branches/{branchId} {
+      allow read: if true;
+      allow write: if isAppAdmin();
+    }
+
+    // Offers & Promos Popup (Dynamic)
+    match /popups/{popupId} {
+      allow read: if true;
+      allow write: if isAppAdmin();
+    }
+
+    // Flash Sales & Special Deals
+    match /flashSales/{dealId} {
+      allow read: if true;
+      allow write: if isAppAdmin();
+    }
+
+    // Volume Discounts Rules
+    match /volumeDiscounts/{discountId} {
+      allow read: if true;
+      allow write: if isAppAdmin();
+    }
+
+    // Product Reviews & Ratings (Customer creation, Admin moderation)
+    match /reviews/{reviewId} {
+      allow read: if true;
+      allow create: if isAuthenticated() && 
+                    request.resource.data.userId == request.auth.uid &&
+                    request.resource.data.rating >= 1 &&
+                    request.resource.data.rating <= 5;
+      allow update: if isAppAdmin() || (isAuthenticated() && resource.data.userId == request.auth.uid);
+      allow delete: if isAppAdmin() || (isAuthenticated() && resource.data.userId == request.auth.uid);
+    }
+
+    // Abandoned Carts (User isolated or Admin access)
+    match /abandonedCarts/{cartId} {
+      allow read, write: if isOwnerUser(cartId) || isAppAdmin();
+    }
+
+    // Light Analytics (Write allowed for telemetry events, Read/Delete strictly Admin)
+    match /analytics/{eventId} {
+      allow create: if true;
+      allow read, update, delete: if isAppAdmin();
+    }
+
+    // =========================================================
+    // 2. USER PROFILES & PRIVATE SUBCOLLECTIONS
+    // =========================================================
+    
+    match /users/{userId} {
+      // User can read their own profile; Admins can read all profiles
+      allow read: if isOwnerUser(userId) || isAppAdmin();
+
+      // Normal users cannot set their role to admin
+      allow create: if isAuthenticated() && (
+        (request.resource.data.role != 'admin' && request.resource.data.role != 'owner') ||
+        request.auth.token.email == 'nsralnaty93@gmail.com'
+      );
+
+      // Normal users cannot change their role attribute; Admins have full update
+      allow update: if (isOwnerUser(userId) && 
+        (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['role']))) || isAppAdmin();
+
+      allow delete: if isAppAdmin();
+
+      // User Addresses Subcollection
+      match /addresses/{addressId} {
+        allow read, write: if isOwnerUser(userId) || isAppAdmin();
+      }
+
+      // User Notifications Subcollection
+      match /notifications/{notificationId} {
+        allow read, write: if isOwnerUser(userId) || isAppAdmin();
+      }
+    }
+
+    // User Cart (persistent shopping carts)
+    match /carts/{userId} {
+      allow read, write: if isOwnerUser(userId) || isAppAdmin();
+    }
+
+    // User Favorites / Wishlist
+    match /favorites/{userId} {
+      allow read, write: if isOwnerUser(userId) || isAppAdmin();
+    }
+
+    // =========================================================
+    // 3. ORDERS (STRICT INTEGRITY)
+    // =========================================================
+    
+    match /orders/{orderId} {
+      // Users can only read their own orders; Admins can read all orders
+      allow read: if isAuthenticated() && (
+        (resource.data.userId == request.auth.uid) || isAppAdmin()
+      );
+
+      // Authenticated users can create orders for themselves
+      allow create: if isAuthenticated() && (
+        request.resource.data.userId == request.auth.uid
+      );
+
+      // Status updates only allowed by Admin or user cancelling their own new order
+      allow update: if isAppAdmin() || (
+        isOwnerUser(resource.data.userId) && 
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status']) &&
+        request.resource.data.status == 'cancelled' &&
+        resource.data.status == 'received'
+      );
+
+      allow delete: if isAppAdmin();
+    }
+
+    // =========================================================
+    // 4. BROADCAST NOTIFICATIONS
+    // =========================================================
+    
+    match /notifications/{notificationId} {
+      allow read: if true;
+      allow write: if isAppAdmin();
+    }
+  }
+}
+

@@ -1,0 +1,6 @@
+{
+  "name": "ضَجّة مول",
+  "description": "ضَجّة مول — المنصة الرائدة للتجارة والتسوق الإلكتروني في اليمن والعالم (ضَجّة في وجه الغلاء)",
+  "requestFramePermissions": ["geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

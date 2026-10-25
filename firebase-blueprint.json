@@ -1,0 +1,342 @@
+{
+  "entities": {
+    "users": {
+      "title": "users",
+      "description": "User profile collection",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "name": { "type": "string" },
+        "phone": { "type": "string" },
+        "email": { "type": "string" },
+        "city": { "type": "string" },
+        "region": { "type": "string" },
+        "profileImage": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["uid", "name"]
+    },
+    "products": {
+      "title": "products",
+      "description": "Marketplace products collection",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "priceYER": { "type": "number" },
+        "originalPriceYER": { "type": "number" },
+        "discountPercentage": { "type": "number" },
+        "category": { "type": "string" },
+        "store": { "type": "string" },
+        "vendorId": { "type": "string" },
+        "images": { "type": "array", "items": { "type": "string" } },
+        "rating": { "type": "number" },
+        "reviewsCount": { "type": "number" },
+        "inStock": { "type": "boolean" },
+        "stockCount": { "type": "number" },
+        "isFlashDeal": { "type": "boolean" },
+        "isFeatured": { "type": "boolean" },
+        "isBestSeller": { "type": "boolean" },
+        "colors": { "type": "array" },
+        "sizes": { "type": "array", "items": { "type": "string" } },
+        "badges": { "type": "array", "items": { "type": "string" } },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "name", "priceYER", "category"]
+    },
+    "categories": {
+      "title": "categories",
+      "description": "Product categories",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "icon": { "type": "string" },
+        "image": { "type": "string" },
+        "itemCount": { "type": "number" }
+      },
+      "required": ["id", "name"]
+    },
+    "brands": {
+      "title": "brands",
+      "description": "Independent Brands (Not tied to Categories)",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "logo": { "type": "string" },
+        "coverImage": { "type": "string" },
+        "description": { "type": "string" },
+        "isActive": { "type": "boolean" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "name", "logo", "isActive"]
+    },
+    "stores": {
+      "title": "stores",
+      "description": "Verified stores and vendors",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "logo": { "type": "string" },
+        "coverImage": { "type": "string" },
+        "rating": { "type": "number" },
+        "verified": { "type": "boolean" },
+        "city": { "type": "string" }
+      },
+      "required": ["id", "name"]
+    },
+    "carts": {
+      "title": "carts",
+      "description": "User persistent shopping carts",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "items": { "type": "array" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["userId", "items"]
+    },
+    "favorites": {
+      "title": "favorites",
+      "description": "User wishlist products",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "productIds": { "type": "array", "items": { "type": "string" } },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["userId", "productIds"]
+    },
+    "addresses": {
+      "title": "addresses",
+      "description": "User delivery addresses with GPS coordinates",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "title": { "type": "string" },
+        "recipientName": { "type": "string" },
+        "phone": { "type": "string" },
+        "city": { "type": "string" },
+        "district": { "type": "string" },
+        "street": { "type": "string" },
+        "building": { "type": "string" },
+        "latitude": { "type": "number" },
+        "longitude": { "type": "number" },
+        "deliveryNotes": { "type": "string" },
+        "isDefault": { "type": "boolean" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "userId", "city", "phone"]
+    },
+    "orders": {
+      "title": "orders",
+      "description": "Marketplace customer orders",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "items": { "type": "array" },
+        "subtotalYER": { "type": "number" },
+        "discountYER": { "type": "number" },
+        "deliveryFeeYER": { "type": "number" },
+        "totalYER": { "type": "number" },
+        "currency": { "type": "string" },
+        "paymentMethod": { "type": "string" },
+        "paymentStatus": { "type": "string" },
+        "shippingAddress": { "type": "object" },
+        "status": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "userId", "items", "totalYER", "paymentMethod", "status"]
+    },
+    "currencySettings": {
+      "title": "currencySettings",
+      "description": "Exchange rates and currency configs",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "rates": { "type": "object" },
+        "lastUpdated": { "type": "string" }
+      },
+      "required": ["rates"]
+    },
+    "appSettings": {
+      "title": "appSettings",
+      "description": "App settings, policies, banners and popup offer configuration",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "featuredCouponCode": { "type": "string" },
+        "promoBannerText": { "type": "string" },
+        "banners": { "type": "array" },
+        "popupOffer": { "type": "object" },
+        "policies": { "type": "array" },
+        "socialChannels": { "type": "object" },
+        "updatedAt": { "type": "string" }
+      }
+    },
+    "banners": {
+      "title": "banners",
+      "description": "Hero slider banners and promotional images",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "isActive": { "type": "boolean" },
+        "order": { "type": "number" }
+      },
+      "required": ["id", "title", "imageUrl"]
+    },
+    "coupons": {
+      "title": "coupons",
+      "description": "Discount coupons and promo vouchers",
+      "type": "object",
+      "properties": {
+        "code": { "type": "string" },
+        "discountType": { "type": "string" },
+        "discountValue": { "type": "number" },
+        "isActive": { "type": "boolean" }
+      },
+      "required": ["code", "discountType", "discountValue"]
+    },
+    "notifications": {
+      "title": "notifications",
+      "description": "Customer notifications",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "title": { "type": "string" },
+        "message": { "type": "string" },
+        "type": { "type": "string" },
+        "isRead": { "type": "boolean" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "title", "message"]
+    },
+    "footer_config": {
+      "title": "footer_config",
+      "description": "Footer configuration, branding, logos, bottom action links, and copyright",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "isEnabled": { "type": "boolean" },
+        "showLogo": { "type": "boolean" },
+        "customLogoUrl": { "type": "string" },
+        "brandNameAr": { "type": "string" },
+        "brandNameEn": { "type": "string" },
+        "sloganAr": { "type": "string" },
+        "sloganEn": { "type": "string" },
+        "aboutTextAr": { "type": "string" },
+        "showBottomLinksBar": { "type": "boolean" },
+        "bottomLinks": { "type": "array" },
+        "showTrustBadges": { "type": "boolean" },
+        "trustBadges": { "type": "array" },
+        "showCopyright": { "type": "boolean" },
+        "copyrightTextAr": { "type": "string" },
+        "autoUpdateYear": { "type": "boolean" },
+        "customYear": { "type": "number" },
+        "showDeveloperSignature": { "type": "boolean" },
+        "developerSignatureName": { "type": "string" },
+        "developerVerifiedBadge": { "type": "boolean" },
+        "updatedAt": { "type": "string" }
+      }
+    },
+    "reviews": {
+      "title": "reviews",
+      "description": "Customer product reviews and ratings by verified buyers",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "productId": { "type": "string" },
+        "productName": { "type": "string" },
+        "productImage": { "type": "string" },
+        "userId": { "type": "string" },
+        "userName": { "type": "string" },
+        "userAvatar": { "type": "string" },
+        "rating": { "type": "number" },
+        "date": { "type": "string" },
+        "comment": { "type": "string" },
+        "verifiedPurchase": { "type": "boolean" },
+        "isHidden": { "type": "boolean" },
+        "isApproved": { "type": "boolean" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["productId", "userId", "userName", "rating", "comment"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "users",
+      "description": "User accounts"
+    },
+    "/products/{productId}": {
+      "schema": "products",
+      "description": "Product catalog"
+    },
+    "/categories/{categoryId}": {
+      "schema": "categories",
+      "description": "Product categories"
+    },
+    "/brands/{brandId}": {
+      "schema": "brands",
+      "description": "Brand list"
+    },
+    "/stores/{storeId}": {
+      "schema": "stores",
+      "description": "Vendors & Stores"
+    },
+    "/carts/{userId}": {
+      "schema": "carts",
+      "description": "Shopping carts"
+    },
+    "/favorites/{userId}": {
+      "schema": "favorites",
+      "description": "Favorites"
+    },
+    "/users/{userId}/addresses/{addressId}": {
+      "schema": "addresses",
+      "description": "Saved delivery addresses"
+    },
+    "/orders/{orderId}": {
+      "schema": "orders",
+      "description": "Placed orders"
+    },
+    "/currencySettings/{settingId}": {
+      "schema": "currencySettings",
+      "description": "Exchange rates"
+    },
+    "/appSettings/{settingId}": {
+      "schema": "appSettings",
+      "description": "Application settings and policy configs"
+    },
+    "/banners/{bannerId}": {
+      "schema": "banners",
+      "description": "Slider banners"
+    },
+    "/coupons/{couponId}": {
+      "schema": "coupons",
+      "description": "Discount coupons"
+    },
+    "/notifications/{notificationId}": {
+      "schema": "notifications",
+      "description": "Broadcast & order alerts"
+    },
+    "/footer_config/{configId}": {
+      "schema": "footer_config",
+      "description": "Dynamic footer layout, branding logos, links and copyright settings"
+    },
+    "/reviews/{reviewId}": {
+      "schema": "reviews",
+      "description": "Customer product ratings and reviews"
+    }
+  }
+}

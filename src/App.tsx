@@ -1,0 +1,901 @@
+import React, { useState, useEffect, useCallback, useMemo, useRef, Suspense, lazy } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { Product, CurrencyCode, Category, Order } from './types';
+import { PRODUCTS, CATEGORIES, STORES } from './data/mockData';
+import { MarketplaceProvider, useMarketplace } from './context/MarketplaceContext';
+
+// Core Navigation & Static Components
+import { Header } from './components/navigation/Header';
+import { BottomNav, NavTab } from './components/navigation/BottomNav';
+import { DajjahLogo } from './components/common/DajjahLogo';
+import { SplashScreen } from './components/splash/SplashScreen';
+
+// Home Sections (Strictly ordered to user specification)
+import { HeroCarousel } from './components/home/HeroCarousel';
+import { HomePromoBenefits } from './components/home/HomePromoBenefits';
+import { EditorialCategories } from './components/home/EditorialCategories';
+import { HomeShortcutsBar } from './components/home/HomeShortcutsBar';
+import { BestSellersSection } from './components/home/BestSellersSection';
+import { NewArrivalsSection } from './components/home/NewArrivalsSection';
+import { FlashDealsSection } from './components/home/FlashDealsSection';
+import { DajjahPicksSection } from './components/home/DajjahPicksSection';
+import { PersonalizedForYouSection } from './components/home/PersonalizedForYouSection';
+import { FeaturedStores } from './components/home/FeaturedStores';
+import { HomeProductTabs } from './components/home/HomeProductTabs';
+import { HomeTopCategoryBar } from './components/home/HomeTopCategoryBar';
+import { HomeFooterPolicies } from './components/home/HomeFooterPolicies';
+import { AppFooterBottomBar } from './components/layout/AppFooterBottomBar';
+import { ProductCard } from './components/products/ProductCard';
+
+// Lazy-Loaded Views & Modals (Loaded strictly on-demand to minimize initial bundle size and boost TTI)
+const MainCategoriesScreen = lazy(() => import('./components/categories/MainCategoriesScreen').then(m => ({ default: m.MainCategoriesScreen })));
+const CategoryLandingPage = lazy(() => import('./components/categories/CategoryLandingPage').then(m => ({ default: m.CategoryLandingPage })));
+const BrandsScreen = lazy(() => import('./components/brands/BrandsScreen').then(m => ({ default: m.BrandsScreen })));
+const TrendsScreen = lazy(() => import('./components/trends/TrendsScreen').then(m => ({ default: m.TrendsScreen })));
+const ProfileView = lazy(() => import('./components/profile/ProfileView').then(m => ({ default: m.ProfileView })));
+const OnboardingScreen = lazy(() => import('./components/onboarding/OnboardingScreen').then(m => ({ default: m.OnboardingScreen })));
+
+// Lazy Modals
+const AuthModal = lazy(() => import('./components/auth/AuthModal').then(m => ({ default: m.AuthModal })));
+const SmartSearchModal = lazy(() => import('./components/search/SmartSearchModal').then(m => ({ default: m.SmartSearchModal })));
+const ProductDetailsModal = lazy(() => import('./components/products/ProductDetailsModal').then(m => ({ default: m.ProductDetailsModal })));
+const ProductQuickViewModal = lazy(() => import('./components/products/ProductQuickViewModal').then(m => ({ default: m.ProductQuickViewModal })));
+const AIAssistantModal = lazy(() => import('./components/ai/AIAssistantModal'));
+const CartModal = lazy(() => import('./components/cart/CartModal').then(m => ({ default: m.CartModal })));
+const NotificationsModal = lazy(() => import('./components/notifications/NotificationsModal').then(m => ({ default: m.NotificationsModal })));
+const LocationPickerModal = lazy(() => import('./components/location/LocationPickerModal').then(m => ({ default: m.LocationPickerModal })));
+const SettingsModal = lazy(() => import('./components/settings/SettingsModal').then(m => ({ default: m.SettingsModal })));
+const AccessibilityModal = lazy(() => import('./components/settings/AccessibilityModal').then(m => ({ default: m.AccessibilityModal })));
+const CustomerServiceModal = lazy(() => import('./components/support/CustomerServiceModal').then(m => ({ default: m.CustomerServiceModal })));
+const PoliciesModal = lazy(() => import('./components/policies/PoliciesModal').then(m => ({ default: m.PoliciesModal })));
+const CurrencySettingsModal = lazy(() => import('./components/admin/CurrencySettingsModal').then(m => ({ default: m.CurrencySettingsModal })));
+const PromoOffersModal = lazy(() => import('./components/common/PromoOffersModal').then(m => ({ default: m.PromoOffersModal })));
+const AdminProductDashboard = lazy(() => import('./components/admin/AdminProductDashboard'));
+const LeafletStoreLocatorModal = lazy(() => import('./components/maps/LeafletStoreLocatorModal').then(m => ({ default: m.LeafletStoreLocatorModal })));
+
+// Icons
+import { 
+  Sparkles, 
+  Flame, 
+  ShieldCheck, 
+  Truck, 
+  CreditCard, 
+  Heart,
+  CheckCircle2,
+  Coins,
+  Search,
+  Tag
+} from 'lucide-react';
+
+function MarketplaceApp() {
+  const {
+    products,
+    categories,
+    brands,
+    cart,
+    addToCart,
+    wishlist,
+    toggleWishlist,
+    currentCurrency,
+    setCurrency,
+    currencyRates,
+    updateCurrencyRates,
+    currentUser,
+    selectedAddress,
+    addOrUpdateAddress,
+    setSelectedAddress,
+    isAdmin,
+    notifications,
+    appSettings,
+  } = useMarketplace();
+
+  const unreadNotifsCount = useMemo(() => {
+    return (notifications || []).filter((n) => !n.isRead).length;
+  }, [notifications]);
+
+  const appCategories = useMemo(() => {
+    return categories && categories.length > 0 ? categories : CATEGORIES;
+  }, [categories]);
+
+  // App Lifecycle States
+  const [showSplash, setShowSplash] = useState(true);
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [activeTab, setActiveTab] = useState<NavTab>('home');
+
+  // Modals
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isAIOpen, setIsAIOpen] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isNotifsOpen, setIsNotifsOpen] = useState(false);
+  const [isLocationPickerOpen, setIsLocationPickerOpen] = useState(false);
+  const [isCurrencyAdminOpen, setIsCurrencyAdminOpen] = useState(false);
+  const [isProductAdminOpen, setIsProductAdminOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isSupportOpen, setIsSupportOpen] = useState(false);
+  const [isAccessibilityOpen, setIsAccessibilityOpen] = useState(false);
+  const [isPoliciesOpen, setIsPoliciesOpen] = useState(false);
+  const [isStoreLocatorOpen, setIsStoreLocatorOpen] = useState(false);
+  const [selectedPolicyKey, setSelectedPolicyKey] = useState<string>('privacy');
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
+
+  // Category & Subcategory Navigation State
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
+  const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(null);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  // Direct URL Hash Route & Admin Portal listener (e.g. /#admin or ?admin=true)
+  useEffect(() => {
+    const handleUrlRoute = () => {
+      const hash = window.location.hash;
+      const search = window.location.search;
+      if (hash === '#admin' || search.includes('admin=true')) {
+        setIsProductAdminOpen(true);
+      }
+    };
+    handleUrlRoute();
+    window.addEventListener('hashchange', handleUrlRoute);
+    return () => window.removeEventListener('hashchange', handleUrlRoute);
+  }, []);
+
+  // Browser Back Button (popstate) safety handling
+  useEffect(() => {
+    const handlePopState = () => {
+      if (selectedProduct) {
+        setSelectedProduct(null);
+      } else if (isProductAdminOpen) {
+        setIsProductAdminOpen(false);
+      } else if (isCartOpen) {
+        setIsCartOpen(false);
+      } else if (isSearchOpen) {
+        setIsSearchOpen(false);
+      } else if (isAuthOpen) {
+        setIsAuthOpen(false);
+      } else if (isNotifsOpen) {
+        setIsNotifsOpen(false);
+      } else if (isLocationPickerOpen) {
+        setIsLocationPickerOpen(false);
+      } else if (isCurrencyAdminOpen) {
+        setIsCurrencyAdminOpen(false);
+      } else if (isAIOpen) {
+        setIsAIOpen(false);
+      } else if (selectedSubcategory) {
+        setSelectedSubcategory(null);
+      } else if (selectedCategoryId) {
+        setSelectedCategoryId(null);
+      } else if (activeTab !== 'home') {
+        setActiveTab('home');
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [
+    selectedProduct,
+    isProductAdminOpen,
+    isCartOpen,
+    isSearchOpen,
+    isAuthOpen,
+    isNotifsOpen,
+    isLocationPickerOpen,
+    isCurrencyAdminOpen,
+    isAIOpen,
+    selectedSubcategory,
+    selectedCategoryId,
+    activeTab,
+  ]);
+
+  const showToast = useCallback((msg: string) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(null), 2500);
+  }, []);
+
+  const handleAddToCartWithToast = useCallback((product: Product, options?: { color?: string; size?: string; quantity?: number }) => {
+    addToCart(product, options);
+    showToast(`تمت إضافة "${product.name}" إلى السلة بنجاح!`);
+  }, [addToCart, showToast]);
+
+  const handleOpenQuickView = useCallback((product: Product) => {
+    setQuickViewProduct(product);
+  }, []);
+
+  const handleBuyNow = useCallback((product: Product, options?: { color?: string; size?: string; quantity?: number }) => {
+    addToCart(product, options);
+    setIsCartOpen(true);
+  }, [addToCart]);
+
+  const handleToggleFavoriteWithToast = useCallback((product: Product) => {
+    toggleWishlist(product.id);
+    showToast('تم تحديث المفضلة ❤️');
+  }, [toggleWishlist, showToast]);
+
+  const DEPARTMENTS_LIST = useMemo(() => ['all', 'women', 'boys', 'girls', 'baby', 'shoes', 'bags'], []);
+  const [homeDepartment, setHomeDepartment] = useState<string>('all');
+  const touchStartXRef = useRef<number | null>(null);
+
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    touchStartXRef.current = e.targetTouches[0].clientX;
+  }, []);
+
+  const handleTouchEnd = useCallback((e: React.TouchEvent) => {
+    if (touchStartXRef.current === null) return;
+    const touchEndX = e.changedTouches[0].clientX;
+    const deltaX = touchStartXRef.current - touchEndX;
+
+    if (Math.abs(deltaX) > 60) {
+      setHomeDepartment((prevDept) => {
+        const currentIndex = DEPARTMENTS_LIST.indexOf(prevDept);
+        if (deltaX > 0) {
+          const nextIndex = (currentIndex + 1) % DEPARTMENTS_LIST.length;
+          return DEPARTMENTS_LIST[nextIndex];
+        } else {
+          const prevIndex = (currentIndex - 1 + DEPARTMENTS_LIST.length) % DEPARTMENTS_LIST.length;
+          return DEPARTMENTS_LIST[prevIndex];
+        }
+      });
+    }
+    touchStartXRef.current = null;
+  }, [DEPARTMENTS_LIST]);
+
+  const handleSelectCategory = useCallback((categoryId: string, subcategoryId?: string) => {
+    setSelectedCategoryId(categoryId);
+    setSelectedSubcategory(subcategoryId || null);
+    setActiveTab('categories');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
+  const handleOpenCategoriesTab = useCallback(() => {
+    setSelectedCategoryId(null);
+    setSelectedSubcategory(null);
+    setActiveTab('categories');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
+  // Fast O(1) set for wishlist lookups & memoized list
+  const wishlistSet = useMemo(() => new Set(wishlist), [wishlist]);
+  const wishlistProducts = useMemo(() => products.filter((p) => wishlistSet.has(p.id)), [products, wishlistSet]);
+  const totalCartCount = useMemo(() => cart.reduce((sum, item) => sum + item.quantity, 0), [cart]);
+
+  const activeCategory = useMemo(() => {
+    if (!selectedCategoryId) return null;
+    return appCategories.find((c) => c.id === selectedCategoryId) || appCategories[0];
+  }, [selectedCategoryId, appCategories]);
+
+  return (
+    <div 
+      className="min-h-screen bg-[#07060A] text-neutral-100 flex flex-col antialiased selection:bg-amber-500 selection:text-neutral-950 font-sans"
+      dir="rtl"
+    >
+      {/* 1. Splash Screen Animation */}
+      {showSplash && (
+        <SplashScreen
+          onComplete={() => setShowSplash(false)}
+          onSkip={() => setShowSplash(false)}
+        />
+      )}
+
+      {/* 2. Onboarding Modal for New Users */}
+      {showOnboarding && (
+        <Suspense fallback={null}>
+          <OnboardingScreen
+            onComplete={() => setShowOnboarding(false)}
+            onSkip={() => setShowOnboarding(false)}
+          />
+        </Suspense>
+      )}
+
+      {/* Global Toast Notification */}
+      <AnimatePresence>
+        {toastMessage && (
+          <motion.div
+            initial={{ opacity: 0, y: -20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.95 }}
+            className="fixed top-20 left-1/2 -translate-x-1/2 z-[100] px-4 py-2.5 rounded-full bg-neutral-900/95 border border-amber-500/50 text-amber-300 text-xs sm:text-sm font-bold shadow-2xl shadow-amber-500/20 backdrop-blur-xl flex items-center gap-2 pointer-events-none"
+          >
+            <CheckCircle2 className="w-4 h-4 text-amber-400" />
+            <span>{toastMessage}</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Main Header */}
+      <Header
+        cartCount={totalCartCount}
+        wishlistCount={wishlist.length}
+        unreadNotifsCount={unreadNotifsCount}
+        currentCurrency={currentCurrency}
+        currentCity={selectedAddress ? `${selectedAddress.city} - ${selectedAddress.district || ''}` : 'صنعاء - حدة'}
+        isAdmin={isAdmin}
+        currentUser={currentUser}
+        onCurrencyChange={setCurrency}
+        onOpenSearch={() => setIsSearchOpen(true)}
+        onOpenCart={() => setIsCartOpen(true)}
+        onOpenNotifications={() => setIsNotifsOpen(true)}
+        onOpenAI={() => setIsAIOpen(true)}
+        onOpenAuth={() => setIsAuthOpen(true)}
+        onOpenProfile={() => {
+          if (currentUser) {
+            setActiveTab('profile');
+          } else {
+            setIsAuthOpen(true);
+          }
+        }}
+        onOpenWishlist={() => setActiveTab('wishlist')}
+        onOpenOffers={() => {}}
+        onOpenAdmin={() => setIsProductAdminOpen(true)}
+        onOpenSupport={() => setIsSupportOpen(true)}
+        onOpenSettings={() => setIsSettingsOpen(true)}
+      />
+
+      {/* ========================================================================= */}
+      {/* VIEW 1: HOME PAGE */}
+      {/* ========================================================================= */}
+      {activeTab === 'home' && (
+        <main 
+          className="flex-1 max-w-7xl mx-auto w-full px-3 sm:px-6 py-2.5 pb-24 md:pb-12 space-y-4 sm:space-y-6"
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+        >
+          {/* Top Quick Category Navigation Bar */}
+          <HomeTopCategoryBar
+            categories={appCategories}
+            selectedCategoryId={homeDepartment}
+            onSelectCategory={(catId) => {
+              setHomeDepartment(catId);
+              if (catId !== 'all') {
+                handleSelectCategory(catId);
+              }
+            }}
+            onViewAllCategories={handleOpenCategoriesTab}
+          />
+
+          {/* Section 1: Hero Carousel Banner */}
+          <HeroCarousel
+            onShopNow={(categoryId) => handleSelectCategory(categoryId || 'women')}
+            onExploreOffers={() => handleSelectCategory('women')}
+            onOpenAI={() => setIsAIOpen(true)}
+            onSelectProduct={(prodId) => {
+              const p = products.find((x) => x.id === prodId);
+              if (p) setSelectedProduct(p);
+            }}
+          />
+
+          {/* Section 2: Promo Benefits Strip */}
+          <HomePromoBenefits 
+            onOpenDeliveryPolicy={() => {
+              setSelectedPolicyKey('shipping');
+              setIsPoliciesOpen(true);
+            }}
+          />
+
+          {/* Section 3: Shortcuts Bar */}
+          <HomeShortcutsBar
+            onOpenDeals={() => handleSelectCategory('women')}
+            onOpenBrands={() => setActiveTab('brands')}
+            onOpenTrends={() => setActiveTab('trends')}
+            onOpenAI={() => setIsAIOpen(true)}
+            onOpenSupport={() => setIsSupportOpen(true)}
+            onOpenPolicies={(key) => {
+              setSelectedPolicyKey(key);
+              setIsPoliciesOpen(true);
+            }}
+            onOpenCategories={handleOpenCategoriesTab}
+          />
+
+          {/* Section 4: Editorial Categories Navigation */}
+          <EditorialCategories
+            categories={appCategories}
+            onSelectCategory={handleSelectCategory}
+            onViewAllCategories={handleOpenCategoriesTab}
+          />
+
+          {/* Section 5: Flash Deals Section */}
+          <FlashDealsSection
+            products={products}
+            currency={currentCurrency}
+            wishlist={wishlist}
+            onToggleFavorite={handleToggleFavoriteWithToast}
+            onAddToCart={handleOpenQuickView}
+            onSelectProduct={setSelectedProduct}
+            onViewAll={() => handleSelectCategory('women')}
+          />
+
+          {/* Section 6: Home Product Tabs */}
+          <HomeProductTabs
+            products={products}
+            currency={currentCurrency}
+            wishlist={wishlist}
+            onToggleFavorite={handleToggleFavoriteWithToast}
+            onAddToCart={handleOpenQuickView}
+            onSelectProduct={setSelectedProduct}
+            onOpenBrands={() => setActiveTab('brands')}
+            onViewAll={handleOpenCategoriesTab}
+          />
+
+          {/* Section 7: Best Sellers */}
+          <BestSellersSection
+            products={products}
+            currency={currentCurrency}
+            wishlist={wishlist}
+            onToggleFavorite={handleToggleFavoriteWithToast}
+            onAddToCart={handleOpenQuickView}
+            onSelectProduct={setSelectedProduct}
+            onViewAll={() => handleSelectCategory('women')}
+          />
+
+          {/* Section 8: New Arrivals */}
+          <NewArrivalsSection
+            products={products}
+            currency={currentCurrency}
+            wishlist={wishlist}
+            onToggleFavorite={handleToggleFavoriteWithToast}
+            onAddToCart={handleOpenQuickView}
+            onSelectProduct={setSelectedProduct}
+            onViewAll={() => handleSelectCategory('women')}
+          />
+
+          {/* Section 9: Dajjah Picks */}
+          <DajjahPicksSection
+            products={products}
+            currency={currentCurrency}
+            wishlist={wishlist}
+            onToggleFavorite={handleToggleFavoriteWithToast}
+            onAddToCart={handleOpenQuickView}
+            onSelectProduct={setSelectedProduct}
+            onViewAll={() => handleSelectCategory('women')}
+          />
+
+          {/* Section 10: Featured Stores */}
+          <FeaturedStores
+            stores={STORES}
+            onSelectStore={(store) => handleSelectCategory('women')}
+          />
+
+          {/* Section 11: Personalized For You Section */}
+          <PersonalizedForYouSection
+            products={products}
+            currency={currentCurrency}
+            wishlist={wishlist}
+            onToggleFavorite={handleToggleFavoriteWithToast}
+            onAddToCart={handleOpenQuickView}
+            onSelectProduct={setSelectedProduct}
+          />
+
+          {/* Section 12: Footer Policies & Guarantees */}
+          <HomeFooterPolicies 
+            onOpenPolicy={(policyKey) => {
+              setSelectedPolicyKey(policyKey);
+              setIsPoliciesOpen(true);
+            }}
+          />
+        </main>
+      )}
+
+      {/* ========================================================================= */}
+      {/* VIEW 2: BRANDS */}
+      {/* ========================================================================= */}
+      {activeTab === 'brands' && (
+        <Suspense fallback={<div className="min-h-[50vh] flex items-center justify-center"><div className="w-8 h-8 rounded-full border-2 border-amber-400 border-t-transparent animate-spin" /></div>}>
+          <BrandsScreen
+            brands={brands}
+            products={products}
+            currency={currentCurrency}
+            wishlist={wishlist}
+            onSelectProduct={setSelectedProduct}
+            onAddToCart={handleOpenQuickView}
+            onToggleFavorite={handleToggleFavoriteWithToast}
+            onBackToHome={() => {
+              setActiveTab('home');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+          />
+        </Suspense>
+      )}
+
+      {/* ========================================================================= */}
+      {/* VIEW 2.5: TRENDS */}
+      {/* ========================================================================= */}
+      {activeTab === 'trends' && (
+        <Suspense fallback={<div className="min-h-[50vh] flex items-center justify-center"><div className="w-8 h-8 rounded-full border-2 border-amber-400 border-t-transparent animate-spin" /></div>}>
+          <TrendsScreen
+            products={products}
+            currency={currentCurrency}
+            wishlist={wishlist}
+            onToggleFavorite={handleToggleFavoriteWithToast}
+            onAddToCart={handleOpenQuickView}
+            onSelectProduct={setSelectedProduct}
+            onBackToHome={() => {
+              setActiveTab('home');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+          />
+        </Suspense>
+      )}
+
+      {/* ========================================================================= */}
+      {/* VIEW 3: CATEGORIES */}
+      {/* ========================================================================= */}
+      {activeTab === 'categories' && (
+        <div className="flex-1 w-full">
+          <Suspense fallback={<div className="min-h-[50vh] flex items-center justify-center"><div className="w-8 h-8 rounded-full border-2 border-amber-400 border-t-transparent animate-spin" /></div>}>
+            {!activeCategory ? (
+              <MainCategoriesScreen
+                categories={appCategories}
+                products={products}
+                onSelectCategory={handleSelectCategory}
+                onBackToHome={() => setActiveTab('home')}
+                onOpenCart={() => setIsCartOpen(true)}
+                onOpenSearch={() => setIsSearchOpen(true)}
+                onOpenAuth={() => setIsAuthOpen(true)}
+              />
+            ) : (
+              <div className="max-w-7xl mx-auto w-full px-3 sm:px-6 py-4">
+                <CategoryLandingPage
+                  category={activeCategory}
+                  allCategories={appCategories}
+                  products={products}
+                  currency={currentCurrency}
+                  wishlist={wishlist}
+                  initialSubcategory={selectedSubcategory}
+                  onSelectCategory={(catId) => {
+                    setSelectedCategoryId(catId);
+                    setSelectedSubcategory(null);
+                  }}
+                  onBackToHome={() => setActiveTab('home')}
+                  onBackToMainCategories={() => {
+                    setSelectedCategoryId(null);
+                    setSelectedSubcategory(null);
+                  }}
+                  onToggleFavorite={handleToggleFavoriteWithToast}
+                  onAddToCart={handleOpenQuickView}
+                  onSelectProduct={setSelectedProduct}
+                  onOpenCart={() => setIsCartOpen(true)}
+                  onOpenSearch={() => setIsSearchOpen(true)}
+                />
+              </div>
+            )}
+          </Suspense>
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* OTHER APP VIEWS (WISHLIST, PROFILE, ORDERS) */}
+      {/* ========================================================================= */}
+      {activeTab !== 'home' && activeTab !== 'categories' && activeTab !== 'trends' && activeTab !== 'brands' && (
+        <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 py-6 pb-24 md:pb-12 space-y-10 sm:space-y-14">
+          {/* VIEW 4: WISHLIST */}
+          {activeTab === 'wishlist' && (
+            <div className="space-y-6">
+              <div className="flex items-center justify-between pb-4 border-b border-neutral-800">
+                <div>
+                  <h2 className="text-xl sm:text-2xl font-black text-white flex items-center gap-2">
+                    <Heart className="w-6 h-6 text-rose-500 fill-rose-500" />
+                    <span>قائمة أمنياتي ({wishlistProducts.length})</span>
+                  </h2>
+                  <p className="text-xs text-neutral-400 mt-1">
+                    منتجاتك المفضلة المحفوظة للشراء لاحقاً ومتابعة خصوماتها
+                  </p>
+                </div>
+
+                {wishlistProducts.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      wishlistProducts.forEach((p) => addToCart(p));
+                      showToast('تمت إضافة جميع المفضلة إلى السلة!');
+                    }}
+                    className="px-4 py-2 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-300 text-xs font-bold hover:bg-amber-500 hover:text-neutral-950 transition-colors"
+                  >
+                    إضافة الكل إلى السلة
+                  </button>
+                )}
+              </div>
+
+              {wishlistProducts.length === 0 ? (
+                <div className="py-20 text-center bg-neutral-900/50 rounded-3xl border border-neutral-800">
+                  <Heart className="w-12 h-12 text-neutral-700 mx-auto mb-3" />
+                  <h3 className="text-base font-bold text-white mb-1">قائمة المفضلة فارغة حالياً</h3>
+                  <p className="text-xs text-neutral-400 max-w-sm mx-auto mb-4">
+                    اضغط على أيقونة القلب على أي منتج أثناء التصفح لحفظه والرجوع إليه بسهولة.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab('home')}
+                    className="px-5 py-2.5 rounded-xl bg-amber-500 text-neutral-950 text-xs font-bold"
+                  >
+                    استكشف المنتجات الآن
+                  </button>
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+                  {wishlistProducts.map((prod) => (
+                    <ProductCard
+                      key={prod.id}
+                      product={prod}
+                      currency={currentCurrency}
+                      isFavorite={true}
+                      onToggleFavorite={handleToggleFavoriteWithToast}
+                      onAddToCart={handleAddToCartWithToast}
+                      onSelectProduct={setSelectedProduct}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* VIEW 5: PROFILE */}
+          {activeTab === 'profile' && (
+            <Suspense fallback={<div className="min-h-[50vh] flex items-center justify-center"><div className="w-8 h-8 rounded-full border-2 border-amber-400 border-t-transparent animate-spin" /></div>}>
+              <ProfileView
+                onNavigateHome={() => {
+                  setActiveTab('home');
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                onOpenAuth={() => setIsAuthOpen(true)}
+                onOpenWishlist={() => setActiveTab('wishlist')}
+                onOpenSupport={() => setIsSupportOpen(true)}
+                onOpenSettings={() => setIsSettingsOpen(true)}
+                onOpenAdmin={() => setIsProductAdminOpen(true)}
+              />
+            </Suspense>
+          )}
+        </main>
+      )}
+
+      {/* Global Modals (Lazy Loaded on demand) */}
+      <Suspense fallback={null}>
+        {/* 1. Smart Search */}
+        {isSearchOpen && (
+          <SmartSearchModal
+            isOpen={isSearchOpen}
+            onClose={() => setIsSearchOpen(false)}
+            currency={currentCurrency}
+            onSelectProduct={setSelectedProduct}
+            onSelectCategory={(catId) => {
+              handleSelectCategory(catId);
+            }}
+          />
+        )}
+
+        {/* 2. Product Details (Full Screen & Detailed) */}
+        {selectedProduct && (
+          <ProductDetailsModal
+            product={selectedProduct}
+            onClose={() => setSelectedProduct(null)}
+            currency={currentCurrency}
+            isFavorite={wishlistSet.has(selectedProduct.id)}
+            onToggleFavorite={handleToggleFavoriteWithToast}
+            onAddToCart={handleAddToCartWithToast}
+            onBuyNow={handleBuyNow}
+            onSelectProduct={setSelectedProduct}
+            onOpenAuth={() => setIsAuthOpen(true)}
+          />
+        )}
+
+        {/* 2.5 Product Quick View Modal */}
+        {quickViewProduct && (
+          <ProductQuickViewModal
+            isOpen={Boolean(quickViewProduct)}
+            product={quickViewProduct}
+            onClose={() => setQuickViewProduct(null)}
+            currency={currentCurrency}
+            isFavorite={wishlistSet.has(quickViewProduct.id)}
+            onToggleFavorite={handleToggleFavoriteWithToast}
+            onAddToCart={handleAddToCartWithToast}
+            onBuyNow={handleBuyNow}
+            onOpenFullDetails={(p) => {
+              setQuickViewProduct(null);
+              setSelectedProduct(p);
+            }}
+            onShowToast={showToast}
+          />
+        )}
+
+        {/* 3. AI Concierge Assistant */}
+        {isAIOpen && (
+          <AIAssistantModal
+            isOpen={isAIOpen}
+            onClose={() => setIsAIOpen(false)}
+            currency={currentCurrency}
+            onSelectProduct={(p) => {
+              setIsAIOpen(false);
+              setQuickViewProduct(p);
+            }}
+            onAddToCart={handleOpenQuickView}
+          />
+        )}
+
+        {/* 4. Cart & Checkout */}
+        {isCartOpen && (
+          <CartModal
+            isOpen={isCartOpen}
+            onClose={() => setIsCartOpen(false)}
+            onTrackOrder={(order) => {
+              setIsCartOpen(false);
+              setActiveTab('profile');
+              showToast(`تم فتح تتبع طلبك (${order.id}) بنجاح`);
+            }}
+            onNavigateHome={() => {
+              setIsCartOpen(false);
+              setActiveTab('home');
+            }}
+          />
+        )}
+
+        {/* 5. Auth Modal */}
+        {isAuthOpen && (
+          <AuthModal
+            isOpen={isAuthOpen}
+            onClose={() => setIsAuthOpen(false)}
+            onSuccess={(newUser) => {
+              showToast(`مرحباً بك يا ${newUser.name} في ضَجّة مول!`);
+            }}
+          />
+        )}
+
+        {/* 6. Notifications */}
+        {isNotifsOpen && (
+          <NotificationsModal
+            isOpen={isNotifsOpen}
+            onClose={() => setIsNotifsOpen(false)}
+            onSelectAction={(notif) => {
+              if (notif.type === 'deal') {
+                handleSelectCategory('women');
+              } else if (notif.type === 'order') {
+                setActiveTab('profile');
+              }
+            }}
+          />
+        )}
+
+        {/* 7. Location Picker Modal */}
+        {isLocationPickerOpen && (
+          <LocationPickerModal
+            isOpen={isLocationPickerOpen}
+            onClose={() => setIsLocationPickerOpen(false)}
+            onSaveAddress={(newAddr) => {
+              addOrUpdateAddress(newAddr);
+              setSelectedAddress(newAddr);
+              showToast(`تم تحديث موقع التوصيل إلى: ${newAddr.city}`);
+            }}
+            initialAddress={selectedAddress}
+          />
+        )}
+
+        {/* 8. Full Real Settings Modal */}
+        {isSettingsOpen && (
+          <SettingsModal
+            isOpen={isSettingsOpen}
+            onClose={() => setIsSettingsOpen(false)}
+            onOpenAuth={() => setIsAuthOpen(true)}
+            onOpenSupport={() => setIsSupportOpen(true)}
+            onOpenAccessibility={() => setIsAccessibilityOpen(true)}
+          />
+        )}
+
+        {/* 9. Customer Service & Support Hub Modal */}
+        {isSupportOpen && (
+          <CustomerServiceModal
+            isOpen={isSupportOpen}
+            onClose={() => setIsSupportOpen(false)}
+          />
+        )}
+
+        {/* 10. Accessibility Settings Modal */}
+        {isAccessibilityOpen && (
+          <AccessibilityModal
+            isOpen={isAccessibilityOpen}
+            onClose={() => setIsAccessibilityOpen(false)}
+          />
+        )}
+
+        {/* 11. Currency Settings Modal */}
+        {isCurrencyAdminOpen && (
+          <CurrencySettingsModal
+            isOpen={isCurrencyAdminOpen}
+            onClose={() => setIsCurrencyAdminOpen(false)}
+            currentCurrency={currentCurrency}
+            rates={currencyRates}
+            onSelectCurrency={setCurrency}
+            onUpdateRates={updateCurrencyRates}
+          />
+        )}
+
+        {/* 12. Dynamic Policies & Guarantees Modal */}
+        {isPoliciesOpen && (
+          <PoliciesModal
+            isOpen={isPoliciesOpen}
+            onClose={() => setIsPoliciesOpen(false)}
+            initialPolicyKey={selectedPolicyKey}
+          />
+        )}
+
+        {/* 13. Dynamic Admin-Controlled Popup Offer */}
+        <PromoOffersModal
+          onNavigate={(target) => {
+            setSelectedCategoryId(target || 'women');
+            setSelectedSubcategory(null);
+            setActiveTab('categories');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+        />
+
+        {/* 14. Admin Product Dashboard Modal (Owner Only) */}
+        {isProductAdminOpen && (
+          <AdminProductDashboard
+            isOpen={isProductAdminOpen}
+            onClose={() => setIsProductAdminOpen(false)}
+          />
+        )}
+
+        {/* 15. Store & Branch Locator Modal (Leaflet & OpenStreetMap) */}
+        {isStoreLocatorOpen && (
+          <LeafletStoreLocatorModal
+            isOpen={isStoreLocatorOpen}
+            onClose={() => setIsStoreLocatorOpen(false)}
+          />
+        )}
+      </Suspense>
+
+      {/* Dynamic Full Admin Controlled Bottom Footer Bar */}
+      <AppFooterBottomBar
+        onOpenStoreLocator={() => setIsStoreLocatorOpen(true)}
+        onReplaySplash={() => setShowSplash(true)}
+        onOpenOnboarding={() => setShowOnboarding(true)}
+        onOpenCurrencyAdmin={() => setIsCurrencyAdminOpen(true)}
+        onOpenSupport={() => setIsSupportOpen(true)}
+        onOpenAI={() => setIsAIOpen(true)}
+        onNavigatePage={(page) => {
+          if (page === 'home' || page === 'trends' || page === 'profile' || page === 'wishlist' || page === 'brands') {
+            setActiveTab(page as NavTab);
+          } else if (page === 'cart') {
+            setIsCartOpen(true);
+          } else if (page === 'categories') {
+            handleOpenCategoriesTab();
+          }
+        }}
+        onSelectCategory={(catId) => handleSelectCategory(catId)}
+        onSelectProduct={(prodId) => {
+          const prod = products.find((p) => p.id === prodId);
+          if (prod) setSelectedProduct(prod);
+        }}
+        onOpenPolicy={(policyKey) => {
+          setSelectedPolicyKey(policyKey);
+          setIsPoliciesOpen(true);
+        }}
+      />
+
+      {/* Mobile Bottom Navigation */}
+      <BottomNav
+        activeTab={activeTab}
+        onSelectTab={(tab) => {
+          if (tab === 'ai') {
+            setIsAIOpen(true);
+          } else if (tab === 'cart') {
+            setIsCartOpen(true);
+          } else if (tab === 'categories') {
+            handleOpenCategoriesTab();
+          } else {
+            setActiveTab(tab);
+          }
+        }}
+        cartCount={totalCartCount}
+        wishlistCount={wishlist.length}
+      />
+    </div>
+  );
+}
+
+export function App() {
+  return (
+    <MarketplaceProvider>
+      <MarketplaceApp />
+    </MarketplaceProvider>
+  );
+}
+
+
+export default App;
