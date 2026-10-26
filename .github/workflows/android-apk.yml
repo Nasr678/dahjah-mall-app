@@ -22,12 +22,14 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
 
       - name: Setup Java
         uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '21'
+          cache: gradle
 
       - name: Setup Android SDK
         run: |
@@ -48,13 +50,23 @@ jobs:
       - name: Install project dependencies
         run: npm install
 
-      - name: Build web app and sync Android
-        run: npm run cap:build
+      - name: Build web app
+        run: npm run build
+
+      - name: Verify web build
+        run: |
+          test -f dist/index.html
+          echo "Web build generated successfully."
+
+      - name: Sync Capacitor Android
+        run: npx cap sync android
 
       - name: Verify Android project
         run: |
           test -f android/gradlew
           test -f android/app/build.gradle || test -f android/app/build.gradle.kts
+          test -f android/app/src/main/assets/capacitor.config.json
+          test -f android/app/src/main/assets/public/index.html
 
       - name: Build debug APK
         run: |
@@ -64,7 +76,8 @@ jobs:
 
       - name: Verify APK
         run: |
-          test -f android/app/build/outputs/apk/debug/app-debug.apk
+          test -s android/app/build/outputs/apk/debug/app-debug.apk
+          echo "APK generated successfully."
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
