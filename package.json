@@ -11,7 +11,7 @@
     "clean": "rm -rf dist android/app/src/main/assets/public && mkdir -p android/app/src/main/assets/public",
     "lint": "tsc --noEmit",
     "cap:sync": "npx cap sync android",
-    "cap:build": "npm run clean && npm run build && npx cap sync android",
+    "cap:build": "npm run clean && npm run build && node ./scripts/verify-android-assets.mjs && npx cap sync android",
     "cap:open": "npx cap open android",
     "verify:android-assets": "node ./scripts/verify-android-assets.mjs"
   },
