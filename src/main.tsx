@@ -1,8 +1,5 @@
 import React, { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import App from './App.tsx';
-import './index.css';
-import 'leaflet/dist/leaflet.css';
 
 const overlayId = 'dajjah-debug-overlay';
 
@@ -63,10 +60,14 @@ function renderStartupFallback(label: string, payload: unknown) {
       <div style="width:100%;max-width:520px;background:rgba(17,17,17,0.97);border:1px solid rgba(245,158,11,0.55);border-radius:18px;padding:24px;box-shadow:0 18px 42px rgba(0,0,0,0.45);">
         <h2 style="margin:0 0 12px;color:#fbbf24;font-size:24px;">تعذر تشغيل التطبيق</h2>
         <p style="margin:0 0 16px;color:#f5f5f4;line-height:1.8;font-size:14px;">حدث خطأ أثناء تهيئة التطبيق. تم تسجيل التفاصيل لتسهيل التشخيص.</p>
-        <pre style="margin:0;white-space:pre-wrap;word-break:break-word;background:rgba(0,0,0,0.2);color:#fef3c7;border-radius:12px;padding:12px;overflow:auto;max-height:260px;font-size:11px;line-height:1.6;">${message}</pre>
-        <button type="button" style="margin-top:18px;width:100%;background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#111827;border:none;border-radius:12px;padding:12px 16px;font-weight:800;cursor:pointer;" onclick="window.location.reload()">إعادة المحاولة</button>
+        <pre style="margin:0;white-space:pre-wrap;word-break:break-word;background:rgba(0,0,0,0.2);color:#fef3c7;border-radius:12px;padding:12px;overflow:auto;max-height:260px;font-size:11px;line-height:1.7;">${message}</pre>
+        <button type="button" style="margin-top:18px;width:100%;background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#111827;border:none;border-radius:12px;padding:12px 16px;font-weight:800;cursor:pointer;">إعادة المحاولة</button>
       </div>
     `;
+    const retryButton = wrapper.querySelector('button');
+    if (retryButton) {
+      retryButton.addEventListener('click', () => window.location.reload());
+    }
     document.body.appendChild(wrapper);
     return;
   }
@@ -76,11 +77,13 @@ function renderStartupFallback(label: string, payload: unknown) {
       <div style="width:100%;max-width:520px;background:rgba(17,17,17,0.97);border:1px solid rgba(245,158,11,0.55);border-radius:18px;padding:24px;box-shadow:0 18px 42px rgba(0,0,0,0.45);">
         <h2 style="margin:0 0 12px;color:#fbbf24;font-size:24px;">تعذر تشغيل التطبيق</h2>
         <p style="margin:0 0 16px;color:#f5f5f4;line-height:1.8;font-size:14px;">حدث خطأ أثناء تهيئة التطبيق. تم تسجيل التفاصيل لتسهيل التشخيص.</p>
-        <pre style="margin:0;white-space:pre-wrap;word-break:break-word;background:rgba(0,0,0,0.2);color:#fef3c7;border-radius:12px;padding:12px;overflow:auto;max-height:260px;font-size:11px;line-height:1.6;">${message}</pre>
+        <pre style="margin:0;white-space:pre-wrap;word-break:break-word;background:rgba(0,0,0,0.2);color:#fef3c7;border-radius:12px;padding:12px;overflow:auto;max-height:260px;font-size:11px;line-height:1.7;">${message}</pre>
         <button type="button" style="margin-top:18px;width:100%;background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#111827;border:none;border-radius:12px;padding:12px 16px;font-weight:800;cursor:pointer;" onclick="window.location.reload()">إعادة المحاولة</button>
       </div>
     </div>
   `;
+
+  showDiagnostic(label, payload);
 }
 
 class StartupErrorBoundary extends React.Component<React.PropsWithChildren, { hasError: boolean }> {
@@ -106,6 +109,16 @@ class StartupErrorBoundary extends React.Component<React.PropsWithChildren, { ha
     }
     return this.props.children;
   }
+}
+
+async function loadAppBundle() {
+  const [{ default: App }, _cssModule, _leafletCssModule] = await Promise.all([
+    import('./App.tsx'),
+    import('./index.css'),
+    import('leaflet/dist/leaflet.css'),
+  ]);
+
+  return App;
 }
 
 if (typeof window !== 'undefined') {
@@ -136,22 +149,28 @@ if (typeof window !== 'undefined') {
   });
 }
 
-try {
-  const rootElement = document.getElementById('root');
-  if (!rootElement) {
-    throw new Error('Missing required #root element in index.html');
-  }
+showDiagnostic('Startup', 'Registering handlers and loading app bundle...');
 
-  const root = createRoot(rootElement);
-  root.render(
-    <StartupErrorBoundary>
-      <StrictMode>
-        <App />
-      </StrictMode>
-    </StartupErrorBoundary>,
-  );
-} catch (error) {
-  const text = getErrorText(error);
-  showDiagnostic('React render failed', text);
-  renderStartupFallback('React render failed', text);
-}
+(async () => {
+  try {
+    const rootElement = document.getElementById('root');
+    if (!rootElement) {
+      throw new Error('Missing required #root element in index.html');
+    }
+
+    const App = await loadAppBundle();
+    const root = createRoot(rootElement);
+    root.render(
+      <StartupErrorBoundary>
+        <StrictMode>
+          <App />
+        </StrictMode>
+      </StartupErrorBoundary>,
+    );
+  } catch (error) {
+    const text = getErrorText(error);
+    showDiagnostic('React startup bootstrap failed', text);
+    renderStartupFallback('React startup bootstrap failed', text);
+  }
+})();
+
