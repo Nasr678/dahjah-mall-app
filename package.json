@@ -11,7 +11,7 @@
     "clean": "rm -rf dist android/app/src/main/assets/public && mkdir -p android/app/src/main/assets/public",
     "lint": "tsc --noEmit",
     "cap:sync": "npx cap sync android",
-    "cap:build": "npm run clean && npm run build && node ./scripts/verify-android-assets.mjs && npx cap sync android",
+    "cap:build": "npm run clean && npm run build && npx cap sync android && node ./scripts/verify-android-assets.mjs",
     "cap:open": "npx cap open android",
     "verify:android-assets": "node ./scripts/verify-android-assets.mjs"
   },
@@ -20,7 +20,7 @@
     "@google/genai": "^2.4.0",
     "@tailwindcss/vite": "^4.1.14",
     "@types/canvas-confetti": "^1.9.0",
-    "@types/leaflet": "^1.9.22",
+    "@types/leaflet": "^9.0.0",
     "@vis.gl/react-google-maps": "^1.9.0",
     "@vitejs/plugin-react": "^5.0.4",
     "canvas-confetti": "^1.9.4",
