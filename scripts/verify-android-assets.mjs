@@ -1,5 +1,5 @@
-const fs = require('node:fs');
-const path = require('node:path');
+import fs from 'node:fs';
+import path from 'node:path';
 
 const root = process.cwd();
 const distIndex = path.join(root, 'dist', 'index.html');
@@ -14,7 +14,7 @@ function getRefs(filePath) {
   const html = fs.readFileSync(filePath, 'utf8');
   const refs = [];
 
-  const regex = /(?:src|href)=["']([^"']+)["']/g;
+  const regex = /(?:src|href)=['"]([^'"]+)['"]/g;
   let match;
   while ((match = regex.exec(html)) !== null) {
     const value = match[1];
