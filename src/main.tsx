@@ -2,7 +2,8 @@ import React, { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
 const overlayId = 'dajjah-debug-overlay';
-const STARTUP_DIAGNOSTIC_OVERLAY = false;
+const isProduction = import.meta.env.PROD;
+let reloadQueued = false;
 
 function getErrorText(payload: unknown): string {
   if (payload instanceof Error) {
@@ -19,77 +20,79 @@ function getErrorText(payload: unknown): string {
 function showDiagnostic(label: string, payload: unknown) {
   const message = getErrorText(payload);
 
-  if (STARTUP_DIAGNOSTIC_OVERLAY) {
-    const existing = document.getElementById(overlayId) as HTMLPreElement | null;
-    const node = existing ?? document.createElement('pre');
+  if (isProduction) {
+    console.error(label, message);
+    return;
+  }
 
-    node.id = overlayId;
-    node.style.position = 'fixed';
-    node.style.left = '12px';
-    node.style.right = '12px';
-    node.style.bottom = '12px';
-    node.style.zIndex = '999999';
-    node.style.maxHeight = '40vh';
-    node.style.overflow = 'auto';
-    node.style.background = 'rgba(12, 12, 12, 0.92)';
-    node.style.color = '#facc15';
-    node.style.fontSize = '12px';
-    node.style.lineHeight = '1.5';
-    node.style.whiteSpace = 'pre-wrap';
-    node.style.wordBreak = 'break-word';
-    node.style.border = '1px solid rgba(250, 204, 21, 0.4)';
-    node.style.borderRadius = '10px';
-    node.style.padding = '12px';
-    node.textContent = `${label}\n${message}`;
+  const existing = document.getElementById(overlayId) as HTMLPreElement | null;
+  const node = existing ?? document.createElement('pre');
 
-    if (!existing) {
-      document.body.appendChild(node);
-    }
+  node.id = overlayId;
+  node.style.position = 'fixed';
+  node.style.left = '12px';
+  node.style.right = '12px';
+  node.style.bottom = '12px';
+  node.style.zIndex = '999999';
+  node.style.maxHeight = '40vh';
+  node.style.overflow = 'auto';
+  node.style.background = 'rgba(12, 12, 12, 0.92)';
+  node.style.color = '#facc15';
+  node.style.fontSize = '12px';
+  node.style.lineHeight = '1.5';
+  node.style.whiteSpace = 'pre-wrap';
+  node.style.wordBreak = 'break-word';
+  node.style.border = '1px solid rgba(250, 204, 21, 0.4)';
+  node.style.borderRadius = '10px';
+  node.style.padding = '12px';
+  node.textContent = `${label}\n${message}`;
+
+  if (!existing) {
+    document.body.appendChild(node);
   }
 
   console.error(label, payload);
 }
 
 function renderStartupFallback(label: string, payload: unknown) {
+  const root = document.getElementById('root');
   const message = getErrorText(payload)
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;');
 
-  const root = document.getElementById('root');
-  if (!root) {
+  const fallbackHtml = `
+    <div dir="rtl" style="min-height:100vh;background:radial-gradient(circle at top,#1d1a16 0%,#0a0a0b 45%,#07060a 100%);color:#fef3c7;display:flex;align-items:center;justify-content:center;padding:24px;font-family:Tajawal,Arial,sans-serif;">
+      <div style="width:min(92vw, 520px);background:rgba(19,17,18,0.96);border:1px solid rgba(245,158,11,0.45);border-radius:24px;padding:24px 20px 20px;box-shadow:0 18px 45px rgba(0,0,0,0.45);text-align:center;">
+        <div style="display:flex;align-items:center;justify-content:center;margin-bottom:18px;">
+          <div style="width:72px;height:72px;border-radius:22px;background:linear-gradient(135deg,#fbbf24,#d97706);display:flex;align-items:center;justify-content:center;color:#111827;font-size:32px;font-weight:900;box-shadow:0 12px 28px rgba(245,158,11,0.35);">ض</div>
+        </div>
+        <h2 style="margin:0 0 12px;color:#fbbf24;font-size:24px;line-height:1.3;font-weight:900;">تعذر تشغيل التطبيق</h2>
+        <p style="margin:0 0 16px;color:#f5f5f4;line-height:1.8;font-size:14px;">
+          حدث خطأ أثناء تهيئة التطبيق. سيتم إعادة المحاولة تلقائياً في لحظات، وإذا استمر الأمر يرجى إعادة فتح التطبيق.
+        </p>
+        <div style="margin-top:12px;padding:12px;border-radius:14px;background:rgba(0,0,0,0.18);border:1px solid rgba(245,158,11,0.18);text-align:right;max-height:200px;overflow:auto;">
+          <pre style="margin:0;white-space:pre-wrap;word-break:break-word;color:#fef3c7;font-size:11px;line-height:1.6;">${message}</pre>
+        </div>
+        <button type="button" style="margin-top:18px;width:100%;background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#111827;border:none;border-radius:12px;padding:12px 16px;font-weight:800;cursor:pointer;box-shadow:0 10px 22px rgba(245,158,11,0.28);">إعادة المحاولة</button>
+      </div>
+    </div>
+  `;
+
+  if (root) {
+    root.innerHTML = fallbackHtml;
+    const retryButton = root.querySelector('button');
+    if (retryButton) {
+      retryButton.addEventListener('click', () => window.location.reload());
+    }
+  } else {
     const wrapper = document.createElement('div');
     wrapper.setAttribute('dir', 'rtl');
-    wrapper.setAttribute('style', 'position:fixed;inset:0;background:#07060A;color:#fef3c7;display:flex;align-items:center;justify-content:center;padding:20px;z-index:999999;font-family:Tahoma,Arial,sans-serif;');
-    wrapper.innerHTML = `
-      <div style="width:100%;max-width:520px;background:rgba(17,17,17,0.97);border:1px solid rgba(245,158,11,0.55);border-radius:18px;padding:24px;box-shadow:0 18px 42px rgba(0,0,0,0.45);">
-        <h2 style="margin:0 0 12px;color:#fbbf24;font-size:24px;">تعذر تشغيل التطبيق</h2>
-        <p style="margin:0 0 16px;color:#f5f5f4;line-height:1.8;font-size:14px;">حدث خطأ أثناء تهيئة التطبيق. تم تسجيل التفاصيل لتسهيل التشخيص.</p>
-        <pre style="margin:0;white-space:pre-wrap;word-break:break-word;background:rgba(0,0,0,0.2);color:#fef3c7;border-radius:12px;padding:12px;overflow:auto;max-height:260px;font-size:11px;line-height:1.6;">${message}</pre>
-        <button type="button" style="margin-top:18px;width:100%;background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#111827;border:none;border-radius:12px;padding:12px 16px;font-weight:800;cursor:pointer;">إعادة المحاولة</button>
-      </div>
-    `;
+    wrapper.innerHTML = fallbackHtml;
     const retryButton = wrapper.querySelector('button');
     if (retryButton) {
       retryButton.addEventListener('click', () => window.location.reload());
     }
     document.body.appendChild(wrapper);
-    return;
-  }
-
-  root.innerHTML = `
-    <div dir="rtl" style="min-height:100vh;background:#07060A;color:#fef3c7;display:flex;align-items:center;justify-content:center;padding:20px;font-family:Tahoma,Arial,sans-serif;">
-      <div style="width:100%;max-width:520px;background:rgba(17,17,17,0.97);border:1px solid rgba(245,158,11,0.55);border-radius:18px;padding:24px;box-shadow:0 18px 42px rgba(0,0,0,0.45);">
-        <h2 style="margin:0 0 12px;color:#fbbf24;font-size:24px;">تعذر تشغيل التطبيق</h2>
-        <p style="margin:0 0 16px;color:#f5f5f4;line-height:1.8;font-size:14px;">حدث خطأ أثناء تهيئة التطبيق. تم تسجيل التفاصيل لتسهيل التشخيص.</p>
-        <pre style="margin:0;white-space:pre-wrap;word-break:break-word;background:rgba(0,0,0,0.2);color:#fef3c7;border-radius:12px;padding:12px;overflow:auto;max-height:260px;font-size:11px;line-height:1.6;">${message}</pre>
-        <button type="button" style="margin-top:18px;width:100%;background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#111827;border:none;border-radius:12px;padding:12px 16px;font-weight:800;cursor:pointer;">إعادة المحاولة</button>
-      </div>
-    </div>
-  `;
-
-  const retryButton = root.querySelector('button');
-  if (retryButton) {
-    retryButton.addEventListener('click', () => window.location.reload());
   }
 
   showDiagnostic(label, payload);
@@ -121,13 +124,14 @@ class StartupErrorBoundary extends React.Component<React.PropsWithChildren, { ha
 }
 
 async function loadAppBundle() {
-  const [{ default: App }, _cssModule, _leafletCssModule] = await Promise.all([
-    import('./App.tsx'),
-    import('./index.css'),
-    import('leaflet/dist/leaflet.css'),
+  const appModulePromise = import('./App.tsx');
+  const optionalCssPromise = Promise.allSettled([
+    import('./index.css').catch(() => undefined),
+    import('leaflet/dist/leaflet.css').catch(() => undefined),
   ]);
 
-  return App;
+  const [appModule, _cssResult] = await Promise.all([appModulePromise, optionalCssPromise]);
+  return appModule.default;
 }
 
 if (typeof window !== 'undefined') {
@@ -135,10 +139,20 @@ if (typeof window !== 'undefined') {
     const text = event?.error ?? event?.message ?? 'Unknown runtime error';
     const msg = String(text).toLowerCase();
     const transient = ['closing', 'hidden', 'database is closing', 'indexeddb', 'abort', 'quota', 'offlinedata'].some((token) => msg.includes(token));
+    const chunkLoadFailure = msg.includes('loading chunk') || msg.includes('failed to fetch dynamically imported module');
+
     if (transient) {
       console.warn('Suppressed transient runtime error:', text);
       return;
     }
+
+    if (chunkLoadFailure && !reloadQueued) {
+      reloadQueued = true;
+      console.warn('Chunk load failed; reloading app once:', text);
+      window.setTimeout(() => window.location.reload(), 800);
+      return;
+    }
+
     event.preventDefault();
     showDiagnostic('window.onerror', text);
     renderStartupFallback('window.onerror', text);
@@ -148,17 +162,25 @@ if (typeof window !== 'undefined') {
     const reason = event?.reason ?? 'Unknown promise rejection';
     const msg = String(reason).toLowerCase();
     const transient = ['closing', 'hidden', 'database is closing', 'indexeddb', 'abort', 'quota', 'offlinedata'].some((token) => msg.includes(token));
+    const chunkLoadFailure = msg.includes('loading chunk') || msg.includes('failed to fetch dynamically imported module');
+
     if (transient) {
       console.warn('Suppressed transient promise rejection:', reason);
       return;
     }
+
+    if (chunkLoadFailure && !reloadQueued) {
+      reloadQueued = true;
+      console.warn('Chunk load failed; reloading app once:', reason);
+      window.setTimeout(() => window.location.reload(), 800);
+      return;
+    }
+
     event.preventDefault();
     showDiagnostic('unhandledrejection', reason);
     renderStartupFallback('unhandledrejection', reason);
   });
 }
-
-console.info('Startup: registering handlers and loading app bundle...');
 
 (async () => {
   try {
@@ -178,6 +200,7 @@ console.info('Startup: registering handlers and loading app bundle...');
     );
   } catch (error) {
     const text = getErrorText(error);
+    console.error('React startup bootstrap failed', error);
     showDiagnostic('React startup bootstrap failed', text);
     renderStartupFallback('React startup bootstrap failed', text);
   }
