@@ -5,6 +5,11 @@ const overlayId = 'dajjah-debug-overlay';
 const isProduction = import.meta.env.PROD;
 let reloadQueued = false;
 
+function removeStartupOverlay() {
+  const overlay = document.getElementById(overlayId);
+  if (overlay) overlay.remove();
+}
+
 function getErrorText(payload: unknown): string {
   if (payload instanceof Error) {
     return payload.stack || payload.message || 'Unknown error';
@@ -198,6 +203,8 @@ if (typeof window !== 'undefined') {
         </StrictMode>
       </StartupErrorBoundary>,
     );
+
+    window.setTimeout(() => removeStartupOverlay(), 400);
   } catch (error) {
     const text = getErrorText(error);
     console.error('React startup bootstrap failed', error);
