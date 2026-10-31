@@ -194,6 +194,7 @@ interface MarketplaceContextType {
   deleteProduct: (id: string) => Promise<void>;
   updateProductStock: (id: string, newStock: number) => Promise<void>;
   saveCategory: (category: Category) => Promise<void>;
+  updateCategory: (id: string, updates: Partial<Category>) => Promise<void>;
   deleteCategory: (id: string) => Promise<void>;
   addBrand: (brandData: Omit<Brand, 'id' | 'createdAt'> & { id?: string }) => Promise<Brand>;
   updateBrand: (id: string, updates: Partial<Brand>) => Promise<void>;
@@ -686,9 +687,10 @@ export const MarketplaceProvider: React.FC<{ children: React.ReactNode }> = ({ c
     color?: string,
     size?: string
   ) => {
+    if (!product) return;
     let quantity = 1;
-    let selectedColor = color || product.colors[0]?.name;
-    let selectedSize = size || product.sizes[0];
+    let selectedColor = color || (product.colors && product.colors.length > 0 ? product.colors[0]?.name : '');
+    let selectedSize = size || (product.sizes && product.sizes.length > 0 ? product.sizes[0] : '');
 
     if (typeof optionsOrQty === 'number') {
       quantity = optionsOrQty;
@@ -701,7 +703,7 @@ export const MarketplaceProvider: React.FC<{ children: React.ReactNode }> = ({ c
     setCart((prev) => {
       const existingIndex = prev.findIndex(
         (item) =>
-          item.product.id === product.id &&
+          item.product?.id === product.id &&
           item.selectedColor === selectedColor &&
           item.selectedSize === selectedSize
       );
@@ -717,9 +719,9 @@ export const MarketplaceProvider: React.FC<{ children: React.ReactNode }> = ({ c
         productId: product.id,
         product,
         quantity,
-        selectedColor,
-        selectedSize,
-        priceYER: product.priceYER,
+        selectedColor: selectedColor || '',
+        selectedSize: selectedSize || '',
+        priceYER: product.priceYER || 0,
       };
       return [newItem, ...prev];
     });
@@ -963,11 +965,8 @@ export const MarketplaceProvider: React.FC<{ children: React.ReactNode }> = ({ c
 
       if (activeRules.length > 0) {
         const bestRule = activeRules[0];
-        if (bestRule.discountType === 'percentage') {
-          volumeDiscountBaseYER = Math.round((subtotalBaseYER * bestRule.discountValue) / 100);
-        } else {
-          volumeDiscountBaseYER = bestRule.discountValue;
-        }
+        const pct = bestRule.discountPercentage || (bestRule as any).discountValue || 0;
+        volumeDiscountBaseYER = Math.round((subtotalBaseYER * pct) / 100);
       }
     }
 
@@ -1215,6 +1214,13 @@ export const MarketplaceProvider: React.FC<{ children: React.ReactNode }> = ({ c
     });
   };
 
+  const updateCategory = async (id: string, updates: Partial<Category>): Promise<void> => {
+    const existing = categories.find((c) => c.id === id);
+    if (!existing) return;
+    const merged = { ...existing, ...updates };
+    await saveCategory(merged);
+  };
+
   const deleteCategory = async (id: string): Promise<void> => {
     await firestoreCatalogService.deleteCategory(id);
     setCategories((prev) => prev.filter((c) => c.id !== id));
@@ -1416,6 +1422,7 @@ export const MarketplaceProvider: React.FC<{ children: React.ReactNode }> = ({ c
     deleteProduct,
     updateProductStock,
     saveCategory,
+    updateCategory,
     deleteCategory,
     addBrand,
     updateBrand,

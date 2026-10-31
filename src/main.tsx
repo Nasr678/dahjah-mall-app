@@ -1,8 +1,11 @@
-import React, { StrictMode } from 'react';
+/// <reference types="vite/client" />
+import React, { Component, StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
+import './index.css';
+import 'leaflet/dist/leaflet.css';
 
 const overlayId = 'dajjah-debug-overlay';
-const isProduction = import.meta.env.PROD;
+const isProduction = Boolean(import.meta.env?.PROD);
 let reloadQueued = false;
 
 function removeStartupOverlay() {
@@ -103,13 +106,21 @@ function renderStartupFallback(label: string, payload: unknown) {
   showDiagnostic(label, payload);
 }
 
-class StartupErrorBoundary extends React.Component<React.PropsWithChildren, { hasError: boolean }> {
-  constructor(props: React.PropsWithChildren) {
+interface StartupErrorBoundaryProps {
+  children?: React.ReactNode;
+}
+
+interface StartupErrorBoundaryState {
+  hasError: boolean;
+}
+
+class StartupErrorBoundary extends Component<StartupErrorBoundaryProps, StartupErrorBoundaryState> {
+  constructor(props: StartupErrorBoundaryProps) {
     super(props);
     this.state = { hasError: false };
   }
 
-  static getDerivedStateFromError() {
+  static getDerivedStateFromError(): StartupErrorBoundaryState {
     return { hasError: true };
   }
 
@@ -129,32 +140,58 @@ class StartupErrorBoundary extends React.Component<React.PropsWithChildren, { ha
 }
 
 async function loadAppBundle() {
-  const appModulePromise = import('./App.tsx');
-  const optionalCssPromise = Promise.allSettled([
-    import('./index.css').catch(() => undefined),
-    import('leaflet/dist/leaflet.css').catch(() => undefined),
-  ]);
-
-  const [appModule, _cssResult] = await Promise.all([appModulePromise, optionalCssPromise]);
+  const appModule = await import('./App.tsx');
   return appModule.default;
+}
+
+let isAppMounted = false;
+
+function isBenignOrIgnoredError(payload: unknown): boolean {
+  const msg = getErrorText(payload).toLowerCase();
+  const ignoredTokens = [
+    'websocket',
+    'closed without opened',
+    'connection closed',
+    'connection failed',
+    'failed to connect',
+    'sockjs',
+    'vite',
+    'hmr',
+    'closing',
+    'hidden',
+    'database is closing',
+    'indexeddb',
+    'abort',
+    'quota',
+    'offlinedata',
+    'resizeobserver',
+    'networkerror',
+    'err_connection_refused',
+  ];
+  return ignoredTokens.some((token) => msg.includes(token));
 }
 
 if (typeof window !== 'undefined') {
   window.addEventListener('error', (event) => {
     const text = event?.error ?? event?.message ?? 'Unknown runtime error';
-    const msg = String(text).toLowerCase();
-    const transient = ['closing', 'hidden', 'database is closing', 'indexeddb', 'abort', 'quota', 'offlinedata'].some((token) => msg.includes(token));
-    const chunkLoadFailure = msg.includes('loading chunk') || msg.includes('failed to fetch dynamically imported module');
 
-    if (transient) {
-      console.warn('Suppressed transient runtime error:', text);
+    if (isBenignOrIgnoredError(text)) {
+      console.warn('Suppressed benign runtime error:', text);
       return;
     }
+
+    const msg = String(text).toLowerCase();
+    const chunkLoadFailure = msg.includes('loading chunk') || msg.includes('failed to fetch dynamically imported module');
 
     if (chunkLoadFailure && !reloadQueued) {
       reloadQueued = true;
       console.warn('Chunk load failed; reloading app once:', text);
       window.setTimeout(() => window.location.reload(), 800);
+      return;
+    }
+
+    if (isAppMounted) {
+      console.error('Post-mount runtime error (preserved UI):', text);
       return;
     }
 
@@ -165,19 +202,24 @@ if (typeof window !== 'undefined') {
 
   window.addEventListener('unhandledrejection', (event) => {
     const reason = event?.reason ?? 'Unknown promise rejection';
-    const msg = String(reason).toLowerCase();
-    const transient = ['closing', 'hidden', 'database is closing', 'indexeddb', 'abort', 'quota', 'offlinedata'].some((token) => msg.includes(token));
-    const chunkLoadFailure = msg.includes('loading chunk') || msg.includes('failed to fetch dynamically imported module');
 
-    if (transient) {
-      console.warn('Suppressed transient promise rejection:', reason);
+    if (isBenignOrIgnoredError(reason)) {
+      console.warn('Suppressed benign promise rejection:', reason);
       return;
     }
+
+    const msg = String(reason).toLowerCase();
+    const chunkLoadFailure = msg.includes('loading chunk') || msg.includes('failed to fetch dynamically imported module');
 
     if (chunkLoadFailure && !reloadQueued) {
       reloadQueued = true;
       console.warn('Chunk load failed; reloading app once:', reason);
       window.setTimeout(() => window.location.reload(), 800);
+      return;
+    }
+
+    if (isAppMounted) {
+      console.warn('Post-mount unhandled rejection (preserved UI):', reason);
       return;
     }
 
@@ -204,6 +246,7 @@ if (typeof window !== 'undefined') {
       </StartupErrorBoundary>,
     );
 
+    isAppMounted = true;
     window.setTimeout(() => removeStartupOverlay(), 400);
   } catch (error) {
     const text = getErrorText(error);

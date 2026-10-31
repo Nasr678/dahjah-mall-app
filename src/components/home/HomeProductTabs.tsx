@@ -36,7 +36,7 @@ export const HomeProductTabs: React.FC<HomeProductTabsProps> = memo(({
     switch (activeTab) {
       case 'brands':
         return products
-          .filter((p) => p.brand || p.isFeatured)
+          .filter((p) => p.brandId || (p as any).brand || p.isFeatured)
           .slice(0, 16);
       case 'offers':
         return products

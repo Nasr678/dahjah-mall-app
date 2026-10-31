@@ -25,7 +25,9 @@ import {
   CalendarCheck,
   ShieldCheck,
   LogOut,
-  LogIn
+  LogIn,
+  MapPin,
+  Play
 } from 'lucide-react';
 
 interface ProfileViewProps {
@@ -35,6 +37,9 @@ interface ProfileViewProps {
   onOpenSettings: () => void;
   onOpenAdmin?: () => void;
   onNavigateHome?: () => void;
+  onOpenStoreLocator?: () => void;
+  onReplaySplash?: () => void;
+  onOpenCurrencyAdmin?: () => void;
 }
 
 export const ProfileView: React.FC<ProfileViewProps> = ({
@@ -43,6 +48,9 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
   onOpenSupport,
   onOpenSettings,
   onOpenAdmin,
+  onOpenStoreLocator,
+  onReplaySplash,
+  onOpenCurrencyAdmin,
 }) => {
   const {
     currentUser,
@@ -78,7 +86,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
   };
 
   // 5 Status classifications
-  const unpaidOrders = orders.filter((o) => o.status === 'received' || o.paymentMethod === 'cod');
+  const unpaidOrders = orders.filter((o) => o.status === 'received' || (o.paymentMethod as string) === 'cod');
   const processingOrders = orders.filter((o) => o.status === 'processing');
   const shippedOrders = orders.filter((o) => o.status === 'out_for_delivery');
   const feedbackOrders = orders.filter((o) => o.status === 'delivered');
@@ -433,7 +441,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                     <span className="font-mono font-bold text-neutral-300">#{order.id.slice(0, 8)}</span>
                     <span className="text-neutral-500 mr-2">({order.items.length} منتجات)</span>
                   </div>
-                  <span className="font-black text-amber-400">{formatPrice(order.totalPriceYER)}</span>
+                  <span className="font-black text-amber-400">{formatPrice(order.totalYER || (order as any).totalPriceYER || 0)}</span>
                 </div>
               ))
             )}
@@ -474,44 +482,46 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
         </button>
       </div>
 
-      {/* 5. ROW 4: WISHLIST | FOLLOWED | VIEWING HISTORY (قائمة الأماني | متابع | سجل التصفح) */}
-      <div className="grid grid-cols-3 gap-1.5 p-1.5 rounded-2xl bg-neutral-900/90 border border-neutral-800 shadow-sm text-center">
-        {/* قائمة الأماني */}
-        <button
-          type="button"
-          onClick={onOpenWishlist}
-          className="flex flex-col items-center gap-1 py-1.5 px-1 rounded-xl hover:bg-neutral-850 text-neutral-200 transition-colors"
-        >
-          <div className="relative">
-            <Heart className="w-4 h-4 text-rose-500 fill-rose-500" />
-            {wishlist.length > 0 && (
-              <span className="absolute -top-1 -right-1.5 min-w-[12px] h-[12px] rounded-full bg-rose-500 text-white text-[7px] font-black flex items-center justify-center">
-                {wishlist.length}
-              </span>
-            )}
-          </div>
-          <span className="text-[10px] font-bold">قائمة الأماني</span>
-        </button>
+      {/* 5. ROW 4: ESSENTIAL TOOLS (خريطة الفروع | إعادة عرض الشعار | أسعار الصرف) */}
+      <div className="space-y-1.5">
+        <span className="text-[10px] font-bold text-neutral-400 px-1">أدوات المتجر الأساسية</span>
+        <div className="grid grid-cols-3 gap-1.5 p-1.5 rounded-2xl bg-neutral-900/90 border border-neutral-800 shadow-sm text-center">
+          {/* خريطة الفروع والمستودعات */}
+          <button
+            type="button"
+            id="profile-btn-store-locator"
+            onClick={onOpenStoreLocator || (() => {})}
+            className="flex flex-col items-center gap-1 py-2 px-1 rounded-xl hover:bg-neutral-850 text-neutral-200 transition-colors cursor-pointer group"
+            title="خريطة الفروع والمستودعات"
+          >
+            <MapPin className="w-4 h-4 text-amber-400 group-hover:scale-110 transition-transform" />
+            <span className="text-[10px] font-bold">خريطة الفروع</span>
+          </button>
 
-        {/* متابع */}
-        <button
-          type="button"
-          onClick={() => alert('أنت تتابع الأقسام الستة الرسمية في ضَجّة مول')}
-          className="flex flex-col items-center gap-1 py-1.5 px-1 rounded-xl hover:bg-neutral-850 text-neutral-200 transition-colors"
-        >
-          <BookmarkCheck className="w-4 h-4 text-amber-400" />
-          <span className="text-[10px] font-bold">متابع</span>
-        </button>
+          {/* إعادة عرض شعار ضَجّة السينمائي */}
+          <button
+            type="button"
+            id="profile-btn-replay-splash"
+            onClick={onReplaySplash || (() => {})}
+            className="flex flex-col items-center gap-1 py-2 px-1 rounded-xl hover:bg-neutral-850 text-neutral-200 transition-colors cursor-pointer group"
+            title="إعادة عرض شعار ضَجّة السينمائي"
+          >
+            <Play className="w-4 h-4 text-rose-500 fill-rose-500/20 group-hover:scale-110 transition-transform" />
+            <span className="text-[10px] font-bold">شعار ضَجّة 3D</span>
+          </button>
 
-        {/* سجل التصفح */}
-        <button
-          type="button"
-          onClick={() => alert('تم حفظ سجل تصفحك محلياً لسرعة الوصول')}
-          className="flex flex-col items-center gap-1 py-1.5 px-1 rounded-xl hover:bg-neutral-850 text-neutral-200 transition-colors"
-        >
-          <Eye className="w-4 h-4 text-amber-400" />
-          <span className="text-[10px] font-bold">سجل التصفح</span>
-        </button>
+          {/* أسعار الصرف الحية */}
+          <button
+            type="button"
+            id="profile-btn-currency-rates"
+            onClick={onOpenCurrencyAdmin || (() => {})}
+            className="flex flex-col items-center gap-1 py-2 px-1 rounded-xl hover:bg-neutral-850 text-neutral-200 transition-colors cursor-pointer group"
+            title="إدارة وعرض أسعار الصرف"
+          >
+            <Coins className="w-4 h-4 text-amber-400 group-hover:scale-110 transition-transform" />
+            <span className="text-[10px] font-bold">أسعار الصرف</span>
+          </button>
+        </div>
       </div>
 
       {/* 6. AUTHENTICATION ACTION BAR (Logout if logged in, Sign In / Sign Up if guest) */}
@@ -576,8 +586,8 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
       {/* Order Tracking Modal */}
       {selectedOrderForTracking && (
         <OrderTrackingModal
+          isOpen={Boolean(selectedOrderForTracking)}
           order={selectedOrderForTracking}
-          currency={currentCurrency}
           onClose={() => setSelectedOrderForTracking(null)}
         />
       )}

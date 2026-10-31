@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { DajjahLogo } from '../common/DajjahLogo';
-import { Sparkles, ArrowLeft } from 'lucide-react';
+import { Sparkles, ArrowLeft, Volume2, VolumeX, Flame } from 'lucide-react';
 
 interface SplashScreenProps {
   onComplete: () => void;
@@ -10,207 +10,313 @@ interface SplashScreenProps {
 
 export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete, onSkip }) => {
   const [phase, setPhase] = useState<number>(1);
-  // Phase 1: Deep Dark (0ms)
-  // Phase 2: Ambient Light (400ms)
-  // Phase 3: Logo Emergence (900ms)
-  // Phase 4: 3D Depth & Light Reflection (1500ms)
-  // Phase 5: Brand Name "ضَجّة مول" Reveal (2200ms)
-  // Phase 6: Tagline "ضَجّة في وجه الغلاء" Reveal (2800ms)
-  // Phase 7: Transition Out (3800ms)
+  const [isMuted, setIsMuted] = useState<boolean>(false);
+  const audioContextRef = useRef<AudioContext | null>(null);
+
+  // Synthesize Netflix-style luxury cinematic impact sound using Web Audio API (0kb download, zero lag, works offline)
+  const playCinematicAudio = useCallback(() => {
+    if (isMuted) return;
+    try {
+      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioCtx) return;
+      
+      const ctx = new AudioCtx();
+      audioContextRef.current = ctx;
+      if (ctx.state === 'suspended') {
+        ctx.resume();
+      }
+
+      const now = ctx.currentTime;
+
+      // 1. Sub-Bass Cinema Impact Boom (Netflix-style low frequency punch)
+      const subOsc = ctx.createOscillator();
+      const subGain = ctx.createGain();
+      subOsc.type = 'sine';
+      subOsc.frequency.setValueAtTime(110, now);
+      subOsc.frequency.exponentialRampToValueAtTime(32, now + 1.2);
+
+      subGain.gain.setValueAtTime(0.001, now);
+      subGain.gain.linearRampToValueAtTime(0.45, now + 0.08);
+      subGain.gain.exponentialRampToValueAtTime(0.001, now + 2.0);
+
+      subOsc.connect(subGain);
+      subGain.connect(ctx.destination);
+      subOsc.start(now);
+      subOsc.stop(now + 2.1);
+
+      // 2. Shimmering Gold Harmonic Swell (Luxury brass / crystal chime)
+      const freqs = [220, 277.18, 329.63, 440, 554.37, 659.25]; // A major luxury chord
+      freqs.forEach((freq, idx) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = idx % 2 === 0 ? 'triangle' : 'sine';
+        osc.frequency.setValueAtTime(freq * 0.98, now + 0.2);
+        osc.frequency.exponentialRampToValueAtTime(freq * 1.02, now + 1.6);
+
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.linearRampToValueAtTime(0.05 / (idx + 1), now + 0.35 + idx * 0.05);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 2.2);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now + 0.2);
+        osc.stop(now + 2.3);
+      });
+    } catch {
+      // Audio autoplay policy fallback (silent mode without breaking)
+    }
+  }, [isMuted]);
 
   useEffect(() => {
+    // Phase 1: Deep cinematic darkness (0ms)
+    // Phase 2: Anamorphic Light Bar Flare & Sub Boom (250ms)
+    // Phase 3: 3D Logo Emergence & Ribbon Burst (600ms)
+    // Phase 4: Specular Golden Scan & Tilt Depth (1100ms)
+    // Phase 5: Brand Name "ضَجّة مول" 3D Reveal (1600ms)
+    // Phase 6: Slogan "ضَجّة في وجه الغلاء" & Climax (2100ms)
+    // Phase 7: Smooth Exit to Main App (2800ms)
+
+    const timerSound = setTimeout(playCinematicAudio, 250);
     const timer1 = setTimeout(() => setPhase(2), 250);
-    const timer2 = setTimeout(() => setPhase(3), 550);
-    const timer3 = setTimeout(() => setPhase(4), 950);
-    const timer4 = setTimeout(() => setPhase(5), 1400);
-    const timer5 = setTimeout(() => setPhase(6), 1800);
+    const timer2 = setTimeout(() => setPhase(3), 600);
+    const timer3 = setTimeout(() => setPhase(4), 1100);
+    const timer4 = setTimeout(() => setPhase(5), 1600);
+    const timer5 = setTimeout(() => setPhase(6), 2100);
     const timer6 = setTimeout(() => {
       setPhase(7);
       setTimeout(onComplete, 400);
-    }, 2600);
+    }, 2850);
 
     return () => {
+      clearTimeout(timerSound);
       clearTimeout(timer1);
       clearTimeout(timer2);
       clearTimeout(timer3);
       clearTimeout(timer4);
       clearTimeout(timer5);
       clearTimeout(timer6);
+      if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
+        try {
+          audioContextRef.current.close();
+        } catch {}
+      }
     };
-  }, [onComplete]);
+  }, [onComplete, playCinematicAudio]);
+
+  const handleSkip = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (onSkip) onSkip();
+    else onComplete();
+  };
 
   return (
     <AnimatePresence>
       <motion.div
-        className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#07060A] text-white overflow-hidden select-none cursor-pointer"
+        className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#050408] text-white overflow-hidden select-none cursor-pointer"
         initial={{ opacity: 1 }}
-        exit={{ opacity: 0, scale: 1.02 }}
-        transition={{ duration: 0.4, ease: 'easeOut' }}
-        onClick={onSkip || onComplete}
+        exit={{ opacity: 0, scale: 1.03 }}
+        transition={{ duration: 0.35, ease: 'easeInOut' }}
+        onClick={handleSkip}
       >
-        {/* Skip button in corner */}
-        <div className="absolute top-6 left-6 z-50">
+        {/* Top Controls Bar: Sound Toggle & Skip Button */}
+        <div className="absolute top-4 sm:top-6 inset-x-4 sm:inset-x-6 z-50 flex items-center justify-between pointer-events-auto">
+          {/* Audio Toggle */}
           <button
+            type="button"
             onClick={(e) => {
               e.stopPropagation();
-              onSkip ? onSkip() : onComplete();
+              setIsMuted(!isMuted);
             }}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-neutral-900/90 border border-neutral-700/80 text-xs font-semibold text-neutral-300 hover:text-amber-400 hover:border-amber-500/40 transition-colors"
+            className="p-2 sm:px-3 sm:py-1.5 rounded-full bg-neutral-900/80 hover:bg-neutral-800 border border-neutral-700/60 text-xs font-semibold text-neutral-300 hover:text-amber-400 transition-colors flex items-center gap-1.5 backdrop-blur-md"
+            title={isMuted ? 'تفعيل الصوت' : 'كتم الصوت'}
+          >
+            {isMuted ? (
+              <>
+                <VolumeX className="w-3.5 h-3.5 text-neutral-400" />
+                <span className="hidden sm:inline text-[11px]">مكتوم</span>
+              </>
+            ) : (
+              <>
+                <Volume2 className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
+                <span className="hidden sm:inline text-[11px]">صوت سينمائي</span>
+              </>
+            )}
+          </button>
+
+          {/* Skip Button */}
+          <button
+            type="button"
+            onClick={handleSkip}
+            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-neutral-900/90 hover:bg-neutral-800 border border-amber-500/30 text-xs font-black text-amber-300 hover:text-amber-200 shadow-lg shadow-black/40 backdrop-blur-md transition-all active:scale-95"
           >
             <span>تخطي العرض</span>
             <ArrowLeft className="w-3.5 h-3.5" />
           </button>
         </div>
 
-        {/* Ambient Cosmic / Cinematic Lighting Grid */}
+        {/* Cinematic Netflix-style Red/Gold Light Streaks (Ribbon Effect) */}
         <motion.div
-          className="absolute inset-0 pointer-events-none"
+          className="absolute inset-0 pointer-events-none overflow-hidden"
           initial={{ opacity: 0 }}
           animate={{ opacity: phase >= 2 ? 1 : 0 }}
-          transition={{ duration: 1.2 }}
+          transition={{ duration: 0.8 }}
         >
-          {/* Top-Right Golden Light Cone */}
-          <div className="absolute -top-32 -right-32 w-96 h-96 rounded-full bg-gradient-to-br from-amber-500/20 via-amber-700/5 to-transparent blur-3xl" />
-          {/* Bottom-Left Royal Violet Aura */}
-          <div className="absolute -bottom-32 -left-32 w-96 h-96 rounded-full bg-gradient-to-tr from-purple-800/25 via-violet-950/10 to-transparent blur-3xl" />
-          {/* Center Light Pillar */}
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(212,175,55,0.08)_0%,transparent_70%)]" />
+          {/* Center Light Pillar (Anamorphic Beam) */}
+          <motion.div
+            className="absolute top-1/2 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-amber-400 to-transparent shadow-[0_0_24px_rgba(251,191,36,0.9)]"
+            initial={{ scaleX: 0, opacity: 0 }}
+            animate={{
+              scaleX: phase >= 2 ? [0, 1.4, 0.4] : 0,
+              opacity: phase >= 2 ? [0, 1, 0.2] : 0,
+            }}
+            transition={{ duration: 1.1, ease: 'easeOut' }}
+          />
+
+          {/* Deep Ambient Cosmic Glowing Orbs */}
+          <div className="absolute -top-32 -right-32 w-96 h-96 rounded-full bg-gradient-to-br from-amber-500/25 via-rose-600/10 to-transparent blur-3xl transform-gpu" />
+          <div className="absolute -bottom-32 -left-32 w-96 h-96 rounded-full bg-gradient-to-tr from-purple-800/25 via-violet-950/15 to-transparent blur-3xl transform-gpu" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(245,158,11,0.12)_0%,rgba(5,4,8,0.85)_65%,#050408_100%)]" />
         </motion.div>
 
-        {/* Cinematic Particles & Star Dust */}
+        {/* Dynamic Star Dust Embers */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          {[...Array(16)].map((_, i) => (
+          {[...Array(20)].map((_, i) => (
             <motion.div
               key={i}
-              className="absolute w-1 h-1 rounded-full bg-amber-300/40"
+              className="absolute rounded-full"
               style={{
-                top: `${(i * 19) % 95}%`,
-                left: `${(i * 23) % 92}%`,
+                width: i % 3 === 0 ? '3px' : '2px',
+                height: i % 3 === 0 ? '3px' : '2px',
+                backgroundColor: i % 2 === 0 ? '#fbbf24' : '#f43f5e',
+                boxShadow: '0 0 6px currentColor',
+                top: `${(i * 17) % 94}%`,
+                left: `${(i * 23) % 96}%`,
               }}
               initial={{ opacity: 0, scale: 0 }}
               animate={{
-                opacity: phase >= 3 ? [0.2, 0.8, 0.2] : 0,
-                scale: phase >= 3 ? [0.8, 1.4, 0.8] : 0,
-                y: [0, -20, 0],
+                opacity: phase >= 3 ? [0.2, 0.85, 0.2] : 0,
+                scale: phase >= 3 ? [0.6, 1.4, 0.6] : 0,
+                y: [0, -25, 0],
               }}
               transition={{
-                duration: 3 + (i % 3),
+                duration: 2.5 + (i % 3),
                 repeat: Infinity,
-                delay: i * 0.15,
+                delay: i * 0.08,
                 ease: 'easeInOut',
               }}
             />
           ))}
         </div>
 
-        {/* 3D Container with Parallax & Depth Tilt */}
+        {/* 3D Master Container with Cinematic Depth */}
         <motion.div
-          className="relative z-20 flex flex-col items-center justify-center p-6"
-          initial={{ scale: 0.75, opacity: 0, y: 30, rotateX: 18 }}
+          className="relative z-20 flex flex-col items-center justify-center p-6 text-center"
+          initial={{ scale: 0.65, opacity: 0, y: 40, rotateX: 25 }}
           animate={{
-            scale: phase >= 3 ? (phase >= 4 ? 1 : 0.95) : 0.75,
+            scale: phase >= 3 ? (phase >= 5 ? 1 : 0.95) : 0.65,
             opacity: phase >= 3 ? 1 : 0,
-            y: phase >= 3 ? 0 : 30,
-            rotateX: phase >= 4 ? [12, -4, 0] : 18,
-            rotateY: phase >= 4 ? [-8, 6, 0] : 0,
+            y: phase >= 3 ? 0 : 40,
+            rotateX: phase >= 4 ? [18, -4, 0] : 25,
+            rotateY: phase >= 4 ? [-10, 8, 0] : 0,
           }}
           transition={{
-            duration: 1.4,
+            duration: 1.2,
             ease: [0.16, 1, 0.3, 1],
           }}
-          style={{ perspective: 1200 }}
+          style={{ perspective: 1400, transformStyle: 'preserve-3d' }}
         >
-          {/* Floating Gold Halo Reflection Behind Logo */}
+          {/* 3D Golden Halo Ring Behind Logo */}
           <motion.div
-            className="absolute w-64 h-64 rounded-full bg-gradient-to-r from-amber-400/20 via-purple-500/20 to-amber-300/30 blur-2xl pointer-events-none"
-            initial={{ scale: 0.5, opacity: 0 }}
+            className="absolute w-72 h-72 rounded-full bg-gradient-to-r from-amber-400/25 via-rose-500/20 to-amber-300/30 blur-2xl pointer-events-none"
+            initial={{ scale: 0.4, opacity: 0 }}
             animate={{
-              scale: phase >= 4 ? [1, 1.25, 1.1] : 0.5,
-              opacity: phase >= 4 ? 0.75 : 0,
+              scale: phase >= 3 ? [1, 1.3, 1.15] : 0.4,
+              opacity: phase >= 3 ? 0.85 : 0,
             }}
             transition={{ duration: 1.8, repeat: Infinity, repeatType: 'reverse' }}
           />
 
-          {/* Light Reflection Sweeping across Logo */}
-          <div className="relative">
+          {/* 3D Emblem with Metallic Reflection Sweep */}
+          <div className="relative transform-gpu">
             <DajjahLogo
               size="hero"
               withGlow={phase >= 4}
-              customSize={window.innerWidth < 640 ? 190 : 230}
+              customSize={window.innerWidth < 640 ? 190 : 240}
             />
 
-            {/* Cinematic Lens Flare Specular Highlight */}
+            {/* Specular Light Sweep (Netflix Cinematic Lens Flare) */}
             {phase >= 4 && (
               <motion.div
                 className="absolute inset-0 pointer-events-none overflow-hidden rounded-full"
-                initial={{ x: '-120%', opacity: 0 }}
-                animate={{ x: '140%', opacity: [0, 0.9, 0] }}
+                initial={{ x: '-130%', opacity: 0 }}
+                animate={{ x: '150%', opacity: [0, 1, 0] }}
                 transition={{ duration: 1.1, ease: 'easeInOut', delay: 0.1 }}
               >
-                <div className="w-20 h-full bg-gradient-to-r from-transparent via-white/50 to-transparent transform -skew-x-25 blur-[2px]" />
+                <div className="w-24 h-full bg-gradient-to-r from-transparent via-white/70 to-transparent transform -skew-x-30 blur-[2px]" />
               </motion.div>
             )}
           </div>
 
-          {/* Brand Name Typography Reveal */}
+          {/* Brand Name Typography Reveal (3D Gold Extrusion) */}
           <motion.div
             className="mt-6 flex flex-col items-center"
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 24, scale: 0.9 }}
             animate={{
               opacity: phase >= 5 ? 1 : 0,
-              y: phase >= 5 ? 0 : 20,
+              y: phase >= 5 ? 0 : 24,
+              scale: phase >= 5 ? 1 : 0.9,
             }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
           >
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2.5">
               <Sparkles className="w-5 h-5 text-amber-400 animate-pulse" />
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-100 drop-shadow-[0_4px_12px_rgba(212,175,55,0.4)]">
+              <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-100 drop-shadow-[0_4px_16px_rgba(245,158,11,0.5)]">
                 ضَجّة مول
               </h1>
               <Sparkles className="w-5 h-5 text-amber-400 animate-pulse" />
             </div>
 
-            {/* Tagline Reveal: "ضَجّة في وجه الغلاء" */}
+            {/* Slogan Reveal: "ضَجّة في وجه الغلاء" */}
             <motion.div
-              initial={{ opacity: 0, y: 12, filter: 'blur(4px)' }}
+              initial={{ opacity: 0, y: 12, filter: 'blur(6px)' }}
               animate={{
                 opacity: phase >= 6 ? 1 : 0,
                 y: phase >= 6 ? 0 : 12,
-                filter: phase >= 6 ? 'blur(0px)' : 'blur(4px)',
+                filter: phase >= 6 ? 'blur(0px)' : 'blur(6px)',
               }}
-              transition={{ duration: 0.7, delay: 0.1 }}
-              className="mt-2.5 flex items-center justify-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-amber-500/10 via-purple-900/30 to-amber-500/10 border border-amber-400/20"
+              transition={{ duration: 0.6 }}
+              className="mt-3 flex items-center justify-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-amber-500/15 via-rose-950/40 to-amber-500/15 border border-amber-400/30 shadow-lg shadow-black/50"
             >
-              <div className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />
-              <p className="text-sm sm:text-base md:text-lg font-bold text-amber-200/95 tracking-wide">
+              <Flame className="w-4 h-4 text-rose-500 animate-bounce" />
+              <p className="text-sm sm:text-base font-black text-amber-200 tracking-wide">
                 ضَجّة في وجه الغلاء
               </p>
-              <div className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />
+              <Flame className="w-4 h-4 text-rose-500 animate-bounce" />
             </motion.div>
 
-            {/* Location & Global Badge */}
+            {/* Subtitle */}
             <motion.p
               initial={{ opacity: 0 }}
-              animate={{ opacity: phase >= 6 ? 0.6 : 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="mt-3 text-xs text-neutral-400 font-medium tracking-widest"
+              animate={{ opacity: phase >= 6 ? 0.75 : 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="mt-2.5 text-[11px] sm:text-xs text-neutral-400 font-semibold tracking-wider font-mono"
             >
-              المنصة العالمية الرائدة للتجارة والتسوق • اليمن والعالم
+              DAHJAH MALL • YEMEN & WORLDWIDE
             </motion.p>
           </motion.div>
         </motion.div>
 
-        {/* Bottom subtle progress indicator */}
-        <div className="absolute bottom-10 inset-x-0 flex flex-col items-center gap-2">
-          <div className="w-36 h-1 bg-neutral-900 rounded-full overflow-hidden border border-neutral-800">
+        {/* Bottom Loading Progress Bar */}
+        <div className="absolute bottom-8 inset-x-0 flex flex-col items-center gap-2 pointer-events-none">
+          <div className="w-40 sm:w-48 h-1 bg-neutral-900 rounded-full overflow-hidden border border-neutral-800">
             <motion.div
-              className="h-full bg-gradient-to-r from-amber-500 via-purple-500 to-amber-300"
+              className="h-full bg-gradient-to-r from-amber-500 via-rose-500 to-amber-300"
               initial={{ width: '0%' }}
               animate={{ width: phase >= 6 ? '100%' : `${(phase / 6) * 100}%` }}
-              transition={{ duration: 0.5 }}
+              transition={{ duration: 0.4 }}
             />
           </div>
-          <span className="text-[11px] text-neutral-500 font-medium">جاري تحميل أحدث العروض...</span>
+          <span className="text-[10px] text-neutral-400 font-medium">جاري تجهيز المتجر والعروض الحصرية...</span>
         </div>
       </motion.div>
     </AnimatePresence>

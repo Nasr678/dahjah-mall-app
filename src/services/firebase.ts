@@ -15,6 +15,8 @@ import {
 import { 
   getFirestore,
   initializeFirestore,
+  persistentLocalCache,
+  persistentMultipleTabManager,
   memoryLocalCache,
   setLogLevel,
   collection, 
@@ -51,13 +53,15 @@ try {
   setLogLevel('error');
 } catch {}
 
-// Use initializeFirestore with memoryLocalCache and auto long polling to guarantee fast performance in sandbox & iframe environments
+// Initialize Firestore with persistent offline caching for ultra-fast performance on Android and web
 let firestoreInstance;
 try {
   firestoreInstance = initializeFirestore(
     app,
     {
-      localCache: memoryLocalCache(),
+      localCache: persistentLocalCache({
+        tabManager: persistentMultipleTabManager(),
+      }),
       experimentalForceLongPolling: true,
       experimentalAutoDetectLongPolling: true,
     },
@@ -65,7 +69,15 @@ try {
   );
 } catch {
   try {
-    firestoreInstance = getFirestore(app, firebaseConfig.firestoreDatabaseId);
+    firestoreInstance = initializeFirestore(
+      app,
+      {
+        localCache: memoryLocalCache(),
+        experimentalForceLongPolling: true,
+        experimentalAutoDetectLongPolling: true,
+      },
+      firebaseConfig.firestoreDatabaseId
+    );
   } catch {
     firestoreInstance = getFirestore(app);
   }
@@ -211,34 +223,55 @@ export function sanitizeForFirestore<T>(data: T): T {
  */
 export function translateAuthError(error: any): string {
   const code = error?.code || '';
-  switch (code) {
-    case 'auth/user-not-found':
-      return 'الحساب غير مسجل. يرجى التأكد من البريد الإلكتروني أو إنشاء حساب جديد.';
-    case 'auth/wrong-password':
-      return 'كلمة المرور غير صحيحة. يرجى المحاولة مرة أخرى أو استعادة كلمة المرور.';
-    case 'auth/invalid-credential':
-      return 'بيانات الدخول غير صحيحة. يرجى التأكد من صحة البريد الإلكتروني وكلمة المرور.';
-    case 'auth/email-already-in-use':
-      return 'هذا البريد الإلكتروني مسجل بالفعل. يرجى تسجيل الدخول أو استعادة كلمة المرور.';
-    case 'auth/weak-password':
-      return 'كلمة المرور ضعيفة. يجب أن تتكون من 6 أحرف أو أرقام على الأقل.';
-    case 'auth/invalid-email':
-      return 'صيغة البريد الإلكتروني غير صحيحة. يرجى إدخال بريد صالح.';
-    case 'auth/popup-closed-by-user':
-      return 'تم إغلاق نافذة تسجيل الدخول قبل إتمام المصادقة.';
-    case 'auth/popup-blocked':
-      return 'تم حظر النافذة المنبثقة من قبل المتصفح. يرجى السماح بالنوافذ المنبثقة ثم المحاولة.';
-    case 'auth/account-exists-with-different-credential':
-      return 'يوجد حساب مسجل بالفعل بهذا البريد عبر مزود خدمة آخر (مثل Google أو البريد).';
-    case 'auth/network-request-failed':
-      return 'تعذر الاتصال بالشبكة. يرجى التحقق من اتصال الإنترنت.';
-    case 'auth/operation-not-allowed':
-      return 'تسجيل الدخول عبر Facebook غير مفعّل في إعدادات Firebase Console (أو يتطلب إدخال App ID و App Secret). يمكنك تسجيل الدخول فوراً وبكل سهولة عبر حساب Google أو البريد الإلكتروني.';
-    case 'auth/cancelled-popup-request':
-      return 'تم إلغاء عملية تسجيل الدخول.';
-    default:
-      return error?.message || 'حدث خطأ أثناء عملية المصادقة. يرجى المحاولة مرة أخرى.';
+  const message = error?.message || '';
+
+  if (code === 'auth/user-not-found') {
+    return 'الحساب غير مسجل في ضَجّة مول. يرجى التأكد من البريد الإلكتروني أو إنشاء حساب جديد.';
   }
+  if (code === 'auth/wrong-password') {
+    return 'كلمة المرور غير صحيحة. يرجى إعادة المحاولة أو النقر على "نسيت كلمة المرور".';
+  }
+  if (code === 'auth/invalid-credential') {
+    return 'بيانات الدخول غير صحيحة. يرجى التحقق من صحة البريد الإلكتروني وكلمة المرور.';
+  }
+  if (code === 'auth/email-already-in-use') {
+    return 'هذا البريد الإلكتروني مسجل بالفعل. يرجى تسجيل الدخول أو استخدام بريد آخر.';
+  }
+  if (code === 'auth/weak-password') {
+    return 'كلمة المرور ضعيفة. يجب أن تتكون من 6 أحرف أو أرقام على الأقل.';
+  }
+  if (code === 'auth/invalid-email') {
+    return 'صيغة البريد الإلكتروني غير صحيحة. يرجى كتابة بريد صالح مثل example@gmail.com.';
+  }
+  if (code === 'auth/popup-closed-by-user') {
+    return 'تم إغلاق نافذة تسجيل الدخول قبل إكمال العملية.';
+  }
+  if (code === 'auth/popup-blocked') {
+    return 'تم حظر النافذة المنبثقة من قبل المتصفح أو WebView. يمكنك تسجيل الدخول مباشرة بالبريد الإلكتروني وكلمة المرور.';
+  }
+  if (code === 'auth/account-exists-with-different-credential') {
+    return 'يوجد حساب مسجل بالفعل بنفس البريد عبر مزود خدمة آخر. يرجى الدخول بالبريد وكلمة المرور.';
+  }
+  if (code === 'auth/network-request-failed') {
+    return 'تعذر الاتصال بالخادم. يرجى التحقق من اتصال الإنترنت ثم إعادة المحاولة.';
+  }
+  if (code === 'auth/too-many-requests') {
+    return 'تم حظر المحاولات مؤقتاً بسبب كثرة المحاولات. يرجى الانتظار دقيقة واحدة ثم المحاولة مجدداً.';
+  }
+  if (code === 'auth/user-disabled') {
+    return 'تم تعطيل هذا الحساب. يرجى التواصل مع خدمة عملاء ضَجّة مول.';
+  }
+  if (code === 'auth/cancelled-popup-request') {
+    return 'تم إلغاء عملية تسجيل الدخول السابقة.';
+  }
+  if (code === 'auth/operation-not-allowed') {
+    return 'طريقة تسجيل الدخول هذه غير مفعلة حالياً في خادم Firebase. يمكنك تسجيل الدخول بحساب Google أو البريد الإلكتروني فوراً.';
+  }
+  if (code === 'auth/timeout' || message.includes('مهلة')) {
+    return 'استغرقت عملية تسجيل الدخول وقتاً أطول من المتوقع. يرجى التأكد من اتصال الإنترنت ثم المحاولة مجدداً.';
+  }
+
+  return message || 'حدث خطأ أثناء عملية المصادقة. يرجى التأكد من البيانات والمحاولة مرة أخرى.';
 }
 
 /**
@@ -330,13 +363,31 @@ export const firebaseAuthService = {
     }
   },
 
-  // Google Sign-In
+  // Google Sign-In with Android WebView & Timeout protection
   async loginWithGoogle(): Promise<UserProfile> {
     const provider = new GoogleAuthProvider();
     provider.setCustomParameters({ prompt: 'select_account' });
-    const result = await signInWithPopup(auth, provider);
-    const fbUser = result.user;
 
+    // Race against 25s timeout to prevent infinite hanging in Android WebView
+    let result: any;
+    try {
+      const popupPromise = signInWithPopup(auth, provider);
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => {
+          const timeoutErr: any = new Error('انتهت مهلة تسجيل الدخول. يمكنك تسجيل الدخول بالبريد الإلكتروني وكلمة المرور.');
+          timeoutErr.code = 'auth/timeout';
+          reject(timeoutErr);
+        }, 25000);
+      });
+      result = await Promise.race([popupPromise, timeoutPromise]);
+    } catch (popupError: any) {
+      if (popupError?.code === 'auth/popup-blocked') {
+        popupError.message = 'تم حظر النافذة المنبثقة في WebView. يرجى المتابعة عبر تسجيل الدخول بالبريد الإلكتروني.';
+      }
+      throw popupError;
+    }
+
+    const fbUser = result.user;
     const userDocRef = doc(db, 'users', fbUser.uid);
     const snap = await getDoc(userDocRef);
 
@@ -377,7 +428,23 @@ export const firebaseAuthService = {
   // Facebook Sign-In
   async loginWithFacebook(): Promise<UserProfile> {
     const provider = new FacebookAuthProvider();
-    const result = await signInWithPopup(auth, provider);
+    let result: any;
+    try {
+      const popupPromise = signInWithPopup(auth, provider);
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => {
+          const timeoutErr: any = new Error('انتهت مهلة تسجيل الدخول.');
+          timeoutErr.code = 'auth/timeout';
+          reject(timeoutErr);
+        }, 25000);
+      });
+      result = await Promise.race([popupPromise, timeoutPromise]);
+    } catch (popupError: any) {
+      if (popupError?.code === 'auth/popup-blocked') {
+        popupError.message = 'تم حظر النافذة المنبثقة في المتصفح. يمكنك تسجيل الدخول بالبريد الإلكتروني.';
+      }
+      throw popupError;
+    }
     const fbUser = result.user;
 
     const userDocRef = doc(db, 'users', fbUser.uid);

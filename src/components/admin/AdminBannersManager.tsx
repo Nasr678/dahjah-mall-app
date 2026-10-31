@@ -43,7 +43,7 @@ export const AdminBannersManager: React.FC = () => {
   const [imageUrl, setImageUrl] = useState('');
   const [badge, setBadge] = useState('');
   const [ctaText, setCtaText] = useState('تسوق الآن');
-  const [linkType, setLinkType] = useState<'category' | 'deals' | 'product' | 'external'>('category');
+  const [linkType, setLinkType] = useState<BannerItem['linkType']>('category');
   const [linkTarget, setLinkTarget] = useState('women');
   const [discountPercentage, setDiscountPercentage] = useState<number | undefined>(undefined);
   const [isActive, setIsActive] = useState(true);

@@ -11,7 +11,7 @@ import {
   Sliders,
   DollarSign
 } from 'lucide-react';
-import { AbandonedCartConfig, AbandonedCartRecord } from '../../types';
+import { AbandonedCartConfig, AbandonedCartRecord, Product } from '../../types';
 import { useMarketplace } from '../../context/MarketplaceContext';
 
 export const AdminAbandonedCartManager: React.FC = () => {
@@ -39,6 +39,7 @@ export const AdminAbandonedCartManager: React.FC = () => {
       userPhone: '771234567',
       items: [
         {
+          id: 'item-ab-1',
           product: {
             id: 'prod-w-1',
             name: 'فستان سهرة أسود ملكي مرصع بالكريستال اللامع',
@@ -54,7 +55,9 @@ export const AdminAbandonedCartManager: React.FC = () => {
             features: [],
             specifications: {},
             reviews: [],
-          },
+            colors: [],
+            sizes: [],
+          } as Product,
           quantity: 1,
           selectedColor: 'أسود ملكي',
           selectedSize: 'M',
@@ -73,6 +76,7 @@ export const AdminAbandonedCartManager: React.FC = () => {
       userPhone: '733987654',
       items: [
         {
+          id: 'item-ab-2',
           product: {
             id: 'prod-s-1',
             name: 'حذاء سنيكرز رياضي إيطالي فائق الخفة',
@@ -88,7 +92,9 @@ export const AdminAbandonedCartManager: React.FC = () => {
             features: [],
             specifications: {},
             reviews: [],
-          },
+            colors: [],
+            sizes: [],
+          } as Product,
           quantity: 2,
           selectedSize: '41',
         },

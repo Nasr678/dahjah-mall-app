@@ -97,6 +97,7 @@ export const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
   const [selectedStarFilter, setSelectedStarFilter] = useState<number | 'all'>('all');
   const [reviewsList, setReviewsList] = useState<Review[]>(product?.reviews || []);
   const [helpfulVotes, setHelpfulVotes] = useState<Record<string, number>>({});
+  const [isAddedToCart, setIsAddedToCart] = useState(false);
 
   const reviewsSectionRef = useRef<HTMLDivElement>(null);
 
@@ -1087,17 +1088,32 @@ export const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
         <div className="p-3 sm:p-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] border-t border-neutral-800 bg-neutral-950/95 backdrop-blur-xl flex items-center gap-2 sm:gap-3 z-30">
           <button
             type="button"
-            onClick={() =>
+            onClick={() => {
               onAddToCart(product, {
                 color: selectedColor,
                 size: selectedSize,
                 quantity,
-              })
-            }
-            className="flex-1 flex items-center justify-center gap-1.5 sm:gap-2 py-3 sm:py-3.5 px-3 sm:px-4 rounded-xl sm:rounded-2xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/50 text-amber-300 hover:text-white font-black text-xs sm:text-sm active:scale-[0.98] transition-all cursor-pointer"
+              });
+              setIsAddedToCart(true);
+              setTimeout(() => setIsAddedToCart(false), 1400);
+            }}
+            className={`flex-1 flex items-center justify-center gap-1.5 sm:gap-2 py-3 sm:py-3.5 px-3 sm:px-4 rounded-xl sm:rounded-2xl font-black text-xs sm:text-sm active:scale-[0.98] transition-all cursor-pointer ${
+              isAddedToCart
+                ? 'bg-emerald-500 text-neutral-950 border border-emerald-400 shadow-lg shadow-emerald-500/25'
+                : 'bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/50 text-amber-300 hover:text-white'
+            }`}
           >
-            <ShoppingCart className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-            <span>أضف إلى السلة</span>
+            {isAddedToCart ? (
+              <>
+                <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                <span>تمت الإضافة إلى السلة بنجاح!</span>
+              </>
+            ) : (
+              <>
+                <ShoppingCart className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                <span>أضف إلى السلة</span>
+              </>
+            )}
           </button>
 
           <button

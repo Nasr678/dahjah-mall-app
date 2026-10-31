@@ -1850,7 +1850,7 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                       saveCoupon({
                         id: `coupon-${Date.now()}`,
                         code: newCouponCode.trim(),
-                        discountType: newDiscountType,
+                        discountType: newDiscountType === 'percentage' ? 'percentage' : 'fixed',
                         discountValue: newDiscountValue,
                         minOrderYER: newMinOrder,
                         description: newCouponDesc.trim() || `خصم ${newDiscountValue}${newDiscountType === 'percentage' ? '%' : ' ر.ي'}`,

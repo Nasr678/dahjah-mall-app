@@ -2072,22 +2072,13 @@ export const DEFAULT_FOOTER_CONFIG: FooterConfig = {
       order: 2,
     },
     {
-      id: 'link-onboarding',
-      titleAr: 'دليل الاستخدام والترحيب',
-      titleEn: 'User Guide & Welcome',
-      icon: 'HelpCircle',
-      linkType: 'action_onboarding',
-      isActive: true,
-      order: 3,
-    },
-    {
       id: 'link-currency-admin',
       titleAr: 'إدارة أسعار الصرف',
       titleEn: 'Exchange Rates Management',
       icon: 'Coins',
       linkType: 'action_currency_admin',
       isActive: true,
-      order: 4,
+      order: 3,
     },
   ],
 

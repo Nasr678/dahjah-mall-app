@@ -280,7 +280,6 @@ function MarketplaceApp() {
         <Suspense fallback={null}>
           <OnboardingScreen
             onComplete={() => setShowOnboarding(false)}
-            onSkip={() => setShowOnboarding(false)}
           />
         </Suspense>
       )}
@@ -364,31 +363,20 @@ function MarketplaceApp() {
 
           {/* Section 2: Promo Benefits Strip */}
           <HomePromoBenefits 
-            onOpenDeliveryPolicy={() => {
+            onOpenFreeShipping={() => {
               setSelectedPolicyKey('shipping');
               setIsPoliciesOpen(true);
             }}
           />
 
           {/* Section 3: Shortcuts Bar */}
-          <HomeShortcutsBar
-            onOpenDeals={() => handleSelectCategory('women')}
-            onOpenBrands={() => setActiveTab('brands')}
-            onOpenTrends={() => setActiveTab('trends')}
-            onOpenAI={() => setIsAIOpen(true)}
-            onOpenSupport={() => setIsSupportOpen(true)}
-            onOpenPolicies={(key) => {
-              setSelectedPolicyKey(key);
-              setIsPoliciesOpen(true);
-            }}
-            onOpenCategories={handleOpenCategoriesTab}
-          />
+          <HomeShortcutsBar />
 
           {/* Section 4: Editorial Categories Navigation */}
           <EditorialCategories
             categories={appCategories}
             onSelectCategory={handleSelectCategory}
-            onViewAllCategories={handleOpenCategoriesTab}
+            onViewAll={handleOpenCategoriesTab}
           />
 
           {/* Section 5: Flash Deals Section */}
@@ -397,7 +385,7 @@ function MarketplaceApp() {
             currency={currentCurrency}
             wishlist={wishlist}
             onToggleFavorite={handleToggleFavoriteWithToast}
-            onAddToCart={handleOpenQuickView}
+            onAddToCart={handleAddToCartWithToast}
             onSelectProduct={setSelectedProduct}
             onViewAll={() => handleSelectCategory('women')}
           />
@@ -408,7 +396,7 @@ function MarketplaceApp() {
             currency={currentCurrency}
             wishlist={wishlist}
             onToggleFavorite={handleToggleFavoriteWithToast}
-            onAddToCart={handleOpenQuickView}
+            onAddToCart={handleAddToCartWithToast}
             onSelectProduct={setSelectedProduct}
             onOpenBrands={() => setActiveTab('brands')}
             onViewAll={handleOpenCategoriesTab}
@@ -420,7 +408,7 @@ function MarketplaceApp() {
             currency={currentCurrency}
             wishlist={wishlist}
             onToggleFavorite={handleToggleFavoriteWithToast}
-            onAddToCart={handleOpenQuickView}
+            onAddToCart={handleAddToCartWithToast}
             onSelectProduct={setSelectedProduct}
             onViewAll={() => handleSelectCategory('women')}
           />
@@ -431,7 +419,7 @@ function MarketplaceApp() {
             currency={currentCurrency}
             wishlist={wishlist}
             onToggleFavorite={handleToggleFavoriteWithToast}
-            onAddToCart={handleOpenQuickView}
+            onAddToCart={handleAddToCartWithToast}
             onSelectProduct={setSelectedProduct}
             onViewAll={() => handleSelectCategory('women')}
           />
@@ -442,15 +430,15 @@ function MarketplaceApp() {
             currency={currentCurrency}
             wishlist={wishlist}
             onToggleFavorite={handleToggleFavoriteWithToast}
-            onAddToCart={handleOpenQuickView}
+            onAddToCart={handleAddToCartWithToast}
             onSelectProduct={setSelectedProduct}
             onViewAll={() => handleSelectCategory('women')}
           />
 
           {/* Section 10: Featured Stores */}
           <FeaturedStores
-            stores={STORES}
-            onSelectStore={(store) => handleSelectCategory('women')}
+            onSelectStore={() => handleSelectCategory('women')}
+            onExploreCategories={handleOpenCategoriesTab}
           />
 
           {/* Section 11: Personalized For You Section */}
@@ -459,7 +447,7 @@ function MarketplaceApp() {
             currency={currentCurrency}
             wishlist={wishlist}
             onToggleFavorite={handleToggleFavoriteWithToast}
-            onAddToCart={handleOpenQuickView}
+            onAddToCart={handleAddToCartWithToast}
             onSelectProduct={setSelectedProduct}
           />
 
@@ -469,6 +457,7 @@ function MarketplaceApp() {
               setSelectedPolicyKey(policyKey);
               setIsPoliciesOpen(true);
             }}
+            onOpenSupport={() => setIsSupportOpen(true)}
           />
         </main>
       )}
@@ -484,7 +473,7 @@ function MarketplaceApp() {
             currency={currentCurrency}
             wishlist={wishlist}
             onSelectProduct={setSelectedProduct}
-            onAddToCart={handleOpenQuickView}
+            onAddToCart={handleAddToCartWithToast}
             onToggleFavorite={handleToggleFavoriteWithToast}
             onBackToHome={() => {
               setActiveTab('home');
@@ -504,7 +493,7 @@ function MarketplaceApp() {
             currency={currentCurrency}
             wishlist={wishlist}
             onToggleFavorite={handleToggleFavoriteWithToast}
-            onAddToCart={handleOpenQuickView}
+            onAddToCart={handleAddToCartWithToast}
             onSelectProduct={setSelectedProduct}
             onBackToHome={() => {
               setActiveTab('home');
@@ -523,10 +512,8 @@ function MarketplaceApp() {
             {!activeCategory ? (
               <MainCategoriesScreen
                 categories={appCategories}
-                products={products}
                 onSelectCategory={handleSelectCategory}
                 onBackToHome={() => setActiveTab('home')}
-                onOpenCart={() => setIsCartOpen(true)}
                 onOpenSearch={() => setIsSearchOpen(true)}
                 onOpenAuth={() => setIsAuthOpen(true)}
               />
@@ -549,7 +536,7 @@ function MarketplaceApp() {
                     setSelectedSubcategory(null);
                   }}
                   onToggleFavorite={handleToggleFavoriteWithToast}
-                  onAddToCart={handleOpenQuickView}
+                  onAddToCart={handleAddToCartWithToast}
                   onSelectProduct={setSelectedProduct}
                   onOpenCart={() => setIsCartOpen(true)}
                   onOpenSearch={() => setIsSearchOpen(true)}
@@ -639,6 +626,9 @@ function MarketplaceApp() {
                 onOpenSupport={() => setIsSupportOpen(true)}
                 onOpenSettings={() => setIsSettingsOpen(true)}
                 onOpenAdmin={() => setIsProductAdminOpen(true)}
+                onOpenStoreLocator={() => setIsStoreLocatorOpen(true)}
+                onReplaySplash={() => setShowSplash(true)}
+                onOpenCurrencyAdmin={() => setIsCurrencyAdminOpen(true)}
               />
             </Suspense>
           )}
@@ -702,9 +692,9 @@ function MarketplaceApp() {
             currency={currentCurrency}
             onSelectProduct={(p) => {
               setIsAIOpen(false);
-              setQuickViewProduct(p);
+              setSelectedProduct(p);
             }}
-            onAddToCart={handleOpenQuickView}
+            onAddToCart={handleAddToCartWithToast}
           />
         )}
 
@@ -815,7 +805,7 @@ function MarketplaceApp() {
 
         {/* 13. Dynamic Admin-Controlled Popup Offer */}
         <PromoOffersModal
-          onNavigate={(target) => {
+          onOpenCategory={(target) => {
             setSelectedCategoryId(target || 'women');
             setSelectedSubcategory(null);
             setActiveTab('categories');

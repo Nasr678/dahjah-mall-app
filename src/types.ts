@@ -22,6 +22,7 @@ export interface ExchangeRates {
 
 export interface Review {
   id: string;
+  userId?: string;
   userName: string;
   userAvatar?: string;
   rating: number;
@@ -114,6 +115,7 @@ export interface CartItem {
   id: string;
   productId?: string;
   product: Product;
+  name?: string;
   selectedColor?: string;
   selectedSize?: string;
   quantity: number;
@@ -126,10 +128,12 @@ export interface Address {
   title: 'المنزل' | 'العمل' | 'عنوان آخر' | string;
   recipientName: string;
   name?: string;
+  fullName?: string;
   phone: string;
   city: string; // صنعاء, عدن, etc.
   district: string; // حدة, المنصورة, etc.
   street: string;
+  streetAddress?: string;
   streetDetails?: string;
   building?: string;
   additionalNotes?: string;
@@ -393,15 +397,18 @@ export interface NotificationItem {
 }
 
 export interface Coupon {
+  id?: string;
   code: string;
   discountType: 'percentage' | 'fixed';
   discountValue: number; // Percentage or Base YER_NORTH amount
   minOrderBaseYER?: number;
+  minOrderYER?: number;
   maxDiscountBaseYER?: number;
   description: string;
   expiryDate?: string;
   isActive: boolean;
   showInTopBanner?: boolean;
+  createdAt?: string;
 }
 
 export interface HomePromoButton {
@@ -663,6 +670,8 @@ export type UserRole = 'customer' | 'admin' | 'seller' | 'delivery';
 export interface UserProfile {
   id: string;
   name: string;
+  fullName?: string;
+  displayName?: string;
   phone: string;
   email: string;
   city: string;
@@ -671,6 +680,7 @@ export interface UserProfile {
   avatarUrl?: string;
   walletBalanceYER: number; // In base YER_NORTH
   points: number;
+  loyaltyPoints?: number;
   memberTier: 'عضو فضي' | 'عضو ذهبي' | 'عضو بلاتينيوم كبار الشخصيات' | string;
   savedAddresses: Address[];
   favoriteProductIds?: string[];

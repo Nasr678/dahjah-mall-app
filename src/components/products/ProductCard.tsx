@@ -4,7 +4,8 @@ import {
   Heart, 
   ShoppingCart, 
   Star, 
-  Flame 
+  Flame,
+  Check 
 } from 'lucide-react';
 import { getOptimizedImageUrl, getOptimizedImageSrcSet } from '../../utils/imageOptimizer';
 
@@ -28,6 +29,7 @@ export const ProductCard: React.FC<ProductCardProps> = memo(({
   onSelect,
 }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [justAdded, setJustAdded] = useState(false);
 
   const handleSelect = useCallback(() => {
     if (onSelectProduct) onSelectProduct(product);
@@ -42,6 +44,8 @@ export const ProductCard: React.FC<ProductCardProps> = memo(({
   const handleAddToCartClick = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
     onAddToCart(product);
+    setJustAdded(true);
+    setTimeout(() => setJustAdded(false), 1200);
   }, [onAddToCart, product]);
 
   const formatPrice = (priceYER: number) => {
@@ -159,11 +163,24 @@ export const ProductCard: React.FC<ProductCardProps> = memo(({
           <button
             type="button"
             onClick={handleAddToCartClick}
-            className="flex items-center justify-center p-2 sm:px-3 sm:py-2 rounded-xl bg-amber-500/15 hover:bg-amber-500 border border-amber-500/40 text-amber-300 hover:text-neutral-950 text-xs font-bold active:scale-95 transition-colors shadow-sm group-hover:bg-amber-500 group-hover:text-neutral-950 flex-shrink-0"
+            className={`flex items-center justify-center p-2 sm:px-3 sm:py-2 rounded-xl text-xs font-bold active:scale-95 transition-all shadow-sm flex-shrink-0 cursor-pointer ${
+              justAdded
+                ? 'bg-emerald-500 text-neutral-950 border border-emerald-400'
+                : 'bg-amber-500/15 hover:bg-amber-500 border border-amber-500/40 text-amber-300 hover:text-neutral-950 group-hover:bg-amber-500 group-hover:text-neutral-950'
+            }`}
             title="أضف إلى السلة"
           >
-            <ShoppingCart className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline mr-1">أضف</span>
+            {justAdded ? (
+              <>
+                <Check className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline mr-1 font-black">تمت الإضافة</span>
+              </>
+            ) : (
+              <>
+                <ShoppingCart className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline mr-1">أضف</span>
+              </>
+            )}
           </button>
         </div>
       </div>

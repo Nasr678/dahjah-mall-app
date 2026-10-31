@@ -77,12 +77,12 @@ export const CartModal: React.FC<CartModalProps> = ({
   const paymentMethodsList = React.useMemo(() => {
     if (appSettings?.paymentOptions && appSettings.paymentOptions.length > 0) {
       return appSettings.paymentOptions
-        .filter((opt) => opt.isEnabled !== false && opt.isAvailable !== false)
-        .map((opt) => ({
+        .filter((opt: any) => opt.isEnabled !== false && opt.isAvailable !== false)
+        .map((opt: any) => ({
           id: opt.id as PaymentMethodType,
           name: opt.nameAr || opt.name,
-          subtitle: opt.subtitleAr || opt.instructionsAr || opt.description,
-          description: opt.instructionsAr || opt.description,
+          subtitle: opt.subtitleAr || opt.instructionsAr || opt.subtitle || opt.description,
+          description: opt.instructionsAr || opt.description || opt.instructions,
           merchantCode: opt.accountNumber || opt.merchantCode,
           accountNumber: opt.accountNumber,
           instructions: opt.instructionsAr || opt.instructions,
@@ -101,7 +101,7 @@ export const CartModal: React.FC<CartModalProps> = ({
     if (paymentMethodsList.length > 0) {
       const exists = paymentMethodsList.some((m) => m.id === selectedPayment);
       if (!exists) {
-        setSelectedPayment(paymentMethodsList[0].id);
+        setSelectedPayment(paymentMethodsList[0].id as PaymentMethodType);
       }
     }
   }, [paymentMethodsList, selectedPayment]);
@@ -475,14 +475,14 @@ export const CartModal: React.FC<CartModalProps> = ({
                         <button
                           key={method.id}
                           type="button"
-                          onClick={() => setSelectedPayment(method.id)}
+                          onClick={() => setSelectedPayment(method.id as PaymentMethodType)}
                           className={`p-3 rounded-2xl border text-right transition-all flex items-start gap-3 relative ${
                             isSelected
                               ? 'bg-amber-500/15 border-amber-400 ring-2 ring-amber-400/20 text-white shadow-md'
                               : 'bg-neutral-900 border-neutral-800 text-neutral-400 hover:border-neutral-700 hover:bg-neutral-900/80'
                           }`}
                         >
-                          <WalletLogo methodId={method.id} size={36} />
+                          <WalletLogo methodId={method.id as PaymentMethodType} size={36} />
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center justify-between">
                               <span className="text-xs font-black text-white">{method.name}</span>

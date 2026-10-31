@@ -3,9 +3,10 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 import { defineConfig } from 'vite';
 
-export default defineConfig(() => {
+export default defineConfig(({ command }) => {
+  const isBuild = command === 'build';
   return {
-    base: './',
+    base: isBuild ? './' : '/',
     plugins: [react(), tailwindcss()],
     resolve: {
       alias: {
@@ -22,8 +23,8 @@ export default defineConfig(() => {
         output: {
           manualChunks(id) {
             if (id.includes('node_modules')) {
-              if (id.includes('leaflet') || id.includes('maps') || id.includes('@vis.gl')) {
-                return 'vendor-maps';
+              if (id.includes('leaflet') || id.includes('maps') || id.includes('@vis.gl') || id.includes('motion') || id.includes('framer-motion')) {
+                return 'vendor-ui-interactive';
               }
               if (id.includes('firebase/storage')) {
                 return 'vendor-firebase-storage';
@@ -33,9 +34,6 @@ export default defineConfig(() => {
               }
               if (id.includes('lucide-react')) {
                 return 'vendor-icons';
-              }
-              if (id.includes('motion') || id.includes('framer-motion')) {
-                return 'vendor-motion';
               }
               if (id.includes('canvas-confetti')) {
                 return 'vendor-confetti';
@@ -49,8 +47,8 @@ export default defineConfig(() => {
       },
     },
     server: {
-      hmr: process.env.DISABLE_HMR !== 'true',
-      watch: process.env.DISABLE_HMR === 'true' ? null : {},
+      hmr: false,
+      watch: null,
     },
   };
 });

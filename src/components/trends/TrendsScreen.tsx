@@ -113,7 +113,7 @@ export const TrendsScreen: React.FC<TrendsScreenProps> = ({
     let list = [...products];
 
     if (activeMainSubTab === 'trends_store') {
-      list = list.filter((p) => p.brand || p.isFeatured);
+      list = list.filter((p) => p.brandId || (p as any).brand || p.isFeatured);
     } else {
       if (activeHashtag === 'heart_obsessed') {
         list = list.filter((p) => p.rating >= 4.8 || (p.reviewCount && p.reviewCount > 20));
