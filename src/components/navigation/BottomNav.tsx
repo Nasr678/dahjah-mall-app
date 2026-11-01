@@ -62,7 +62,7 @@ export const BottomNav: React.FC<BottomNavProps> = React.memo(({
           return (
             <button
               key={tab.id}
-              id={`bottom-tab-${tab.id}`}
+              id={tab.id === 'cart' ? 'bottom-nav-cart' : `bottom-tab-${tab.id}`}
               onClick={() => onSelectTab(tab.id)}
               className={`relative flex flex-col items-center py-1 px-1 rounded-2xl transition-all duration-200 flex-1 max-w-[72px] cursor-pointer ${
                 isActive 

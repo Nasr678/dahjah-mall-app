@@ -4,6 +4,7 @@ import { Product, CurrencyCode, Review } from '../../types';
 import { useMarketplace } from '../../context/MarketplaceContext';
 import { ProductCard } from './ProductCard';
 import { getOptimizedImageUrl } from '../../utils/imageOptimizer';
+import { triggerFlyToCart } from '../cart/FlyToCartOverlay';
 import { createWhatsAppLink, createProductInquiryWhatsAppMessage } from '../../utils/whatsappHelper';
 import { 
   X, 
@@ -1088,14 +1089,23 @@ export const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
         <div className="p-3 sm:p-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] border-t border-neutral-800 bg-neutral-950/95 backdrop-blur-xl flex items-center gap-2 sm:gap-3 z-30">
           <button
             type="button"
-            onClick={() => {
-              onAddToCart(product, {
-                color: selectedColor,
-                size: selectedSize,
-                quantity,
-              });
-              setIsAddedToCart(true);
-              setTimeout(() => setIsAddedToCart(false), 1400);
+            onClick={(e) => {
+              if (product) {
+                // 1. Launch 60fps fly-to-cart immediately
+                triggerFlyToCart(product.images?.[activeImageIndex] || product.images?.[0] || '', e.currentTarget);
+                setIsAddedToCart(true);
+
+                // 2. Decouple cart state update so animation runs without frame drop
+                setTimeout(() => {
+                  onAddToCart(product, {
+                    color: selectedColor,
+                    size: selectedSize,
+                    quantity,
+                  });
+                }, 100);
+
+                setTimeout(() => setIsAddedToCart(false), 1400);
+              }
             }}
             className={`flex-1 flex items-center justify-center gap-1.5 sm:gap-2 py-3 sm:py-3.5 px-3 sm:px-4 rounded-xl sm:rounded-2xl font-black text-xs sm:text-sm active:scale-[0.98] transition-all cursor-pointer ${
               isAddedToCart

@@ -26,6 +26,7 @@ import { HomeTopCategoryBar } from './components/home/HomeTopCategoryBar';
 import { HomeFooterPolicies } from './components/home/HomeFooterPolicies';
 import { AppFooterBottomBar } from './components/layout/AppFooterBottomBar';
 import { ProductCard } from './components/products/ProductCard';
+import { FlyToCartOverlay } from './components/cart/FlyToCartOverlay';
 
 // Lazy-Loaded Views & Modals (Loaded strictly on-demand to minimize initial bundle size and boost TTI)
 const MainCategoriesScreen = lazy(() => import('./components/categories/MainCategoriesScreen').then(m => ({ default: m.MainCategoriesScreen })));
@@ -119,6 +120,7 @@ function MarketplaceApp() {
   const [selectedPolicyKey, setSelectedPolicyKey] = useState<string>('privacy');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
+  const [cartInitialStep, setCartInitialStep] = useState<'cart' | 'checkout'>('cart');
 
   // Category & Subcategory Navigation State
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
@@ -200,8 +202,14 @@ function MarketplaceApp() {
     setQuickViewProduct(product);
   }, []);
 
+  const handleOpenCart = useCallback(() => {
+    setCartInitialStep('cart');
+    setIsCartOpen(true);
+  }, []);
+
   const handleBuyNow = useCallback((product: Product, options?: { color?: string; size?: string; quantity?: number }) => {
     addToCart(product, options);
+    setCartInitialStep('checkout');
     setIsCartOpen(true);
   }, [addToCart]);
 
@@ -310,7 +318,7 @@ function MarketplaceApp() {
         currentUser={currentUser}
         onCurrencyChange={setCurrency}
         onOpenSearch={() => setIsSearchOpen(true)}
-        onOpenCart={() => setIsCartOpen(true)}
+        onOpenCart={handleOpenCart}
         onOpenNotifications={() => setIsNotifsOpen(true)}
         onOpenAI={() => setIsAIOpen(true)}
         onOpenAuth={() => setIsAuthOpen(true)}
@@ -385,7 +393,7 @@ function MarketplaceApp() {
             currency={currentCurrency}
             wishlist={wishlist}
             onToggleFavorite={handleToggleFavoriteWithToast}
-            onAddToCart={handleAddToCartWithToast}
+            onAddToCart={handleOpenQuickView}
             onSelectProduct={setSelectedProduct}
             onViewAll={() => handleSelectCategory('women')}
           />
@@ -396,7 +404,7 @@ function MarketplaceApp() {
             currency={currentCurrency}
             wishlist={wishlist}
             onToggleFavorite={handleToggleFavoriteWithToast}
-            onAddToCart={handleAddToCartWithToast}
+            onAddToCart={handleOpenQuickView}
             onSelectProduct={setSelectedProduct}
             onOpenBrands={() => setActiveTab('brands')}
             onViewAll={handleOpenCategoriesTab}
@@ -408,7 +416,7 @@ function MarketplaceApp() {
             currency={currentCurrency}
             wishlist={wishlist}
             onToggleFavorite={handleToggleFavoriteWithToast}
-            onAddToCart={handleAddToCartWithToast}
+            onAddToCart={handleOpenQuickView}
             onSelectProduct={setSelectedProduct}
             onViewAll={() => handleSelectCategory('women')}
           />
@@ -419,7 +427,7 @@ function MarketplaceApp() {
             currency={currentCurrency}
             wishlist={wishlist}
             onToggleFavorite={handleToggleFavoriteWithToast}
-            onAddToCart={handleAddToCartWithToast}
+            onAddToCart={handleOpenQuickView}
             onSelectProduct={setSelectedProduct}
             onViewAll={() => handleSelectCategory('women')}
           />
@@ -430,7 +438,7 @@ function MarketplaceApp() {
             currency={currentCurrency}
             wishlist={wishlist}
             onToggleFavorite={handleToggleFavoriteWithToast}
-            onAddToCart={handleAddToCartWithToast}
+            onAddToCart={handleOpenQuickView}
             onSelectProduct={setSelectedProduct}
             onViewAll={() => handleSelectCategory('women')}
           />
@@ -447,7 +455,7 @@ function MarketplaceApp() {
             currency={currentCurrency}
             wishlist={wishlist}
             onToggleFavorite={handleToggleFavoriteWithToast}
-            onAddToCart={handleAddToCartWithToast}
+            onAddToCart={handleOpenQuickView}
             onSelectProduct={setSelectedProduct}
           />
 
@@ -473,7 +481,7 @@ function MarketplaceApp() {
             currency={currentCurrency}
             wishlist={wishlist}
             onSelectProduct={setSelectedProduct}
-            onAddToCart={handleAddToCartWithToast}
+            onAddToCart={handleOpenQuickView}
             onToggleFavorite={handleToggleFavoriteWithToast}
             onBackToHome={() => {
               setActiveTab('home');
@@ -493,7 +501,7 @@ function MarketplaceApp() {
             currency={currentCurrency}
             wishlist={wishlist}
             onToggleFavorite={handleToggleFavoriteWithToast}
-            onAddToCart={handleAddToCartWithToast}
+            onAddToCart={handleOpenQuickView}
             onSelectProduct={setSelectedProduct}
             onBackToHome={() => {
               setActiveTab('home');
@@ -536,9 +544,9 @@ function MarketplaceApp() {
                     setSelectedSubcategory(null);
                   }}
                   onToggleFavorite={handleToggleFavoriteWithToast}
-                  onAddToCart={handleAddToCartWithToast}
+                  onAddToCart={handleOpenQuickView}
                   onSelectProduct={setSelectedProduct}
-                  onOpenCart={() => setIsCartOpen(true)}
+                  onOpenCart={handleOpenCart}
                   onOpenSearch={() => setIsSearchOpen(true)}
                 />
               </div>
@@ -604,7 +612,7 @@ function MarketplaceApp() {
                       currency={currentCurrency}
                       isFavorite={true}
                       onToggleFavorite={handleToggleFavoriteWithToast}
-                      onAddToCart={handleAddToCartWithToast}
+                      onAddToCart={handleOpenQuickView}
                       onSelectProduct={setSelectedProduct}
                     />
                   ))}
@@ -702,6 +710,7 @@ function MarketplaceApp() {
         {isCartOpen && (
           <CartModal
             isOpen={isCartOpen}
+            initialStep={cartInitialStep}
             onClose={() => setIsCartOpen(false)}
             onTrackOrder={(order) => {
               setIsCartOpen(false);
@@ -842,7 +851,7 @@ function MarketplaceApp() {
           if (page === 'home' || page === 'trends' || page === 'profile' || page === 'wishlist' || page === 'brands') {
             setActiveTab(page as NavTab);
           } else if (page === 'cart') {
-            setIsCartOpen(true);
+            handleOpenCart();
           } else if (page === 'categories') {
             handleOpenCategoriesTab();
           }
@@ -858,6 +867,9 @@ function MarketplaceApp() {
         }}
       />
 
+      {/* Fly-to-Cart 60fps Dynamic Particle Overlay */}
+      <FlyToCartOverlay />
+
       {/* Mobile Bottom Navigation */}
       <BottomNav
         activeTab={activeTab}
@@ -865,7 +877,7 @@ function MarketplaceApp() {
           if (tab === 'ai') {
             setIsAIOpen(true);
           } else if (tab === 'cart') {
-            setIsCartOpen(true);
+            handleOpenCart();
           } else if (tab === 'categories') {
             handleOpenCategoriesTab();
           } else {

@@ -17,6 +17,7 @@ interface ProductCardProps {
   onAddToCart: (product: Product) => void;
   onSelectProduct?: (product: Product) => void;
   onSelect?: (product: Product) => void;
+  onQuickBuy?: (product: Product) => void;
 }
 
 export const ProductCard: React.FC<ProductCardProps> = memo(({
@@ -27,6 +28,7 @@ export const ProductCard: React.FC<ProductCardProps> = memo(({
   onAddToCart,
   onSelectProduct,
   onSelect,
+  onQuickBuy,
 }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [justAdded, setJustAdded] = useState(false);
@@ -43,10 +45,14 @@ export const ProductCard: React.FC<ProductCardProps> = memo(({
 
   const handleAddToCartClick = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
-    onAddToCart(product);
+    if (onQuickBuy) {
+      onQuickBuy(product);
+    } else {
+      onAddToCart(product);
+    }
     setJustAdded(true);
     setTimeout(() => setJustAdded(false), 1200);
-  }, [onAddToCart, product]);
+  }, [onQuickBuy, onAddToCart, product]);
 
   const formatPrice = (priceYER: number) => {
     if (currency === 'USD') return `$${(priceYER / 530).toFixed(1)}`;

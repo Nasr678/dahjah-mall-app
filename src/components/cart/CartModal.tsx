@@ -40,6 +40,7 @@ interface CartModalProps {
   onOrderPlaced?: (order: Order) => void;
   onTrackOrder?: (order: Order) => void;
   onNavigateHome?: () => void;
+  initialStep?: 'cart' | 'checkout';
 }
 
 export const CartModal: React.FC<CartModalProps> = ({
@@ -48,6 +49,7 @@ export const CartModal: React.FC<CartModalProps> = ({
   onOrderPlaced,
   onTrackOrder,
   onNavigateHome,
+  initialStep = 'cart',
 }) => {
   const {
     cart,
@@ -69,7 +71,13 @@ export const CartModal: React.FC<CartModalProps> = ({
     appSettings,
   } = useMarketplace();
 
-  const [step, setStep] = useState<'cart' | 'checkout' | 'success'>('cart');
+  const [step, setStep] = useState<'cart' | 'checkout' | 'success'>(initialStep || 'cart');
+
+  useEffect(() => {
+    if (isOpen) {
+      setStep(initialStep || 'cart');
+    }
+  }, [isOpen, initialStep]);
   const [couponInput, setCouponInput] = useState('');
   const [couponFeedback, setCouponFeedback] = useState<{ success: boolean; message: string } | null>(null);
 
