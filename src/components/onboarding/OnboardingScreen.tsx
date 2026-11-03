@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion } from 'motion/react';
 import { DajjahLogo } from '../common/DajjahLogo';
 import { 
   ArrowLeft, 
@@ -81,48 +81,45 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }
 
       {/* Main Slide Content */}
       <div className="relative flex-1 flex flex-col justify-between px-6 pb-8 overflow-hidden">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={currentSlide}
-            initial={{ opacity: 0, x: 40 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -40 }}
-            transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-            className="flex-1 flex flex-col items-center justify-center text-center my-auto"
-          >
-            {/* Visual Card with Image & Glowing Overlay */}
-            <div className="relative w-full max-w-sm aspect-[4/3] rounded-3xl overflow-hidden border border-neutral-800 shadow-2xl mb-8 group">
-              <img
-                src={slides[currentSlide].image}
-                alt={slides[currentSlide].title}
-                className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
-              />
-              <div className={`absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/40 to-transparent`} />
-              
-              {/* Badge overlay */}
-              <div className="absolute top-4 right-4 flex items-center gap-1.5 px-3 py-1 rounded-full bg-neutral-900/80 border border-amber-500/30 backdrop-blur-md">
-                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                <span className="text-xs font-bold text-amber-300">{slides[currentSlide].badge}</span>
-              </div>
-
-              {/* Floating icon */}
-              <div className="absolute bottom-4 left-4 p-3.5 rounded-2xl bg-gradient-to-br from-amber-500 to-amber-700 text-neutral-950 shadow-lg shadow-amber-500/20">
-                {React.createElement(slides[currentSlide].icon, { className: 'w-6 h-6' })}
-              </div>
+        <motion.div
+          key={currentSlide}
+          initial={{ opacity: 0, x: 40 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+          className="flex-1 flex flex-col items-center justify-center text-center my-auto"
+        >
+          {/* Visual Card with Image & Glowing Overlay */}
+          <div className="relative w-full max-w-sm aspect-[4/3] rounded-3xl overflow-hidden border border-neutral-800 shadow-2xl mb-8 group">
+            <img
+              src={slides[currentSlide].image}
+              alt={slides[currentSlide].title}
+              className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
+            />
+            <div className={`absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/40 to-transparent`} />
+            
+            {/* Badge overlay */}
+            <div className="absolute top-4 right-4 flex items-center gap-1.5 px-3 py-1 rounded-full bg-neutral-900/80 border border-amber-500/30 backdrop-blur-md">
+              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+              <span className="text-xs font-bold text-amber-300">{slides[currentSlide].badge}</span>
             </div>
 
-            {/* Typography */}
-            <span className="text-xs font-bold uppercase tracking-widest text-amber-400 mb-2">
-              {slides[currentSlide].subtitle}
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-black text-white mb-3">
-              {slides[currentSlide].title}
-            </h2>
-            <p className="text-sm sm:text-base text-neutral-300 max-w-md leading-relaxed">
-              {slides[currentSlide].description}
-            </p>
-          </motion.div>
-        </AnimatePresence>
+            {/* Floating icon */}
+            <div className="absolute bottom-4 left-4 p-3.5 rounded-2xl bg-gradient-to-br from-amber-500 to-amber-700 text-neutral-950 shadow-lg shadow-amber-500/20">
+              {React.createElement(slides[currentSlide].icon, { className: 'w-6 h-6' })}
+            </div>
+          </div>
+
+          {/* Typography */}
+          <span className="text-xs font-bold uppercase tracking-widest text-amber-400 mb-2">
+            {slides[currentSlide].subtitle}
+          </span>
+          <h2 className="text-2xl sm:text-3xl font-black text-white mb-3">
+            {slides[currentSlide].title}
+          </h2>
+          <p className="text-sm sm:text-base text-neutral-300 max-w-md leading-relaxed">
+            {slides[currentSlide].description}
+          </p>
+        </motion.div>
 
         {/* Bottom Controls & Navigation */}
         <div className="relative z-20 w-full max-w-md mx-auto pt-4">

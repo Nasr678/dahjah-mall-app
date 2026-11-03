@@ -60,6 +60,7 @@ export interface Brand {
 
 export interface Product {
   id: string;
+  sku?: string; // Unique inventory SKU (رمز التخزين التعريفي الفريد لإدارة المخزون)
   name: string;
   arabicName: string;
   category: string;

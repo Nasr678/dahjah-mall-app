@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion } from 'motion/react';
 import { DajjahLogo } from '../common/DajjahLogo';
 import { Sparkles, ArrowLeft, Volume2, VolumeX, Flame } from 'lucide-react';
 
@@ -110,11 +110,10 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete, onSkip }
   };
 
   return (
-    <AnimatePresence>
-      <motion.div
-        className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#050408] text-white overflow-hidden select-none cursor-pointer"
-        initial={{ opacity: 1 }}
-        exit={{ opacity: 0, scale: 1.03 }}
+    <motion.div
+      className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#050408] text-white overflow-hidden select-none cursor-pointer"
+      initial={{ opacity: 1 }}
+      exit={{ opacity: 0, scale: 1.03 }}
         transition={{ duration: 0.35, ease: 'easeInOut' }}
         onClick={handleSkip}
       >
@@ -319,6 +318,5 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete, onSkip }
           <span className="text-[10px] text-neutral-400 font-medium">جاري تجهيز المتجر والعروض الحصرية...</span>
         </div>
       </motion.div>
-    </AnimatePresence>
   );
 };

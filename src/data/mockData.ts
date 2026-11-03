@@ -216,6 +216,7 @@ export const PRODUCTS: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-w-1',
+    sku: 'DJH-WMN-001',
     name: 'فستان سهرة أسود ملكي مرصع بالكريستال اللامع',
     arabicName: 'فستان سهرة أسود ملكي مرصع بالكريستال اللامع',
     category: 'women',
@@ -270,6 +271,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'prod-w-2',
+    sku: 'DJH-WMN-002',
     name: 'بنطال نسائي كلاسيك بقصة مستقيمة وقماش إيطالي مرن',
     arabicName: 'بنطال نسائي كلاسيك بقصة مستقيمة وقماش إيطالي مرن',
     category: 'women',
@@ -310,6 +312,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'prod-w-3',
+    sku: 'DJH-WMN-003',
     name: 'بلوزة شيفون حريري بطبعة أزهار ناعمة وياقة فيونكة',
     arabicName: 'بلوزة شيفون حريري بطبعة أزهار ناعمة وياقة فيونكة',
     category: 'women',
@@ -349,6 +352,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'prod-w-4',
+    sku: 'DJH-WMN-004',
     name: 'روب مخملي فاخر بتطريز ذهبي على الأكمام',
     arabicName: 'روب مخملي فاخر بتطريز ذهبي على الأكمام',
     category: 'women',
@@ -386,6 +390,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'prod-w-5',
+    sku: 'DJH-WMN-005',
     name: 'تنورة بليسيه مكسرة ميدي بلمعة حريرية ساحرة',
     arabicName: 'تنورة بليسيه مكسرة ميدي بلمعة حريرية ساحرة',
     category: 'women',
@@ -423,6 +428,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'prod-w-6',
+    sku: 'DJH-WMN-006',
     name: 'طقم كاجوال نسائي مكون من توب وبنطال واسع مريح',
     arabicName: 'طقم كاجوال نسائي مكون من توب وبنطال واسع مريح',
     category: 'women',
@@ -459,6 +465,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'prod-w-7',
+    sku: 'DJH-WMN-007',
     name: 'بيجاما نسائية حريرية ناعمة للمنزل بطبعة قلوب',
     arabicName: 'بيجاما نسائية حريرية ناعمة للمنزل بطبعة قلوب',
     category: 'women',
@@ -496,6 +503,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'prod-w-8',
+    sku: 'DJH-WMN-008',
     name: 'فستان مناسبات درابيه طويل بياقة كتف واحد مطرزة',
     arabicName: 'فستان مناسبات درابيه طويل بياقة كتف واحد مطرزة',
     category: 'women',
@@ -536,6 +544,7 @@ export const PRODUCTS: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-b-1',
+    sku: 'DJH-BOY-001',
     name: 'تيشيرت ولادي قطن طبيعي بطبعة جرافيك عصرية',
     arabicName: 'تيشيرت ولادي قطن طبيعي بطبعة جرافيك عصرية',
     category: 'boys',
@@ -574,6 +583,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'prod-b-2',
+    sku: 'DJH-BOY-002',
     name: 'قميص ولادي كلاسيك مربعات كاروهات أنيق للمناسبات',
     arabicName: 'قميص ولادي كلاسيك مربعات كاروهات أنيق للمناسبات',
     category: 'boys',
@@ -610,6 +620,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'prod-b-3',
+    sku: 'DJH-BOY-003',
     name: 'بنطال جينز ولادي مريح بخصر مطاطي وقماش ستريتش',
     arabicName: 'بنطال جينز ولادي مريح بخصر مطاطي وقماش ستريتش',
     category: 'boys',
@@ -646,6 +657,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'prod-b-4',
+    sku: 'DJH-BOY-004',
     name: 'طقم ولادي صيفي كاجوال تيشيرت وبيرمودا أنيق',
     arabicName: 'طقم ولادي صيفي كاجوال تيشيرت وبيرمودا أنيق',
     category: 'boys',
@@ -683,6 +695,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'prod-b-5',
+    sku: 'DJH-BOY-005',
     name: 'بيجاما ولادي قطنية مريحة للمنزل والنوم',
     arabicName: 'بيجاما ولادي قطنية مريحة للمنزل والنوم',
     category: 'boys',
@@ -718,6 +731,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'prod-b-6',
+    sku: 'DJH-BOY-006',
     name: 'بدلة مناسبات ولادي فخمة 3 قطع (جاكيت + صديري + بنطال + ربطة عنق)',
     arabicName: 'بدلة مناسبات ولادي فخمة 3 قطع (جاكيت + صديري + بنطال + ربطة عنق)',
     category: 'boys',
@@ -758,6 +772,7 @@ export const PRODUCTS: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-g-1',
+    sku: 'DJH-GRL-001',
     name: 'فستان بناتي تول ملكي منفوش بالورود للأميرات',
     arabicName: 'فستان بناتي تول ملكي منفوش بالورود للأميرات',
     category: 'girls',
@@ -798,6 +813,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'prod-g-2',
+    sku: 'DJH-GRL-002',
     name: 'بلوزة بناتي قطن مع تطريز دانتيل وأكمام فراشة',
     arabicName: 'بلوزة بناتي قطن مع تطريز دانتيل وأكمام فراشة',
     category: 'girls',
@@ -834,6 +850,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'prod-g-3',
+    sku: 'DJH-GRL-003',
     name: 'بنطال بناتي جينز مطرز بفراشات ملونة وخصر مطاطي',
     arabicName: 'بنطال بناتي جينز مطرز بفراشات ملونة وخصر مطاطي',
     category: 'girls',
@@ -869,6 +886,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'prod-g-4',
+    sku: 'DJH-GRL-004',
     name: 'طقم بناتي قطعتين توب وشورت مكشكش بطبعة زهور',
     arabicName: 'طقم بناتي قطعتين توب وشورت مكشكش بطبعة زهور',
     category: 'girls',
@@ -906,6 +924,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'prod-g-5',
+    sku: 'DJH-GRL-005',
     name: 'تنورة بناتي تول مكسرة بخصر لامع مطاطي',
     arabicName: 'تنورة بناتي تول مكسرة بخصر لامع مطاطي',
     category: 'girls',
@@ -942,6 +961,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'prod-g-6',
+    sku: 'DJH-GRL-006',
     name: 'فستان بناتي مخمل وساتان ملكي للأعياد والمناسبات',
     arabicName: 'فستان بناتي مخمل وساتان ملكي للأعياد والمناسبات',
     category: 'girls',
@@ -982,6 +1002,7 @@ export const PRODUCTS: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-bb-1',
+    sku: 'DJH-BBY-001',
     name: 'طقم بربتوز مواليد قطن عضوي 5 قطع متكامل مع قبعة وقفازات',
     arabicName: 'طقم بربتوز مواليد قطن عضوي 5 قطع متكامل مع قبعة وقفازات',
     category: 'baby',
@@ -1023,6 +1044,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'prod-bb-2',
+    sku: 'DJH-BBY-002',
     name: 'أفرول شتوي مواليد مبطن فرو ناعم مع غطاء رأس بأذنين دبدوب',
     arabicName: 'أفرول شتوي مواليد مبطن فرو ناعم مع غطاء رأس بأذنين دبدوب',
     category: 'baby',
@@ -1060,6 +1082,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'prod-bb-3',
+    sku: 'DJH-BBY-003',
     name: 'بطانية مواليد محبوكة يدوياً فائقة النعومة مع لفة قماط',
     arabicName: 'بطانية مواليد محبوكة يدوياً فائقة النعومة مع لفة قماط',
     category: 'baby',
@@ -1098,6 +1121,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'prod-bb-4',
+    sku: 'DJH-BBY-004',
     name: 'مجموعة مستلزمات العناية بالمواليد 8 قطع (مقص أظافر آمن + فرشاة + ميزان حرارة)',
     arabicName: 'مجموعة مستلزمات العناية بالمواليد 8 قطع (مقص أظافر آمن + فرشاة + ميزان حرارة)',
     category: 'baby',
@@ -1134,6 +1158,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'prod-bb-5',
+    sku: 'DJH-BBY-005',
     name: 'بوكس هدايا استقبال مواليد ملكي فاخر مع كرت إهداء وتغليف راقي',
     arabicName: 'بوكس هدايا استقبال مواليد ملكي فاخر مع كرت إهداء وتغليف راقي',
     category: 'baby',
@@ -1175,6 +1200,7 @@ export const PRODUCTS: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-s-1',
+    sku: 'DJH-SHS-001',
     name: 'حذاء سنيكرز رياضي فائق الخفة والمروحة للمشي والجري اليومي',
     arabicName: 'حذاء سنيكرز رياضي فائق الخفة والمروحة للمشي والجري اليومي',
     category: 'shoes',
@@ -1217,6 +1243,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'prod-s-2',
+    sku: 'DJH-SHS-002',
     name: 'حذاء كعب نسائي أنيق ومريح للسهرات والمناسبات الرسمية',
     arabicName: 'حذاء كعب نسائي أنيق ومريح للسهرات والمناسبات الرسمية',
     category: 'shoes',
@@ -1256,6 +1283,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'prod-s-3',
+    sku: 'DJH-SHS-003',
     name: 'حذاء رجالي جلد طبيعي كلاسيك بروج إيطالي فاخر',
     arabicName: 'حذاء رجالي جلد طبيعي كلاسيك بروج إيطالي فاخر',
     category: 'shoes',
@@ -1293,6 +1321,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'prod-s-4',
+    sku: 'DJH-SHS-004',
     name: 'صندل شرقي جلد طبيعي مريح بنقش ليزر وقاعدة طبية',
     arabicName: 'صندل شرقي جلد طبيعي مريح بنقش ليزر وقاعدة طبية',
     category: 'shoes',
@@ -1330,6 +1359,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'prod-s-5',
+    sku: 'DJH-SHS-005',
     name: 'حذاء أطفال سنيكرز بإضاءة LED وشريط لاصق سهل الارتداء',
     arabicName: 'حذاء أطفال سنيكرز بإضاءة LED وشريط لاصق سهل الارتداء',
     category: 'shoes',
@@ -1370,6 +1400,7 @@ export const PRODUCTS: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-bg-1',
+    sku: 'DJH-BAG-001',
     name: 'حقيبة يد نسائية جلد إيطالي فاخر مع سلسلة ذهبية مطلية',
     arabicName: 'حقيبة يد نسائية جلد إيطالي فاخر مع سلسلة ذهبية مطلية',
     category: 'bags',
@@ -1412,6 +1443,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'prod-bg-2',
+    sku: 'DJH-BAG-002',
     name: 'حقيبة ظهر ذكية للرجال واللابتوب مقاومة للماء مع منفذ شحن USB',
     arabicName: 'حقيبة ظهر ذكية للرجال واللابتوب مقاومة للماء مع منفذ شحن USB',
     category: 'bags',
@@ -1451,6 +1483,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'prod-bg-3',
+    sku: 'DJH-BAG-003',
     name: 'طقم حقائب سفر 3 قطع فايبر صلب غير قابل للكسر مع قفل TSA رقمي',
     arabicName: 'طقم حقائب سفر 3 قطع فايبر صلب غير قابل للكسر مع قفل TSA رقمي',
     category: 'bags',
@@ -1491,6 +1524,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'prod-bg-4',
+    sku: 'DJH-BAG-004',
     name: 'حقيبة أطفال مدرسية أنيقة ومريحة مع مقلمة مطابقة',
     arabicName: 'حقيبة أطفال مدرسية أنيقة ومريحة مع مقلمة مطابقة',
     category: 'bags',
@@ -1527,6 +1561,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'prod-bg-5',
+    sku: 'DJH-BAG-005',
     name: 'حقيبة يد رجالية جلدية فاخرة (كلتش) للأوراق والجوال والمفاتيح',
     arabicName: 'حقيبة يد رجالية جلدية فاخرة (كلتش) للأوراق والجوال والمفاتيح',
     category: 'bags',

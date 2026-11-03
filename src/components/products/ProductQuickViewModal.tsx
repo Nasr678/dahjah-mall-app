@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion } from 'motion/react';
 import { Product, CurrencyCode } from '../../types';
 import { getOptimizedImageUrl } from '../../utils/imageOptimizer';
 import { triggerFlyToCart, safeHaptic } from '../cart/FlyToCartOverlay';
@@ -15,10 +15,12 @@ import {
   Truck, 
   ChevronLeft, 
   ChevronRight, 
-  Check,
-  AlertCircle,
-  Plus,
-  Minus
+  Check, 
+  AlertCircle, 
+  Plus, 
+  Minus,
+  Barcode,
+  Copy
 } from 'lucide-react';
 
 interface ProductQuickViewModalProps {
@@ -52,6 +54,7 @@ export const ProductQuickViewModal: React.FC<ProductQuickViewModalProps> = ({
   const [quantity, setQuantity] = useState<number>(1);
   const [validationError, setValidationError] = useState<string | null>(null);
   const [isAddingAnimation, setIsAddingAnimation] = useState(false);
+  const [copiedSku, setCopiedSku] = useState(false);
   const imageRef = useRef<HTMLDivElement | null>(null);
 
   // Initialize selection when product opens or changes
@@ -63,6 +66,7 @@ export const ProductQuickViewModal: React.FC<ProductQuickViewModalProps> = ({
       setQuantity(1);
       setValidationError(null);
       setIsAddingAnimation(false);
+      setCopiedSku(false);
     }
   }, [product?.id, isOpen]);
 
@@ -71,6 +75,8 @@ export const ProductQuickViewModal: React.FC<ProductQuickViewModalProps> = ({
   const images = product.images && product.images.length > 0
     ? product.images
     : ['https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600'];
+
+  const productSku = product.sku || `DJH-${(product.category || 'GEN').slice(0, 3).toUpperCase()}-${product.id.replace(/^prod-/, '').toUpperCase()}`;
 
   const formatPrice = (priceYER: number) => {
     if (currency === 'USD') return `$${(priceYER / 530).toFixed(1)}`;
@@ -311,6 +317,41 @@ export const ProductQuickViewModal: React.FC<ProductQuickViewModalProps> = ({
                   {product.stock <= 8 && (
                     <span className="text-amber-400">
                       (متبقي {product.stock} فقط)
+                    </span>
+                  )}
+                </div>
+
+                {/* SKU Field for Inventory Management (رمز التخزين لإدارة الجرد) */}
+                <div className="mt-2 pt-2 border-t border-neutral-800/80 flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-1.5 text-[10px]">
+                    <span className="text-neutral-500 font-medium">رمز المخزون:</span>
+                    <button
+                      type="button"
+                      onClick={async (e) => {
+                        e.stopPropagation();
+                        try {
+                          await navigator.clipboard.writeText(productSku);
+                          setCopiedSku(true);
+                          safeHaptic(25);
+                          setTimeout(() => setCopiedSku(false), 2000);
+                          if (onShowToast) onShowToast(`تم نسخ رمز SKU (${productSku}) بنجاح ✓`);
+                        } catch {}
+                      }}
+                      title="انقر لنسخ رمز المنتج (SKU)"
+                      className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-neutral-800/90 hover:bg-neutral-800 border border-neutral-700/70 hover:border-amber-500/50 text-[10px] text-amber-300 hover:text-amber-200 transition-colors group cursor-pointer active:scale-95 shadow-sm"
+                    >
+                      <Barcode className="w-3.5 h-3.5 text-amber-400 group-hover:scale-105 transition-transform" />
+                      <span className="font-mono font-bold tracking-wider">{productSku}</span>
+                      {copiedSku ? (
+                        <Check className="w-3 h-3 text-emerald-400" />
+                      ) : (
+                        <Copy className="w-2.5 h-2.5 text-neutral-500 group-hover:text-amber-300" />
+                      )}
+                    </button>
+                  </div>
+                  {product.brandName && (
+                    <span className="text-[9px] text-neutral-400 bg-neutral-800/50 px-1.5 py-0.5 rounded border border-neutral-700/30 truncate max-w-[100px]">
+                      {product.brandName}
                     </span>
                   )}
                 </div>

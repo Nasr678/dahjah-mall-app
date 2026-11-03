@@ -1,6 +1,7 @@
 /// <reference types="vite/client" />
 import React, { Component, StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
+import App from './App';
 import './index.css';
 import 'leaflet/dist/leaflet.css';
 
@@ -139,11 +140,6 @@ class StartupErrorBoundary extends Component<StartupErrorBoundaryProps, StartupE
   }
 }
 
-async function loadAppBundle() {
-  const appModule = await import('./App.tsx');
-  return appModule.default;
-}
-
 let isAppMounted = false;
 
 function isBenignOrIgnoredError(payload: unknown): boolean {
@@ -229,29 +225,26 @@ if (typeof window !== 'undefined') {
   });
 }
 
-(async () => {
-  try {
-    const rootElement = document.getElementById('root');
-    if (!rootElement) {
-      throw new Error('Missing required #root element in index.html');
-    }
-
-    const App = await loadAppBundle();
-    const root = createRoot(rootElement);
-    root.render(
-      <StartupErrorBoundary>
-        <StrictMode>
-          <App />
-        </StrictMode>
-      </StartupErrorBoundary>,
-    );
-
-    isAppMounted = true;
-    window.setTimeout(() => removeStartupOverlay(), 400);
-  } catch (error) {
-    const text = getErrorText(error);
-    console.error('React startup bootstrap failed', error);
-    showDiagnostic('React startup bootstrap failed', text);
-    renderStartupFallback('React startup bootstrap failed', text);
+try {
+  const rootElement = document.getElementById('root');
+  if (!rootElement) {
+    throw new Error('Missing required #root element in index.html');
   }
-})();
+
+  const root = createRoot(rootElement);
+  root.render(
+    <StartupErrorBoundary>
+      <StrictMode>
+        <App />
+      </StrictMode>
+    </StartupErrorBoundary>,
+  );
+
+  isAppMounted = true;
+  window.setTimeout(() => removeStartupOverlay(), 400);
+} catch (error) {
+  const text = getErrorText(error);
+  console.error('React startup bootstrap failed', error);
+  showDiagnostic('React startup bootstrap failed', text);
+  renderStartupFallback('React startup bootstrap failed', text);
+}

@@ -32,7 +32,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   onSuccess,
   initialMode = 'login',
 }) => {
-  const { loginWithEmail, registerWithEmail, loginWithGoogle, loginWithFacebook, sendPasswordReset } = useMarketplace();
+  const { loginWithEmail, registerWithEmail, loginWithGoogle, sendPasswordReset } = useMarketplace();
   const [mode, setMode] = useState<'login' | 'register' | 'forgot'>(initialMode);
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -41,7 +41,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   const [city, setCity] = useState(YEMEN_CITIES[0]);
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [socialLoading, setSocialLoading] = useState<'google' | 'facebook' | null>(null);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
@@ -55,8 +55,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
     try {
       if (mode === 'forgot') {
-        if (!email) {
-          setError('يرجى إدخال البريد الإلكتروني لاستعادة كلمة المرور');
+        if (!email || !email.includes('@')) {
+          setError('يرجى إدخال بريد إلكتروني صالح لاستلام رابط إعادة تعيين كلمة المرور');
           setIsLoading(false);
           return;
         }
@@ -65,6 +65,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         setIsLoading(false);
       } else if (mode === 'register') {
         const userEmail = email ? email.trim() : `${phone.replace(/\D/g, '')}@dajjahmall.ye`;
+        if (password.length < 6) {
+          setError('كلمة المرور ضعيفة. يجب أن تتكون من 6 خانات أو أحرف على الأقل.');
+          setIsLoading(false);
+          return;
+        }
         const profile = await registerWithEmail(
           userEmail,
           password,
@@ -83,6 +88,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       } else {
         // Login with Email
         const userEmail = email.includes('@') ? email.trim() : `${phone.replace(/\D/g, '')}@dajjahmall.ye`;
+        if (!password) {
+          setError('يرجى إدخال كلمة المرور للمتابعة.');
+          setIsLoading(false);
+          return;
+        }
         const profile = await loginWithEmail(userEmail, password);
         if (onSuccess) {
           onSuccess({
@@ -106,7 +116,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
   const handleGoogleSignIn = async () => {
     setError('');
-    setSocialLoading('google');
+    setIsGoogleLoading(true);
     try {
       const profile = await loginWithGoogle();
       if (onSuccess) {
@@ -124,35 +134,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       }
       setError(translateAuthError(err));
     } finally {
-      setSocialLoading(null);
-    }
-  };
-
-  const handleFacebookSignIn = async () => {
-    setError('');
-    setSocialLoading('facebook');
-    try {
-      const profile = await loginWithFacebook();
-      if (onSuccess) {
-        onSuccess({
-          name: profile.name,
-          phone: profile.phone,
-          city: profile.city,
-        });
-      }
-      onClose();
-    } catch (err: any) {
-      if (err?.code === 'auth/popup-closed-by-user' || err?.code === 'auth/cancelled-popup-request') {
-        setError('تم إغلاق نافذة تسجيل الدخول.');
-        return;
-      }
-      if (err?.code === 'auth/operation-not-allowed') {
-        setError('تسجيل الدخول عبر Facebook غير مفعّل حالياً في خادم Firebase. يمكنك المتابعة فوراً عبر حساب Google أو البريد الإلكتروني.');
-        return;
-      }
-      setError(translateAuthError(err));
-    } finally {
-      setSocialLoading(null);
+      setIsGoogleLoading(false);
     }
   };
 
@@ -216,19 +198,19 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           </div>
         )}
 
-        {/* Social Authentication Providers (Google & Facebook) */}
+        {/* Social Authentication Provider (Google Quick Sign-In) */}
         {mode !== 'forgot' && (
           <div className="space-y-2.5 mb-5">
             <button
               type="button"
               onClick={handleGoogleSignIn}
-              disabled={socialLoading !== null || isLoading}
-              className="w-full py-3 px-4 rounded-2xl bg-neutral-950 hover:bg-neutral-800 border border-neutral-750 hover:border-neutral-600 text-neutral-100 text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-3 disabled:opacity-60"
+              disabled={isGoogleLoading || isLoading}
+              className="w-full py-3.5 px-4 rounded-2xl bg-neutral-950 hover:bg-neutral-800 border border-neutral-750 hover:border-amber-500/50 text-neutral-100 text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-3 disabled:opacity-60 cursor-pointer shadow-sm hover:shadow-md active:scale-[0.99]"
             >
-              {socialLoading === 'google' ? (
+              {isGoogleLoading ? (
                 <div className="w-4 h-4 border-2 border-amber-400 border-t-transparent rounded-full animate-spin" />
               ) : (
-                <svg className="w-4 h-4" viewBox="0 0 24 24">
+                <svg className="w-5 h-5" viewBox="0 0 24 24">
                   <path
                     fill="#4285F4"
                     d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -248,22 +230,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 </svg>
               )}
               <span>الدخول السريع بحساب Google</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={handleFacebookSignIn}
-              disabled={socialLoading !== null || isLoading}
-              className="w-full py-3 px-4 rounded-2xl bg-[#1877F2]/15 hover:bg-[#1877F2]/25 border border-[#1877F2]/40 text-[#4599FF] hover:text-white text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-3 disabled:opacity-60"
-            >
-              {socialLoading === 'facebook' ? (
-                <div className="w-4 h-4 border-2 border-[#1877F2] border-t-transparent rounded-full animate-spin" />
-              ) : (
-                <svg className="w-4 h-4 fill-current text-[#1877F2]" viewBox="0 0 24 24">
-                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-                </svg>
-              )}
-              <span>الدخول عبر Facebook</span>
             </button>
 
             <div className="flex items-center gap-3 my-4">
@@ -414,7 +380,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           {/* Submit Action */}
           <button
             type="submit"
-            disabled={isLoading || socialLoading !== null}
+            disabled={isLoading || isGoogleLoading}
             className="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-neutral-950 font-black text-sm shadow-lg shadow-amber-500/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2 mt-2 disabled:opacity-60"
           >
             {isLoading ? (

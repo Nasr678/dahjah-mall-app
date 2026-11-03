@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef, Suspense, lazy } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion } from 'motion/react';
 import { Product, CurrencyCode, Category, Order } from './types';
 import { PRODUCTS, CATEGORIES, STORES } from './data/mockData';
 import { MarketplaceProvider, useMarketplace } from './context/MarketplaceContext';
@@ -28,31 +28,33 @@ import { AppFooterBottomBar } from './components/layout/AppFooterBottomBar';
 import { ProductCard } from './components/products/ProductCard';
 import { FlyToCartOverlay } from './components/cart/FlyToCartOverlay';
 
-// Lazy-Loaded Views & Modals (Loaded strictly on-demand to minimize initial bundle size and boost TTI)
-const MainCategoriesScreen = lazy(() => import('./components/categories/MainCategoriesScreen').then(m => ({ default: m.MainCategoriesScreen })));
-const CategoryLandingPage = lazy(() => import('./components/categories/CategoryLandingPage').then(m => ({ default: m.CategoryLandingPage })));
-const BrandsScreen = lazy(() => import('./components/brands/BrandsScreen').then(m => ({ default: m.BrandsScreen })));
-const TrendsScreen = lazy(() => import('./components/trends/TrendsScreen').then(m => ({ default: m.TrendsScreen })));
-const ProfileView = lazy(() => import('./components/profile/ProfileView').then(m => ({ default: m.ProfileView })));
-const OnboardingScreen = lazy(() => import('./components/onboarding/OnboardingScreen').then(m => ({ default: m.OnboardingScreen })));
+// Views & Screens
+import { MainCategoriesScreen } from './components/categories/MainCategoriesScreen';
+import { CategoryLandingPage } from './components/categories/CategoryLandingPage';
+import { BrandsScreen } from './components/brands/BrandsScreen';
+import { TrendsScreen } from './components/trends/TrendsScreen';
+import { ProfileView } from './components/profile/ProfileView';
+import { OnboardingScreen } from './components/onboarding/OnboardingScreen';
 
-// Lazy Modals
-const AuthModal = lazy(() => import('./components/auth/AuthModal').then(m => ({ default: m.AuthModal })));
-const SmartSearchModal = lazy(() => import('./components/search/SmartSearchModal').then(m => ({ default: m.SmartSearchModal })));
-const ProductDetailsModal = lazy(() => import('./components/products/ProductDetailsModal').then(m => ({ default: m.ProductDetailsModal })));
-const ProductQuickViewModal = lazy(() => import('./components/products/ProductQuickViewModal').then(m => ({ default: m.ProductQuickViewModal })));
-const AIAssistantModal = lazy(() => import('./components/ai/AIAssistantModal'));
-const CartModal = lazy(() => import('./components/cart/CartModal').then(m => ({ default: m.CartModal })));
-const NotificationsModal = lazy(() => import('./components/notifications/NotificationsModal').then(m => ({ default: m.NotificationsModal })));
-const LocationPickerModal = lazy(() => import('./components/location/LocationPickerModal').then(m => ({ default: m.LocationPickerModal })));
-const SettingsModal = lazy(() => import('./components/settings/SettingsModal').then(m => ({ default: m.SettingsModal })));
-const AccessibilityModal = lazy(() => import('./components/settings/AccessibilityModal').then(m => ({ default: m.AccessibilityModal })));
-const CustomerServiceModal = lazy(() => import('./components/support/CustomerServiceModal').then(m => ({ default: m.CustomerServiceModal })));
-const PoliciesModal = lazy(() => import('./components/policies/PoliciesModal').then(m => ({ default: m.PoliciesModal })));
-const CurrencySettingsModal = lazy(() => import('./components/admin/CurrencySettingsModal').then(m => ({ default: m.CurrencySettingsModal })));
-const PromoOffersModal = lazy(() => import('./components/common/PromoOffersModal').then(m => ({ default: m.PromoOffersModal })));
+// Modals
+import { AuthModal } from './components/auth/AuthModal';
+import { SmartSearchModal } from './components/search/SmartSearchModal';
+import { ProductDetailsModal } from './components/products/ProductDetailsModal';
+import { ProductQuickViewModal } from './components/products/ProductQuickViewModal';
+import AIAssistantModal from './components/ai/AIAssistantModal';
+import { CartModal } from './components/cart/CartModal';
+import { NotificationsModal } from './components/notifications/NotificationsModal';
+import { LocationPickerModal } from './components/location/LocationPickerModal';
+import { SettingsModal } from './components/settings/SettingsModal';
+import { AccessibilityModal } from './components/settings/AccessibilityModal';
+import { CustomerServiceModal } from './components/support/CustomerServiceModal';
+import { PoliciesModal } from './components/policies/PoliciesModal';
+import { CurrencySettingsModal } from './components/admin/CurrencySettingsModal';
+import { PromoOffersModal } from './components/common/PromoOffersModal';
+import { LeafletStoreLocatorModal } from './components/maps/LeafletStoreLocatorModal';
+
+// Large Admin Dashboard remains lazy-loaded
 const AdminProductDashboard = lazy(() => import('./components/admin/AdminProductDashboard'));
-const LeafletStoreLocatorModal = lazy(() => import('./components/maps/LeafletStoreLocatorModal').then(m => ({ default: m.LeafletStoreLocatorModal })));
 
 // Icons
 import { 
@@ -293,19 +295,15 @@ function MarketplaceApp() {
       )}
 
       {/* Global Toast Notification */}
-      <AnimatePresence>
-        {toastMessage && (
-          <motion.div
-            initial={{ opacity: 0, y: -20, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -20, scale: 0.95 }}
-            className="fixed top-20 left-1/2 -translate-x-1/2 z-[100] px-4 py-2.5 rounded-full bg-neutral-900/95 border border-amber-500/50 text-amber-300 text-xs sm:text-sm font-bold shadow-2xl shadow-amber-500/20 backdrop-blur-xl flex items-center gap-2 pointer-events-none"
-          >
-            <CheckCircle2 className="w-4 h-4 text-amber-400" />
-            <span>{toastMessage}</span>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {toastMessage && (
+        <div
+          role="status"
+          className="fixed top-20 left-1/2 -translate-x-1/2 z-[100] px-4 py-2.5 rounded-full bg-neutral-900/95 border border-amber-500/50 text-amber-300 text-xs sm:text-sm font-bold shadow-2xl shadow-amber-500/20 backdrop-blur-xl flex items-center gap-2 pointer-events-none transition-all duration-300 animate-in fade-in slide-in-from-top-3"
+        >
+          <CheckCircle2 className="w-4 h-4 text-amber-400" />
+          <span>{toastMessage}</span>
+        </div>
+      )}
 
       {/* Main Header */}
       <Header

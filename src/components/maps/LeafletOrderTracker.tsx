@@ -1,5 +1,6 @@
-import React, { useMemo } from 'react';
-import { MapContainer, TileLayer, Marker, Polyline } from 'react-leaflet';
+import React, { useMemo, useEffect, useRef } from 'react';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 import { Order } from '../../types';
 import { 
   CARTO_DARK_TILE_LAYER, 
@@ -17,6 +18,10 @@ export const LeafletOrderTracker: React.FC<LeafletOrderTrackerProps> = ({
   order,
   className = 'h-[280px] sm:h-[320px]',
 }) => {
+  const mapContainerRef = useRef<HTMLDivElement | null>(null);
+  const mapInstanceRef = useRef<L.Map | null>(null);
+  const layerGroupRef = useRef<L.LayerGroup | null>(null);
+
   // Destination Coordinates from order shipping address or fallback to Sana'a
   const destLat = order.shippingAddress.lat || 15.3324;
   const destLng = order.shippingAddress.lng || 44.1852;
@@ -92,6 +97,69 @@ export const LeafletOrderTracker: React.FC<LeafletOrderTrackerProps> = ({
   const courierIcon = useMemo(() => createCustomMarkerIcon('courier'), []);
   const destIcon = useMemo(() => createCustomMarkerIcon('pickup'), []);
 
+  // Initialize pure Leaflet map
+  useEffect(() => {
+    if (!mapContainerRef.current) return;
+
+    if (!mapInstanceRef.current) {
+      const map = L.map(mapContainerRef.current, {
+        center: mapCenter,
+        zoom: 13,
+        zoomControl: false,
+        attributionControl: false,
+      });
+
+      L.tileLayer(CARTO_DARK_TILE_LAYER.url, {
+        maxZoom: CARTO_DARK_TILE_LAYER.maxZoom,
+      }).addTo(map);
+
+      const layerGroup = L.layerGroup().addTo(map);
+      layerGroupRef.current = layerGroup;
+      mapInstanceRef.current = map;
+    }
+
+    return () => {
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.remove();
+        mapInstanceRef.current = null;
+        layerGroupRef.current = null;
+      }
+    };
+  }, []);
+
+  // Draw Route & Markers on order update
+  useEffect(() => {
+    if (!mapInstanceRef.current || !layerGroupRef.current) return;
+
+    layerGroupRef.current.clearLayers();
+
+    // 1. Draw Polyline
+    L.polyline(routePositions, {
+      color: '#f59e0b',
+      weight: 4,
+      opacity: 0.85,
+      dashArray: '8, 8',
+    }).addTo(layerGroupRef.current);
+
+    // 2. Origin Hub Marker
+    L.marker([originLat, originLng], { icon: hubIcon }).addTo(layerGroupRef.current);
+
+    // 3. Courier Marker
+    if (order.status !== 'delivered') {
+      L.marker([courierInfo.lat, courierInfo.lng], { icon: courierIcon }).addTo(layerGroupRef.current);
+    }
+
+    // 4. Destination Marker
+    L.marker([destLat, destLng], { icon: destIcon }).addTo(layerGroupRef.current);
+
+    // Adjust bounds
+    try {
+      mapInstanceRef.current.fitBounds(L.latLngBounds(routePositions), { padding: [40, 40] });
+    } catch {
+      mapInstanceRef.current.setView(mapCenter, 13);
+    }
+  }, [routePositions, originLat, originLng, destLat, destLng, courierInfo, hubIcon, courierIcon, destIcon, order.status, mapCenter]);
+
   return (
     <div className={`relative w-full rounded-3xl overflow-hidden border border-neutral-800 bg-neutral-950 shadow-2xl flex flex-col ${className}`}>
       {/* Live Map Top Floating Status Banner */}
@@ -117,57 +185,20 @@ export const LeafletOrderTracker: React.FC<LeafletOrderTrackerProps> = ({
 
       {/* Main Leaflet Map Container */}
       <div className="w-full flex-1 relative min-h-[220px]">
-        <MapContainer
-          center={mapCenter}
-          zoom={13}
-          scrollWheelZoom={true}
-          style={{ width: '100%', height: '100%', minHeight: '220px' }}
-          zoomControl={false}
-          attributionControl={false}
-        >
-          <TileLayer
-            attribution={CARTO_DARK_TILE_LAYER.attribution}
-            url={CARTO_DARK_TILE_LAYER.url}
-            maxZoom={CARTO_DARK_TILE_LAYER.maxZoom}
-          />
-
-          {/* Simulated Route Polyline */}
-          <Polyline
-            positions={routePositions}
-            pathOptions={{
-              color: '#f59e0b',
-              weight: 4,
-              opacity: 0.8,
-              dashArray: '8, 8',
-            }}
-          />
-
-          {/* 1. Hub / Origin Marker */}
-          <Marker position={[originLat, originLng]} icon={hubIcon} />
-
-          {/* 2. Live Courier Vehicle Marker (if active delivery) */}
-          {order.status !== 'delivered' && (
-            <Marker position={[courierInfo.lat, courierInfo.lng]} icon={courierIcon} />
-          )}
-
-          {/* 3. Destination Delivery Marker */}
-          <Marker position={[destLat, destLng]} icon={destIcon} />
-        </MapContainer>
+        <div
+          ref={mapContainerRef}
+          className="w-full h-full min-h-[220px]"
+          style={{ background: '#121212' }}
+        />
       </div>
 
       {/* Footer Info Strip */}
       <div className="px-4 py-2.5 bg-neutral-950 border-t border-neutral-800 flex items-center justify-between text-xs text-neutral-400 z-10">
         <div className="flex items-center gap-2">
-          <Navigation className="w-4 h-4 text-amber-400 flex-shrink-0" />
-          <span className="text-white font-medium">
-            من <strong className="text-amber-400">{hub.district}</strong> إلى{' '}
-            <strong className="text-emerald-400">
-              {order.shippingAddress.district || order.shippingAddress.city}
-            </strong>
-          </span>
+          <Truck className="w-3.5 h-3.5 text-amber-400" />
+          <span>تحديث لحظي لحركة مندوب التوصيل في أرجاء المدينة</span>
         </div>
-
-        <div className="flex items-center gap-1 text-[11px] font-mono text-neutral-400">
+        <div className="flex items-center gap-1 text-[11px] font-mono text-neutral-500">
           <span>Leaflet / OpenStreetMap</span>
         </div>
       </div>

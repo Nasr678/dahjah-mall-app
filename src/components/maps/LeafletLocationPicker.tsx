@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { MapContainer, TileLayer, Marker, useMap, useMapEvents } from 'react-leaflet';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 import { 
   MapPin, 
   Search, 
@@ -32,32 +32,6 @@ interface LeafletLocationPickerProps {
   selectedCity?: string;
 }
 
-// Controller for programmatic panning when city or coords change from outside
-const MapCenterController: React.FC<{
-  center: [number, number];
-  zoom: number;
-}> = ({ center, zoom }) => {
-  const map = useMap();
-
-  useEffect(() => {
-    map.setView(center, zoom, { animate: true });
-  }, [map, center[0], center[1], zoom]);
-
-  return null;
-};
-
-// Map click event listener component
-const MapClickHandler: React.FC<{
-  onLocationSelect: (lat: number, lng: number) => void;
-}> = ({ onLocationSelect }) => {
-  useMapEvents({
-    click(e) {
-      onLocationSelect(e.latlng.lat, e.latlng.lng);
-    },
-  });
-  return null;
-};
-
 export const LeafletLocationPicker: React.FC<LeafletLocationPickerProps> = ({
   lat,
   lng,
@@ -71,33 +45,91 @@ export const LeafletLocationPicker: React.FC<LeafletLocationPickerProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
 
-  const markerRef = useRef<L.Marker | null>(null);
+  const mapContainerRef = useRef<HTMLDivElement | null>(null);
+  const mapInstanceRef = useRef<L.Map | null>(null);
+  const markerInstanceRef = useRef<L.Marker | null>(null);
+  const tileLayerRef = useRef<L.TileLayer | null>(null);
 
   // Custom User Marker Icon
   const userMarkerIcon = useMemo(() => {
     return createCustomMarkerIcon('user_pin');
   }, []);
 
-  const handleLocationPicked = (newLat: number, newLng: number) => {
+  const handleLocationPicked = useCallback((newLat: number, newLng: number) => {
     const geocoded = reverseGeocodeYemen(newLat, newLng);
     onCoordinatesChange(newLat, newLng, geocoded);
     setStatusMessage(`تم تحديد الموقع: ${geocoded.city} — ${geocoded.district}`);
     setTimeout(() => setStatusMessage(null), 3000);
-  };
+  }, [onCoordinatesChange]);
 
-  // Drag handler for marker
-  const markerEventHandlers = useMemo(
-    () => ({
-      dragend() {
-        const marker = markerRef.current;
-        if (marker != null) {
-          const newPos = marker.getLatLng();
-          handleLocationPicked(newPos.lat, newPos.lng);
-        }
-      },
-    }),
-    [onCoordinatesChange]
-  );
+  const currentTile = activeTileLayer === 'osm' ? OSM_TILE_LAYER : CARTO_DARK_TILE_LAYER;
+
+  // Initialize pure Leaflet Map instance
+  useEffect(() => {
+    if (!mapContainerRef.current) return;
+
+    if (!mapInstanceRef.current) {
+      const map = L.map(mapContainerRef.current, {
+        center: [lat, lng],
+        zoom: mapZoom,
+        zoomControl: false,
+        attributionControl: false,
+      });
+
+      const tile = L.tileLayer(currentTile.url, {
+        maxZoom: currentTile.maxZoom,
+      }).addTo(map);
+      tileLayerRef.current = tile;
+
+      const marker = L.marker([lat, lng], {
+        draggable: true,
+        icon: userMarkerIcon,
+      }).addTo(map);
+
+      marker.on('dragend', () => {
+        const pos = marker.getLatLng();
+        handleLocationPicked(pos.lat, pos.lng);
+      });
+
+      map.on('click', (e) => {
+        marker.setLatLng(e.latlng);
+        handleLocationPicked(e.latlng.lat, e.latlng.lng);
+      });
+
+      markerInstanceRef.current = marker;
+      mapInstanceRef.current = map;
+    }
+
+    return () => {
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.remove();
+        mapInstanceRef.current = null;
+        markerInstanceRef.current = null;
+        tileLayerRef.current = null;
+      }
+    };
+  }, []);
+
+  // Update marker & view when lat/lng props change
+  useEffect(() => {
+    if (mapInstanceRef.current && markerInstanceRef.current) {
+      const currentPos = markerInstanceRef.current.getLatLng();
+      if (Math.abs(currentPos.lat - lat) > 0.0001 || Math.abs(currentPos.lng - lng) > 0.0001) {
+        markerInstanceRef.current.setLatLng([lat, lng]);
+        mapInstanceRef.current.setView([lat, lng], mapZoom, { animate: true });
+      }
+    }
+  }, [lat, lng, mapZoom]);
+
+  // Update Tile Layer if switched
+  useEffect(() => {
+    if (!mapInstanceRef.current) return;
+    if (tileLayerRef.current) {
+      mapInstanceRef.current.removeLayer(tileLayerRef.current);
+    }
+    const newTile = L.tileLayer(currentTile.url, { maxZoom: currentTile.maxZoom }).addTo(mapInstanceRef.current);
+    tileLayerRef.current = newTile;
+  }, [activeTileLayer, currentTile.url, currentTile.maxZoom]);
 
   // GPS Device location trigger
   const handleLocateMe = async () => {
@@ -106,9 +138,13 @@ export const LeafletLocationPicker: React.FC<LeafletLocationPickerProps> = ({
       const loc = await getCurrentDeviceLocation();
       handleLocationPicked(loc.lat, loc.lng);
       setMapZoom(16);
+      if (mapInstanceRef.current && markerInstanceRef.current) {
+        markerInstanceRef.current.setLatLng([loc.lat, loc.lng]);
+        mapInstanceRef.current.setView([loc.lat, loc.lng], 16, { animate: true });
+      }
       setStatusMessage(`تم تحديد موقعك بدقة عبر GPS: ${loc.lat.toFixed(4)}, ${loc.lng.toFixed(4)}`);
       setTimeout(() => setStatusMessage(null), 4000);
-    } catch (err: any) {
+    } catch {
       setStatusMessage('تعذر الوصول لنظام GPS. يرجى تفعيل إذن الموقع أو النقر على الخريطة.');
       setTimeout(() => setStatusMessage(null), 4000);
     } finally {
@@ -122,12 +158,14 @@ export const LeafletLocationPicker: React.FC<LeafletLocationPickerProps> = ({
     if (coords) {
       handleLocationPicked(coords.lat, coords.lng);
       setMapZoom(14);
+      if (mapInstanceRef.current && markerInstanceRef.current) {
+        markerInstanceRef.current.setLatLng([coords.lat, coords.lng]);
+        mapInstanceRef.current.setView([coords.lat, coords.lng], 14, { animate: true });
+      }
       setStatusMessage(`تم الانتقال إلى مدينة ${cityName}`);
       setTimeout(() => setStatusMessage(null), 2500);
     }
   };
-
-  const currentTile = activeTileLayer === 'osm' ? OSM_TILE_LAYER : CARTO_DARK_TILE_LAYER;
 
   return (
     <div className={`relative w-full rounded-2xl overflow-hidden border border-neutral-800 bg-neutral-950 shadow-inner flex flex-col ${className}`}>
@@ -159,7 +197,7 @@ export const LeafletLocationPicker: React.FC<LeafletLocationPickerProps> = ({
             type="button"
             onClick={handleLocateMe}
             disabled={isLocating}
-            className="p-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-neutral-950 font-bold transition-all shadow-lg active:scale-95 flex items-center gap-1.5 text-xs flex-shrink-0"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-neutral-950 font-bold text-xs shadow-lg transition-all active:scale-95 disabled:opacity-50 flex-shrink-0 cursor-pointer"
             title="موقعي الحالي عبر GPS"
           >
             <Compass className={`w-4 h-4 ${isLocating ? 'animate-spin' : ''}`} />
@@ -167,16 +205,16 @@ export const LeafletLocationPicker: React.FC<LeafletLocationPickerProps> = ({
           </button>
         </div>
 
-        {/* Quick Yemen City Selector Pills */}
-        <div className="flex items-center gap-1 overflow-x-auto no-scrollbar py-0.5 px-0.5">
-          {['صنعاء', 'عدن', 'تعز', 'حضرموت (المكلا)', 'إب', 'الحديدة', 'مأرب'].map((c) => (
+        {/* Quick select pills */}
+        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+          {['صنعاء', 'عدن', 'تعز', 'حضرموت', 'الحديدة', 'إب', 'ذمار', 'مأرب'].map((c) => (
             <button
               key={c}
               type="button"
               onClick={() => handleQuickCitySelect(c)}
-              className={`px-2.5 py-1 rounded-lg text-[11px] font-bold whitespace-nowrap transition-all backdrop-blur-md shadow-sm ${
+              className={`px-2.5 py-1 rounded-lg text-[11px] font-bold whitespace-nowrap transition-all shadow-md cursor-pointer ${
                 selectedCity === c
-                  ? 'bg-amber-500 text-neutral-950 border border-amber-400 font-black'
+                  ? 'bg-amber-400 text-neutral-950 font-black'
                   : 'bg-neutral-900/85 hover:bg-neutral-800 text-neutral-300 border border-neutral-700/60'
               }`}
             >
@@ -188,32 +226,11 @@ export const LeafletLocationPicker: React.FC<LeafletLocationPickerProps> = ({
 
       {/* Main Leaflet Map View */}
       <div className="w-full flex-1 relative min-h-[260px]">
-        <MapContainer
-          center={[lat, lng]}
-          zoom={mapZoom}
-          scrollWheelZoom={true}
-          style={{ width: '100%', height: '100%', minHeight: '260px' }}
-          zoomControl={false}
-          attributionControl={false}
-        >
-          <TileLayer
-            attribution={currentTile.attribution}
-            url={currentTile.url}
-            maxZoom={currentTile.maxZoom}
-          />
-
-          <MapCenterController center={[lat, lng]} zoom={mapZoom} />
-          <MapClickHandler onLocationSelect={handleLocationPicked} />
-
-          {/* Draggable Amber Pin */}
-          <Marker
-            position={[lat, lng]}
-            draggable={true}
-            eventHandlers={markerEventHandlers}
-            ref={markerRef}
-            icon={userMarkerIcon}
-          />
-        </MapContainer>
+        <div
+          ref={mapContainerRef}
+          className="w-full h-full min-h-[260px]"
+          style={{ background: '#121212' }}
+        />
 
         {/* Map Floating Tools */}
         <div className="absolute left-3 bottom-3 z-[1000] flex flex-col gap-1.5 pointer-events-auto">
@@ -221,7 +238,7 @@ export const LeafletLocationPicker: React.FC<LeafletLocationPickerProps> = ({
           <button
             type="button"
             onClick={() => setActiveTileLayer((prev) => (prev === 'osm' ? 'voyager' : 'osm'))}
-            className="p-2 rounded-xl bg-neutral-900/90 hover:bg-neutral-800 text-neutral-300 hover:text-amber-400 border border-neutral-700/80 backdrop-blur-md shadow-lg transition-all"
+            className="p-2 rounded-xl bg-neutral-900/90 hover:bg-neutral-800 text-neutral-300 hover:text-amber-400 border border-neutral-700/80 backdrop-blur-md shadow-lg transition-all cursor-pointer"
             title="تبديل نمط الخريطة"
           >
             <Layers className="w-4 h-4" />
@@ -238,19 +255,20 @@ export const LeafletLocationPicker: React.FC<LeafletLocationPickerProps> = ({
           </div>
         </div>
 
-        {/* Toast Status */}
+        {/* Feedback notification toast */}
         {statusMessage && (
-          <div className="absolute top-24 left-1/2 -translate-x-1/2 z-[1001] px-4 py-2 rounded-2xl bg-neutral-950/95 border border-amber-500/40 text-amber-300 text-xs font-bold shadow-2xl backdrop-blur-md text-center max-w-[90%] animate-in fade-in slide-in-from-top-2">
-            {statusMessage}
+          <div className="absolute top-24 left-1/2 -translate-x-1/2 z-[1000] px-3.5 py-1.5 rounded-xl bg-neutral-900/95 border border-amber-500/50 text-amber-300 text-xs font-bold shadow-2xl backdrop-blur-md flex items-center gap-2 animate-bounce">
+            <MapPin className="w-3.5 h-3.5 text-amber-400" />
+            <span>{statusMessage}</span>
           </div>
         )}
       </div>
 
-      {/* Bottom Information Footer */}
-      <div className="px-3 py-2 bg-neutral-950 border-t border-neutral-800/80 flex items-center justify-between text-[11px] text-neutral-400 z-10">
+      {/* Footer Instructions */}
+      <div className="px-3.5 py-2 bg-neutral-950 border-t border-neutral-800 flex items-center justify-between text-xs text-neutral-400 z-10">
         <div className="flex items-center gap-1.5">
-          <MapPin className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
-          <span>انقر في أي مكان على الخريطة أو اسحب الدبوس لتحديد عنوانك بدقة</span>
+          <Navigation className="w-3.5 h-3.5 text-amber-400" />
+          <span>انقر في أي مكان أو اسحب الدبوس لتحديد عنوان التوصيل بدقة</span>
         </div>
         <span className="font-mono text-neutral-500 text-[10px] hidden sm:inline">Leaflet & OpenStreetMap</span>
       </div>

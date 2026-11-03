@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion } from 'motion/react';
 import { Product, CurrencyCode, Review } from '../../types';
 import { useMarketplace } from '../../context/MarketplaceContext';
 import { ProductCard } from './ProductCard';
@@ -19,19 +19,20 @@ import {
   Share2, 
   Check, 
   ChevronLeft, 
-  ChevronRight,
-  MessageSquare,
-  MessageCircle,
-  ThumbsUp,
-  MapPin,
-  Lock,
-  LogIn,
-  CheckCircle2,
-  Filter,
-  UserCheck,
-  Send,
-  Loader2,
-  AlertCircle
+  ChevronRight, 
+  MessageSquare, 
+  MessageCircle, 
+  ThumbsUp, 
+  MapPin, 
+  Lock, 
+  LogIn, 
+  CheckCircle2, 
+  Filter, 
+  UserCheck, 
+  Send, 
+  Loader2, 
+  AlertCircle,
+  Barcode
 } from 'lucide-react';
 
 interface ProductDetailsModalProps {
@@ -399,6 +400,13 @@ export const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
                   <span className="text-emerald-400 font-semibold flex items-center gap-1">
                     <CheckCircle2 className="w-3.5 h-3.5" />
                     <span>متوفر في المستودع</span>
+                  </span>
+
+                  <span className="text-neutral-600">•</span>
+
+                  <span className="inline-flex items-center gap-1 text-[11px] font-mono font-bold text-amber-300 bg-neutral-800/80 px-2 py-0.5 rounded border border-neutral-700/60 shadow-sm" title="رمز المخزون التعريفي">
+                    <Barcode className="w-3.5 h-3.5 text-amber-400" />
+                    <span>SKU: {product.sku || `DJH-${(product.category || 'GEN').slice(0, 3).toUpperCase()}-${product.id.replace(/^prod-/, '').toUpperCase()}`}</span>
                   </span>
                 </button>
 

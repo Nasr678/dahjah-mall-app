@@ -222,56 +222,110 @@ export function sanitizeForFirestore<T>(data: T): T {
  * Translates Firebase Auth error codes to clear Arabic messages
  */
 export function translateAuthError(error: any): string {
-  const code = error?.code || '';
-  const message = error?.message || '';
+  if (!error) return 'حدث خطأ غير متوقع أثناء عملية المصادقة. يرجى المحاولة مرة أخرى.';
 
-  if (code === 'auth/user-not-found') {
-    return 'الحساب غير مسجل في ضَجّة مول. يرجى التأكد من البريد الإلكتروني أو إنشاء حساب جديد.';
+  const code = (error?.code || '').toLowerCase();
+  const rawMsg = error instanceof Error ? error.message : String(error?.message || error || '');
+  const msg = rawMsg.toLowerCase();
+
+  // Invalid Credentials / Password / User not found
+  if (
+    code === 'auth/user-not-found' || 
+    code === 'auth/wrong-password' || 
+    code === 'auth/invalid-credential' || 
+    code === 'auth/invalid-login-credentials' ||
+    msg.includes('invalid-credential') ||
+    msg.includes('invalid-login-credentials') ||
+    msg.includes('wrong-password') ||
+    msg.includes('user-not-found')
+  ) {
+    return 'بيانات الدخول غير صحيحة. يرجى التأكد من البريد الإلكتروني وكلمة المرور أو إنشاء حساب جديد.';
   }
-  if (code === 'auth/wrong-password') {
-    return 'كلمة المرور غير صحيحة. يرجى إعادة المحاولة أو النقر على "نسيت كلمة المرور".';
+
+  // Email already in use
+  if (code === 'auth/email-already-in-use' || msg.includes('email-already-in-use')) {
+    return 'هذا البريد الإلكتروني مسجل بالفعل. يرجى تسجيل الدخول أو النقر على "نسيت كلمة المرور".';
   }
-  if (code === 'auth/invalid-credential') {
-    return 'بيانات الدخول غير صحيحة. يرجى التحقق من صحة البريد الإلكتروني وكلمة المرور.';
+
+  // Weak password
+  if (code === 'auth/weak-password' || msg.includes('weak-password')) {
+    return 'كلمة المرور ضعيفة. يجب أن تتكون من 6 خانات أو أكثر لحماية حسابك.';
   }
-  if (code === 'auth/email-already-in-use') {
-    return 'هذا البريد الإلكتروني مسجل بالفعل. يرجى تسجيل الدخول أو استخدام بريد آخر.';
-  }
-  if (code === 'auth/weak-password') {
-    return 'كلمة المرور ضعيفة. يجب أن تتكون من 6 أحرف أو أرقام على الأقل.';
-  }
-  if (code === 'auth/invalid-email') {
+
+  // Invalid email format
+  if (code === 'auth/invalid-email' || msg.includes('invalid-email')) {
     return 'صيغة البريد الإلكتروني غير صحيحة. يرجى كتابة بريد صالح مثل example@gmail.com.';
   }
-  if (code === 'auth/popup-closed-by-user') {
+
+  // Missing email or password
+  if (code === 'auth/missing-email' || msg.includes('missing-email')) {
+    return 'يرجى إدخال البريد الإلكتروني للمتابعة.';
+  }
+  if (code === 'auth/missing-password' || msg.includes('missing-password')) {
+    return 'يرجى إدخال كلمة المرور.';
+  }
+
+  // Popup closed or cancelled
+  if (
+    code === 'auth/popup-closed-by-user' || 
+    code === 'auth/cancelled-popup-request' ||
+    msg.includes('popup-closed-by-user') ||
+    msg.includes('cancelled-popup-request')
+  ) {
     return 'تم إغلاق نافذة تسجيل الدخول قبل إكمال العملية.';
   }
-  if (code === 'auth/popup-blocked') {
-    return 'تم حظر النافذة المنبثقة من قبل المتصفح أو WebView. يمكنك تسجيل الدخول مباشرة بالبريد الإلكتروني وكلمة المرور.';
+
+  // Popup blocked
+  if (code === 'auth/popup-blocked' || msg.includes('popup-blocked')) {
+    return 'تم حظر النافذة المنبثقة من قبل المتصفح أو WebView. يرجى السماح بالنوافذ أو تسجيل الدخول بالبريد الإلكتروني مباشرة.';
   }
-  if (code === 'auth/account-exists-with-different-credential') {
-    return 'يوجد حساب مسجل بالفعل بنفس البريد عبر مزود خدمة آخر. يرجى الدخول بالبريد وكلمة المرور.';
+
+  // Disallowed User Agent (Android WebView Google OAuth restriction)
+  if (code === 'auth/disallowed-useragent' || msg.includes('disallowed_useragent') || msg.includes('disallowed-useragent')) {
+    return 'تسجيل الدخول عبر Google غير مدعوم في متصفح WebView الداخلي. يرجى تسجيل الدخول بالبريد الإلكتروني وكلمة المرور فوراً.';
   }
-  if (code === 'auth/network-request-failed') {
+
+  // Account exists with different credential
+  if (code === 'auth/account-exists-with-different-credential' || msg.includes('account-exists-with-different-credential')) {
+    return 'يوجد حساب مسجل بالفعل بهذا البريد عبر مزود خدمة آخر. يرجى تسجيل الدخول بالبريد وكلمة المرور.';
+  }
+
+  // Network error
+  if (code === 'auth/network-request-failed' || msg.includes('network-request-failed') || msg.includes('failed to fetch')) {
     return 'تعذر الاتصال بالخادم. يرجى التحقق من اتصال الإنترنت ثم إعادة المحاولة.';
   }
-  if (code === 'auth/too-many-requests') {
+
+  // Too many attempts / Rate limiting
+  if (code === 'auth/too-many-requests' || msg.includes('too-many-requests')) {
     return 'تم حظر المحاولات مؤقتاً بسبب كثرة المحاولات. يرجى الانتظار دقيقة واحدة ثم المحاولة مجدداً.';
   }
-  if (code === 'auth/user-disabled') {
+
+  // User disabled
+  if (code === 'auth/user-disabled' || msg.includes('user-disabled')) {
     return 'تم تعطيل هذا الحساب. يرجى التواصل مع خدمة عملاء ضَجّة مول.';
   }
-  if (code === 'auth/cancelled-popup-request') {
-    return 'تم إلغاء عملية تسجيل الدخول السابقة.';
+
+  // Operation not allowed
+  if (code === 'auth/operation-not-allowed' || msg.includes('operation-not-allowed')) {
+    return 'طريقة تسجيل الدخول هذه غير مفعلة حالياً في خادم Firebase. يمكنك المتابعة بحساب Google أو البريد الإلكتروني فوراً.';
   }
-  if (code === 'auth/operation-not-allowed') {
-    return 'طريقة تسجيل الدخول هذه غير مفعلة حالياً في خادم Firebase. يمكنك تسجيل الدخول بحساب Google أو البريد الإلكتروني فوراً.';
-  }
-  if (code === 'auth/timeout' || message.includes('مهلة')) {
+
+  // Timeout
+  if (code === 'auth/timeout' || msg.includes('timeout') || msg.includes('مهلة')) {
     return 'استغرقت عملية تسجيل الدخول وقتاً أطول من المتوقع. يرجى التأكد من اتصال الإنترنت ثم المحاولة مجدداً.';
   }
 
-  return message || 'حدث خطأ أثناء عملية المصادقة. يرجى التأكد من البيانات والمحاولة مرة أخرى.';
+  // Unauthorized domain
+  if (code === 'auth/unauthorized-domain' || msg.includes('unauthorized-domain')) {
+    return 'نطاق التطبيق الحالي غير مضاف في قائمة النطاقات المصرح بها في إعدادات Firebase Auth.';
+  }
+
+  // Mask cryptic English Firebase SDK strings
+  if (rawMsg.startsWith('Firebase:') || rawMsg.includes('auth/')) {
+    return 'حدث خطأ أثناء عملية المصادقة. يرجى التحقق من صحة البيانات والمحاولة مرة أخرى.';
+  }
+
+  return rawMsg || 'حدث خطأ أثناء عملية المصادقة. يرجى التأكد من البيانات والمحاولة مرة أخرى.';
 }
 
 /**
@@ -302,7 +356,7 @@ export const firebaseAuthService = {
       preferredCurrency: region === 'south' ? 'YER_SOUTH' : 'YER_NORTH',
       walletBalanceYER: 10000,
       points: 200,
-      memberTier: 'عضو فضي',
+      memberTier: isEmailAdmin ? 'مالك التطبيق — Admin' : 'عضو فضي',
       role: isEmailAdmin ? 'admin' : 'customer',
       savedAddresses: [
         {
@@ -322,8 +376,14 @@ export const firebaseAuthService = {
       createdAt: new Date().toISOString(),
     };
 
-    // Save to Firestore
-    await setDoc(doc(db, 'users', firebaseUser.uid), sanitizeForFirestore(userProfile));
+    // Save to Firestore with timeout protection
+    try {
+      await withFirestoreTimeout(
+        setDoc(doc(db, 'users', firebaseUser.uid), sanitizeForFirestore(userProfile)),
+        3000,
+        null
+      );
+    } catch {}
 
     return userProfile;
   },
@@ -335,16 +395,32 @@ export const firebaseAuthService = {
 
     // Fetch or create user profile in Firestore
     const userDocRef = doc(db, 'users', firebaseUser.uid);
-    const snap = await getDoc(userDocRef);
+    let snap: any = null;
+    try {
+      snap = await withFirestoreTimeout(getDoc(userDocRef), 3000, null);
+    } catch {}
 
-    if (snap.exists()) {
-      return snap.data() as UserProfile;
+    const isEmailAdmin = (firebaseUser.email?.toLowerCase().trim() === 'nsralnaty93@gmail.com');
+
+    if (snap && snap.exists()) {
+      const data = snap.data() as UserProfile;
+      if (isEmailAdmin && data.role !== 'admin') {
+        data.role = 'admin';
+        data.memberTier = 'مالك التطبيق — Admin';
+        try {
+          await withFirestoreTimeout(
+            updateDoc(userDocRef, { role: 'admin', memberTier: 'مالك التطبيق — Admin' }),
+            2000,
+            null
+          );
+        } catch {}
+      }
+      return data;
     } else {
       const region = getRegionFromCity('صنعاء');
-      const isEmailAdmin = (firebaseUser.email?.toLowerCase().trim() === 'nsralnaty93@gmail.com');
       const newProfile: UserProfile = {
         id: firebaseUser.uid,
-        name: firebaseUser.displayName || 'مستخدم ضَجّة مول',
+        name: firebaseUser.displayName || (isEmailAdmin ? 'ناصر العناتي (المالك)' : 'مستخدم ضَجّة مول'),
         phone: firebaseUser.phoneNumber || '',
         email: firebaseUser.email || email,
         city: 'صنعاء',
@@ -352,13 +428,19 @@ export const firebaseAuthService = {
         preferredCurrency: 'YER_NORTH',
         walletBalanceYER: 10000,
         points: 200,
-        memberTier: 'عضو فضي',
+        memberTier: isEmailAdmin ? 'مالك التطبيق — Admin' : 'عضو فضي',
         role: isEmailAdmin ? 'admin' : 'customer',
         savedAddresses: [],
         favoriteProductIds: [],
         createdAt: new Date().toISOString(),
       };
-      await setDoc(userDocRef, sanitizeForFirestore(newProfile));
+      try {
+        await withFirestoreTimeout(
+          setDoc(userDocRef, sanitizeForFirestore(newProfile)),
+          3000,
+          null
+        );
+      } catch {}
       return newProfile;
     }
   },
@@ -368,7 +450,7 @@ export const firebaseAuthService = {
     const provider = new GoogleAuthProvider();
     provider.setCustomParameters({ prompt: 'select_account' });
 
-    // Race against 25s timeout to prevent infinite hanging in Android WebView
+    // Race against 25s timeout to prevent infinite hanging in Android WebView or slow popups
     let result: any;
     try {
       const popupPromise = signInWithPopup(auth, provider);
@@ -381,31 +463,43 @@ export const firebaseAuthService = {
       });
       result = await Promise.race([popupPromise, timeoutPromise]);
     } catch (popupError: any) {
-      if (popupError?.code === 'auth/popup-blocked') {
-        popupError.message = 'تم حظر النافذة المنبثقة في WebView. يرجى المتابعة عبر تسجيل الدخول بالبريد الإلكتروني.';
+      const code = popupError?.code || '';
+      if (code === 'auth/popup-blocked') {
+        popupError.message = 'تم حظر النافذة المنبثقة من قبل المتصفح أو WebView. يرجى تسجيل الدخول بالبريد الإلكتروني وكلمة المرور مباشرة.';
+      } else if (code === 'auth/disallowed-useragent') {
+        popupError.message = 'بيئة WebView الحالية تمنع نافذة Google المنبثقة. يرجى تسجيل الدخول بالبريد الإلكتروني وكلمة المرور.';
       }
       throw popupError;
     }
 
     const fbUser = result.user;
     const userDocRef = doc(db, 'users', fbUser.uid);
-    const snap = await getDoc(userDocRef);
+    let snap: any = null;
+    try {
+      snap = await withFirestoreTimeout(getDoc(userDocRef), 3000, null);
+    } catch {}
 
-    if (snap.exists()) {
+    const isEmailAdmin = (fbUser.email?.toLowerCase().trim() === 'nsralnaty93@gmail.com');
+
+    if (snap && snap.exists()) {
       const existingData = snap.data() as UserProfile;
       // Update avatar or email if changed
       const updated: Partial<UserProfile> = {
         avatarUrl: fbUser.photoURL || existingData.avatarUrl,
         email: fbUser.email || existingData.email,
+        name: fbUser.displayName || existingData.name,
+        role: isEmailAdmin ? 'admin' : existingData.role,
+        memberTier: isEmailAdmin ? 'مالك التطبيق — Admin' : existingData.memberTier,
       };
-      await updateDoc(userDocRef, sanitizeForFirestore(updated));
+      try {
+        await withFirestoreTimeout(updateDoc(userDocRef, sanitizeForFirestore(updated)), 2000, null);
+      } catch {}
       return { ...existingData, ...updated };
     } else {
       const region = getRegionFromCity('صنعاء');
-      const isEmailAdmin = (fbUser.email?.toLowerCase().trim() === 'nsralnaty93@gmail.com');
       const newProfile: UserProfile = {
         id: fbUser.uid,
-        name: fbUser.displayName || 'مستخدم Google',
+        name: fbUser.displayName || (isEmailAdmin ? 'ناصر العناتي (المالك)' : 'مستخدم Google'),
         phone: fbUser.phoneNumber || '',
         email: fbUser.email || '',
         avatarUrl: fbUser.photoURL || undefined,
@@ -414,13 +508,15 @@ export const firebaseAuthService = {
         preferredCurrency: 'YER_NORTH',
         walletBalanceYER: 10000,
         points: 200,
-        memberTier: 'عضو فضي',
+        memberTier: isEmailAdmin ? 'مالك التطبيق — Admin' : 'عضو فضي',
         role: isEmailAdmin ? 'admin' : 'customer',
         savedAddresses: [],
         favoriteProductIds: [],
         createdAt: new Date().toISOString(),
       };
-      await setDoc(userDocRef, sanitizeForFirestore(newProfile));
+      try {
+        await withFirestoreTimeout(setDoc(userDocRef, sanitizeForFirestore(newProfile)), 3000, null);
+      } catch {}
       return newProfile;
     }
   },

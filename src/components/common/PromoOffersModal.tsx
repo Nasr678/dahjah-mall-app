@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion } from 'motion/react';
 import { X, Sparkles, Tag, Gift, ArrowLeft, Check, Copy } from 'lucide-react';
 import { PopupOffer } from '../../types';
 import { DEFAULT_POPUP_OFFER } from '../../data/mockData';
@@ -74,11 +74,10 @@ export const PromoOffersModal: React.FC<PromoOffersModalProps> = ({
   };
 
   return (
-    <AnimatePresence>
-      <div 
-        id="promo-popup-backdrop"
-        className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md"
-      >
+    <div 
+      id="promo-popup-backdrop"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md"
+    >
         <motion.div
           initial={{ opacity: 0, scale: 0.85, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -181,6 +180,5 @@ export const PromoOffersModal: React.FC<PromoOffersModalProps> = ({
           </div>
         </motion.div>
       </div>
-    </AnimatePresence>
   );
 };

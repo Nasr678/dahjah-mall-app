@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion } from 'motion/react';
 import { Product, CurrencyCode } from '../../types';
 import { PRODUCTS } from '../../data/mockData';
 import { useMarketplace } from '../../context/MarketplaceContext';

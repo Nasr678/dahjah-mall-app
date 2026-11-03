@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion } from 'motion/react';
 import confetti from 'canvas-confetti';
 import { CartItem, CurrencyCode, PaymentMethodType, Order, Address } from '../../types';
 import { PAYMENT_METHODS } from '../../data/mockData';

@@ -114,7 +114,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                       {currentUser ? currentUser.name : 'تسجيل الدخول والحساب'}
                     </div>
                     <div className="text-[10px] text-neutral-400">
-                      {currentUser ? currentUser.email : 'تسجيل الدخول عبر Google أو Facebook أو البريد'}
+                      {currentUser ? currentUser.email : 'تسجيل الدخول السريع بحساب Google أو البريد'}
                     </div>
                   </div>
                 </div>
