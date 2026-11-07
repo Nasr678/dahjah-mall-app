@@ -3,14 +3,14 @@ import { Product, CurrencyCode } from '../../types';
 import { ProductCard } from '../products/ProductCard';
 import { 
   Flame, 
-  Sparkles, 
   Search, 
-  Heart, 
   ArrowRight, 
   Bot,
   ChevronLeft,
   Crown
 } from 'lucide-react';
+import { CachedImage } from '../common/CachedImage';
+import { ProductGridSkeleton } from '../common/ProductSkeleton';
 
 interface TrendsScreenProps {
   products: Product[];
@@ -170,9 +170,12 @@ export const TrendsScreen: React.FC<TrendsScreenProps> = ({
       <div className="relative w-full overflow-hidden">
         {/* Background Image with Blur */}
         <div className="relative h-64 sm:h-72 w-full">
-          <img
+          <CachedImage
             src={currentLookbook.bgImage}
             alt={currentLookbook.tag}
+            preset="banner"
+            priority={true}
+            containerClassName="w-full h-full"
             className="w-full h-full object-cover brightness-60"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/40 to-transparent" />
@@ -209,11 +212,12 @@ export const TrendsScreen: React.FC<TrendsScreenProps> = ({
                   className="group relative rounded-xl overflow-hidden bg-white/95 p-1 border border-white/80 shadow-md text-center flex flex-col items-center"
                 >
                   <div className="w-full aspect-[4/5] rounded-lg overflow-hidden bg-neutral-100">
-                    <img
+                    <CachedImage
                       src={item.image}
                       alt={item.brand}
+                      preset="thumb"
+                      containerClassName="w-full h-full"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                      referrerPolicy="no-referrer"
                     />
                   </div>
                   <div className="mt-1 flex items-center justify-between w-full px-1">
@@ -293,19 +297,23 @@ export const TrendsScreen: React.FC<TrendsScreenProps> = ({
 
       {/* 5. 2-Column Product Grid matching SHEIN */}
       <div className="px-3 sm:px-4 pt-2">
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5 sm:gap-3.5">
-          {displayedProducts.map((product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              currency={currency}
-              isFavorite={wishlist.includes(product.id)}
-              onToggleFavorite={onToggleFavorite}
-              onAddToCart={onAddToCart}
-              onSelectProduct={onSelectProduct}
-            />
-          ))}
-        </div>
+        {products.length === 0 ? (
+          <ProductGridSkeleton count={6} className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5 sm:gap-3.5" />
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5 sm:gap-3.5">
+            {displayedProducts.map((product) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                currency={currency}
+                isFavorite={wishlist.includes(product.id)}
+                onToggleFavorite={onToggleFavorite}
+                onAddToCart={onAddToCart}
+                onSelectProduct={onSelectProduct}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Product, Category, Order, OrderStatus, Brand } from '../../types';
 import { useMarketplace } from '../../context/MarketplaceContext';
-import { uploadProductImage, uploadBrandImage, compressImage } from '../../services/firebase';
+import { uploadProductImage, uploadBrandImage } from '../../services/firebase';
 import { AdminBannersManager } from './AdminBannersManager';
 import { AdminPopupManager } from './AdminPopupManager';
 import { AdminPoliciesManager } from './AdminPoliciesManager';
@@ -9,7 +9,6 @@ import { AdminSocialMediaManager } from './AdminSocialMediaManager';
 import { AdminAIKnowledgeManager } from './AdminAIKnowledgeManager';
 import { AdminPaymentMethodsManager } from './AdminPaymentMethodsManager';
 import { AdminShippingManager } from './AdminShippingManager';
-import { AdminCategoriesManager } from './AdminCategoriesManager';
 import { AdminAbandonedCartManager } from './AdminAbandonedCartManager';
 import { AdminVolumeDiscountsManager } from './AdminVolumeDiscountsManager';
 import { AdminFlashSalesManager } from './AdminFlashSalesManager';
@@ -28,7 +27,6 @@ import {
   CheckCircle2, 
   AlertCircle, 
   Search, 
-  Filter, 
   Layers, 
   Sparkles, 
   Flame, 
@@ -36,17 +34,12 @@ import {
   Package, 
   ChevronRight, 
   FolderPlus, 
-  Check, 
-  DollarSign, 
   ShieldCheck, 
   Lock, 
   Eye, 
-  ArrowRight,
   TrendingUp,
   RefreshCw,
   Sliders,
-  Palette,
-  Ruler,
   ShoppingBag,
   Users as UsersIcon,
   Settings,
@@ -55,19 +48,14 @@ import {
   Send,
   CheckCircle,
   Clock,
-  XCircle,
   Phone,
   PhoneCall,
   Mail,
   MapPin,
-  FileText,
   Percent,
   BookOpen,
   Coins,
   Calculator,
-  HelpCircle,
-  Info,
-  ExternalLink,
   Gift,
   Share2,
   Bot,
@@ -194,7 +182,7 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
   const [newCouponDesc, setNewCouponDesc] = useState('');
 
   // Exchange Rates State
-  const [northRate, setNorthRate] = useState<number>(currencyRates?.YER_NORTH || 1.0);
+  const northRate = currencyRates?.YER_NORTH || 1.0;
   const [southRate, setSouthRate] = useState<number>(currencyRates?.YER_SOUTH || 3.0);
   const [usdRate, setUsdRate] = useState<number>(currencyRates?.USD || 0.0018868);
   const [sarRate, setSarRate] = useState<number>(currencyRates?.SAR || 0.0071428);
@@ -296,8 +284,6 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
     { name: 'أسود ملكي', hex: '#000000', inStock: true },
     { name: 'بيج رملي', hex: '#D4B996', inStock: true },
   ]);
-  const [customColorName, setCustomColorName] = useState('');
-  const [customColorHex, setCustomColorHex] = useState('#1E293B');
   const [productBrandId, setProductBrandId] = useState<string>('');
 
   // Feature Flags
@@ -391,19 +377,17 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
     setIsFormModalOpen(true);
   };
 
-  // Handle Image Upload from device
+  // Handle Image Upload from device with parallel processing
   const handleImageFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
 
     setIsUploadingImage(true);
     try {
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        const uploadedUrl = await uploadProductImage(file);
-        setImages((prev) => [...prev, uploadedUrl]);
-      }
-      setStatusMessage({ type: 'success', text: 'تم رفع وتحسين الصورة بنجاح!' });
+      const uploadPromises = Array.from(files).map((file) => uploadProductImage(file));
+      const uploadedUrls = await Promise.all(uploadPromises);
+      setImages((prev) => [...prev, ...uploadedUrls]);
+      setStatusMessage({ type: 'success', text: 'تم ضغط ورفع الصور بنجاح في ثوانٍ معدودة!' });
     } catch (err) {
       console.error('Image upload failed:', err);
       setStatusMessage({ type: 'error', text: 'حدث خطأ أثناء رفع الصورة.' });
@@ -448,16 +432,6 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
     if (!selectedColors.some((c) => c.name === color.name)) {
       setSelectedColors((prev) => [...prev, { ...color, inStock: true }]);
     }
-  };
-
-  // Add Custom Color
-  const handleAddCustomColor = () => {
-    if (!customColorName.trim()) return;
-    setSelectedColors((prev) => [
-      ...prev,
-      { name: customColorName.trim(), hex: customColorHex, inStock: true },
-    ]);
-    setCustomColorName('');
   };
 
   // Remove Color

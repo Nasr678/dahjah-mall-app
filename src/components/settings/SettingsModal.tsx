@@ -10,13 +10,10 @@ import {
   Coins, 
   Globe, 
   Eye, 
-  Bell, 
   Headphones, 
   MessageCircle, 
   Mail, 
-  HelpCircle, 
   Info, 
-  FileText, 
   RotateCcw, 
   Truck, 
   Trash2, 
@@ -48,7 +45,6 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
     logout,
   } = useMarketplace();
 
-  const [activeSubModal, setActiveSubModal] = useState<string | null>(null);
   const [cacheCleared, setCacheCleared] = useState(false);
   const [isCheckingUpdate, setIsCheckingUpdate] = useState(false);
   const [updateMessage, setUpdateMessage] = useState<string | null>(null);
@@ -225,7 +221,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               <a
                 href="https://wa.me/967770000000"
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 className="w-full flex items-center justify-between p-3 hover:bg-neutral-850 transition-colors"
               >
                 <div className="flex items-center gap-2.5">

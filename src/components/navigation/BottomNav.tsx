@@ -4,8 +4,7 @@ import {
   LayoutGrid, 
   Bot,
   ShoppingBag, 
-  User,
-  Sparkles 
+  User 
 } from 'lucide-react';
 
 export type NavTab = 'home' | 'categories' | 'trends' | 'cart' | 'profile' | 'offers' | 'ai' | 'wishlist' | 'brands';

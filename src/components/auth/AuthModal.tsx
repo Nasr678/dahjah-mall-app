@@ -15,7 +15,6 @@ import {
   EyeOff, 
   CheckCircle2, 
   ArrowRight, 
-  Sparkles,
   Shield
 } from 'lucide-react';
 
@@ -115,6 +114,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   };
 
   const handleGoogleSignIn = async () => {
+    if (isGoogleLoading) return;
     setError('');
     setIsGoogleLoading(true);
     try {
@@ -128,7 +128,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       }
       onClose();
     } catch (err: any) {
-      if (err?.code === 'auth/popup-closed-by-user' || err?.code === 'auth/cancelled-popup-request') {
+      if (
+        err?.code === 'auth/popup-closed-by-user' ||
+        err?.code === 'auth/cancelled-popup-request' ||
+        err?.message?.includes('تم إغلاق نافذة تسجيل الدخول')
+      ) {
         setError('تم إغلاق نافذة تسجيل الدخول.');
         return;
       }

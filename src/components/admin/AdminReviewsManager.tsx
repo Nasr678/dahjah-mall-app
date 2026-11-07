@@ -5,12 +5,7 @@ import {
   Eye, 
   EyeOff, 
   Check, 
-  X, 
-  MessageSquare, 
-  ShieldCheck, 
-  User, 
-  Filter,
-  AlertCircle
+  ShieldCheck
 } from 'lucide-react';
 import { ReviewItem } from '../../types';
 import { useMarketplace } from '../../context/MarketplaceContext';

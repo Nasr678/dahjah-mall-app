@@ -7,7 +7,7 @@ import {
   DAJJAH_BRANCHES, 
   createCustomMarkerIcon 
 } from '../../services/leafletMapService';
-import { Truck, MapPin, Store, Navigation, Clock } from 'lucide-react';
+import { Truck, Clock } from 'lucide-react';
 
 interface LeafletOrderTrackerProps {
   order: Order;

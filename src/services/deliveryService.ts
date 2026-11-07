@@ -1,4 +1,4 @@
-import { DeliveryZone, RegionType, Address } from '../types';
+import { DeliveryZone, Address } from '../types';
 
 export const YEMENI_DELIVERY_ZONES: Record<string, DeliveryZone> = {
   'صنعاء': {

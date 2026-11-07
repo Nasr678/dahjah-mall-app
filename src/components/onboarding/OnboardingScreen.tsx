@@ -6,9 +6,7 @@ import {
   ArrowRight, 
   Sparkles, 
   Truck, 
-  CreditCard, 
   Bot, 
-  ShieldCheck, 
   Flame 
 } from 'lucide-react';
 

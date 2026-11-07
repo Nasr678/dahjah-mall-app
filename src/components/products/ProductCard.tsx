@@ -7,7 +7,8 @@ import {
   Flame,
   Check 
 } from 'lucide-react';
-import { getOptimizedImageUrl, getOptimizedImageSrcSet } from '../../utils/imageOptimizer';
+import { CachedImage } from '../common/CachedImage';
+import { triggerFlyToCart } from '../cart/FlyToCartOverlay';
 
 interface ProductCardProps {
   product: Product;
@@ -30,7 +31,6 @@ export const ProductCard: React.FC<ProductCardProps> = memo(({
   onSelect,
   onQuickBuy,
 }) => {
-  const [imageLoaded, setImageLoaded] = useState(false);
   const [justAdded, setJustAdded] = useState(false);
 
   const handleSelect = useCallback(() => {
@@ -48,6 +48,7 @@ export const ProductCard: React.FC<ProductCardProps> = memo(({
     if (onQuickBuy) {
       onQuickBuy(product);
     } else {
+      triggerFlyToCart(product.images?.[0] || '', e.currentTarget as HTMLElement);
       onAddToCart(product);
     }
     setJustAdded(true);
@@ -60,9 +61,6 @@ export const ProductCard: React.FC<ProductCardProps> = memo(({
     return `${priceYER.toLocaleString('ar-YE')} ر.ي`;
   };
 
-  const optimizedSrc = getOptimizedImageUrl(product.images?.[0], 'card');
-  const optimizedSrcSet = getOptimizedImageSrcSet(product.images?.[0], 'card');
-
   return (
     <div 
       onClick={handleSelect}
@@ -70,23 +68,13 @@ export const ProductCard: React.FC<ProductCardProps> = memo(({
     >
       {/* Top Image & Floating Badges */}
       <div className="relative aspect-[3/4] sm:aspect-[4/5] w-full rounded-2xl overflow-hidden bg-neutral-950 mb-2.5 sm:mb-3">
-        {/* Placeholder skeleton while image loads */}
-        {!imageLoaded && (
-          <div className="absolute inset-0 bg-neutral-900 animate-pulse" />
-        )}
-
-        <img
-          src={optimizedSrc}
-          srcSet={optimizedSrcSet || undefined}
-          sizes="(max-width: 640px) 48vw, (max-width: 1024px) 30vw, 240px"
+        <CachedImage
+          src={product.images?.[0]}
           alt={product.name}
-          loading="lazy"
-          decoding="async"
-          onLoad={() => setImageLoaded(true)}
-          className={`w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300 ${
-            imageLoaded ? 'opacity-100' : 'opacity-0'
-          }`}
-          referrerPolicy="no-referrer"
+          preset="card"
+          fallbackText={product.name}
+          containerClassName="w-full h-full"
+          className="group-hover:scale-105 transition-transform duration-300"
         />
 
         {/* Gradient Overlay for Top Contrast */}

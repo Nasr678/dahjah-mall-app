@@ -7,14 +7,7 @@ import {
   Check, 
   X, 
   Upload, 
-  Image as ImageIcon, 
-  FolderTree, 
-  Eye, 
-  EyeOff, 
-  ArrowUp, 
-  ArrowDown, 
-  Sparkles,
-  AlertCircle
+  FolderTree
 } from 'lucide-react';
 import { Category, SubcategoryDetail } from '../../types';
 import { useMarketplace } from '../../context/MarketplaceContext';

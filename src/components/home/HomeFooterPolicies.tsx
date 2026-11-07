@@ -1,8 +1,5 @@
 import React, { useMemo } from 'react';
 import { 
-  ShieldCheck, 
-  RotateCcw, 
-  Truck, 
   Phone, 
   MessageCircle, 
   FileText, 
@@ -132,7 +129,7 @@ export const HomeFooterPolicies: React.FC<HomeFooterPoliciesProps> = React.memo(
                 <a
                   href={createWhatsAppLink(appSettings?.contactWhatsapp, 'السلام عليكم، أريد الاستفسار والطلب من متجر ضَجّة مول')}
                   target="_blank"
-                  rel="noreferrer"
+                  rel="noopener noreferrer"
                   className="px-3 py-1.5 rounded-xl bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-600/30 text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
                 >
                   <MessageCircle className="w-3.5 h-3.5" />
@@ -191,7 +188,7 @@ export const HomeFooterPolicies: React.FC<HomeFooterPoliciesProps> = React.memo(
                       key={item.id}
                       href={item.url.startsWith('http') || item.url.startsWith('https') || item.url.startsWith('mailto:') || item.url.startsWith('tel:') ? item.url : `https://${item.url}`}
                       target="_blank"
-                      rel="noreferrer"
+                      rel="noopener noreferrer"
                       title={item.name}
                       className="flex flex-col items-center justify-center p-2 rounded-2xl bg-neutral-900/80 border border-neutral-800/90 hover:border-amber-400/50 hover:bg-neutral-850 text-neutral-300 hover:text-white transition-all group cursor-pointer shadow-sm hover:scale-105 active:scale-95"
                     >

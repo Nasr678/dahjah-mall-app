@@ -205,9 +205,6 @@ export const AdminSocialMediaManager: React.FC = () => {
       {/* Items List */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {items.map((item, index) => {
-          const IconComponent = getSocialIconComponent(item.icon);
-          const brand = getSocialBrandColor(item.icon);
-
           return (
             <div
               key={item.id}
@@ -229,7 +226,7 @@ export const AdminSocialMediaManager: React.FC = () => {
                   <a
                     href={item.url}
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                     className="text-[11px] text-neutral-400 hover:text-amber-400 truncate flex items-center gap-1 mt-0.5"
                   >
                     <span className="truncate">{item.url}</span>

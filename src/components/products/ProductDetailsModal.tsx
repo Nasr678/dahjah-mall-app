@@ -3,7 +3,6 @@ import { motion } from 'motion/react';
 import { Product, CurrencyCode, Review } from '../../types';
 import { useMarketplace } from '../../context/MarketplaceContext';
 import { ProductCard } from './ProductCard';
-import { getOptimizedImageUrl } from '../../utils/imageOptimizer';
 import { triggerFlyToCart } from '../cart/FlyToCartOverlay';
 import { createWhatsAppLink, createProductInquiryWhatsAppMessage } from '../../utils/whatsappHelper';
 import { 
@@ -23,17 +22,15 @@ import {
   MessageSquare, 
   MessageCircle, 
   ThumbsUp, 
-  MapPin, 
   Lock, 
   LogIn, 
   CheckCircle2, 
-  Filter, 
-  UserCheck, 
   Send, 
   Loader2, 
   AlertCircle,
   Barcode
 } from 'lucide-react';
+import { CachedImage } from '../common/CachedImage';
 
 interface ProductDetailsModalProps {
   product: Product | null;
@@ -296,11 +293,13 @@ export const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
             {/* Image Gallery */}
             <div className="space-y-3">
               <div className="relative aspect-square w-full rounded-2xl sm:rounded-3xl overflow-hidden bg-neutral-950 border border-neutral-800 shadow-inner group">
-                <img
-                  src={getOptimizedImageUrl(product.images[activeImageIndex] || product.images[0], 'card')}
+                <CachedImage
+                  src={product.images[activeImageIndex] || product.images[0]}
                   alt={product.name}
-                  loading="lazy"
-                  decoding="async"
+                  preset="card"
+                  priority
+                  fallbackText={product.name}
+                  containerClassName="w-full h-full"
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
 
@@ -350,11 +349,11 @@ export const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
                           : 'border-neutral-800 opacity-60 hover:opacity-100'
                       }`}
                     >
-                      <img 
-                        src={getOptimizedImageUrl(img, 'thumb')} 
-                        alt="" 
-                        loading="lazy"
-                        decoding="async"
+                      <CachedImage 
+                        src={img} 
+                        alt={`${product.name} - صورة ${i + 1}`} 
+                        preset="thumb"
+                        containerClassName="w-full h-full"
                         className="w-full h-full object-cover" 
                       />
                     </button>
@@ -540,7 +539,7 @@ export const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
                     createProductInquiryWhatsAppMessage(product.name, formatPrice(product.priceYER), product.id)
                   )}
                   target="_blank"
-                  rel="noreferrer"
+                  rel="noopener noreferrer"
                   className="w-full mt-3 py-2.5 px-3 rounded-2xl bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/40 text-emerald-300 hover:text-white font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-sm active:scale-98"
                 >
                   <MessageCircle className="w-4 h-4 text-emerald-400" />
@@ -999,7 +998,7 @@ export const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
                               {rev.userAvatar ? (
                                 <img
                                   src={rev.userAvatar}
-                                  alt=""
+                                  alt={rev.userName || 'صورة العميل'}
                                   className="w-7 h-7 rounded-full object-cover border border-amber-500/40"
                                 />
                               ) : (

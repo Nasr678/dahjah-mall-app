@@ -1,17 +1,12 @@
 import React, { useState, useRef } from 'react';
 import { 
-  Sparkles, 
   Save, 
   Upload, 
   RefreshCw, 
   Gift, 
-  Tag, 
-  Eye, 
   EyeOff, 
   CheckCircle2, 
-  AlertCircle,
-  Copy,
-  Clock
+  AlertCircle
 } from 'lucide-react';
 import { PopupOffer } from '../../types';
 import { useMarketplace } from '../../context/MarketplaceContext';

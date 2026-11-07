@@ -1,13 +1,11 @@
-import React, { useState, useEffect, useCallback, useMemo, useRef, Suspense, lazy } from 'react';
-import { motion } from 'motion/react';
-import { Product, CurrencyCode, Category, Order } from './types';
-import { PRODUCTS, CATEGORIES, STORES } from './data/mockData';
+import { useState, useEffect, useCallback, useMemo, Suspense, lazy } from 'react';
+import { Product } from './types';
+import { CATEGORIES } from './data/mockData';
 import { MarketplaceProvider, useMarketplace } from './context/MarketplaceContext';
 
 // Core Navigation & Static Components
 import { Header } from './components/navigation/Header';
 import { BottomNav, NavTab } from './components/navigation/BottomNav';
-import { DajjahLogo } from './components/common/DajjahLogo';
 import { SplashScreen } from './components/splash/SplashScreen';
 
 // Home Sections (Strictly ordered to user specification)
@@ -27,6 +25,7 @@ import { HomeFooterPolicies } from './components/home/HomeFooterPolicies';
 import { AppFooterBottomBar } from './components/layout/AppFooterBottomBar';
 import { ProductCard } from './components/products/ProductCard';
 import { FlyToCartOverlay } from './components/cart/FlyToCartOverlay';
+import { ProductGridSkeleton, ProfileSkeleton } from './components/common/ProductSkeleton';
 
 // Views & Screens
 import { MainCategoriesScreen } from './components/categories/MainCategoriesScreen';
@@ -57,18 +56,7 @@ import { LeafletStoreLocatorModal } from './components/maps/LeafletStoreLocatorM
 const AdminProductDashboard = lazy(() => import('./components/admin/AdminProductDashboard'));
 
 // Icons
-import { 
-  Sparkles, 
-  Flame, 
-  ShieldCheck, 
-  Truck, 
-  CreditCard, 
-  Heart,
-  CheckCircle2,
-  Coins,
-  Search,
-  Tag
-} from 'lucide-react';
+import { Heart, CheckCircle2 } from 'lucide-react';
 
 function MarketplaceApp() {
   const {
@@ -89,7 +77,6 @@ function MarketplaceApp() {
     setSelectedAddress,
     isAdmin,
     notifications,
-    appSettings,
   } = useMarketplace();
 
   const unreadNotifsCount = useMemo(() => {
@@ -220,33 +207,7 @@ function MarketplaceApp() {
     showToast('تم تحديث المفضلة ❤️');
   }, [toggleWishlist, showToast]);
 
-  const DEPARTMENTS_LIST = useMemo(() => ['all', 'women', 'boys', 'girls', 'baby', 'shoes', 'bags'], []);
   const [homeDepartment, setHomeDepartment] = useState<string>('all');
-  const touchStartXRef = useRef<number | null>(null);
-
-  const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    touchStartXRef.current = e.targetTouches[0].clientX;
-  }, []);
-
-  const handleTouchEnd = useCallback((e: React.TouchEvent) => {
-    if (touchStartXRef.current === null) return;
-    const touchEndX = e.changedTouches[0].clientX;
-    const deltaX = touchStartXRef.current - touchEndX;
-
-    if (Math.abs(deltaX) > 60) {
-      setHomeDepartment((prevDept) => {
-        const currentIndex = DEPARTMENTS_LIST.indexOf(prevDept);
-        if (deltaX > 0) {
-          const nextIndex = (currentIndex + 1) % DEPARTMENTS_LIST.length;
-          return DEPARTMENTS_LIST[nextIndex];
-        } else {
-          const prevIndex = (currentIndex - 1 + DEPARTMENTS_LIST.length) % DEPARTMENTS_LIST.length;
-          return DEPARTMENTS_LIST[prevIndex];
-        }
-      });
-    }
-    touchStartXRef.current = null;
-  }, [DEPARTMENTS_LIST]);
 
   const handleSelectCategory = useCallback((categoryId: string, subcategoryId?: string) => {
     setSelectedCategoryId(categoryId);
@@ -340,8 +301,6 @@ function MarketplaceApp() {
       {activeTab === 'home' && (
         <main 
           className="flex-1 max-w-7xl mx-auto w-full px-3 sm:px-6 py-2.5 pb-24 md:pb-12 space-y-4 sm:space-y-6"
-          onTouchStart={handleTouchStart}
-          onTouchEnd={handleTouchEnd}
         >
           {/* Top Quick Category Navigation Bar */}
           <HomeTopCategoryBar
@@ -358,8 +317,8 @@ function MarketplaceApp() {
 
           {/* Section 1: Hero Carousel Banner */}
           <HeroCarousel
-            onShopNow={(categoryId) => handleSelectCategory(categoryId || 'women')}
-            onExploreOffers={() => handleSelectCategory('women')}
+            onShopNow={(categoryId) => categoryId ? handleSelectCategory(categoryId) : handleOpenCategoriesTab()}
+            onExploreOffers={handleOpenCategoriesTab}
             onOpenAI={() => setIsAIOpen(true)}
             onSelectProduct={(prodId) => {
               const p = products.find((x) => x.id === prodId);
@@ -393,7 +352,7 @@ function MarketplaceApp() {
             onToggleFavorite={handleToggleFavoriteWithToast}
             onAddToCart={handleOpenQuickView}
             onSelectProduct={setSelectedProduct}
-            onViewAll={() => handleSelectCategory('women')}
+            onViewAll={handleOpenCategoriesTab}
           />
 
           {/* Section 6: Home Product Tabs */}
@@ -416,7 +375,7 @@ function MarketplaceApp() {
             onToggleFavorite={handleToggleFavoriteWithToast}
             onAddToCart={handleOpenQuickView}
             onSelectProduct={setSelectedProduct}
-            onViewAll={() => handleSelectCategory('women')}
+            onViewAll={handleOpenCategoriesTab}
           />
 
           {/* Section 8: New Arrivals */}
@@ -427,7 +386,7 @@ function MarketplaceApp() {
             onToggleFavorite={handleToggleFavoriteWithToast}
             onAddToCart={handleOpenQuickView}
             onSelectProduct={setSelectedProduct}
-            onViewAll={() => handleSelectCategory('women')}
+            onViewAll={handleOpenCategoriesTab}
           />
 
           {/* Section 9: Dajjah Picks */}
@@ -438,12 +397,12 @@ function MarketplaceApp() {
             onToggleFavorite={handleToggleFavoriteWithToast}
             onAddToCart={handleOpenQuickView}
             onSelectProduct={setSelectedProduct}
-            onViewAll={() => handleSelectCategory('women')}
+            onViewAll={handleOpenCategoriesTab}
           />
 
           {/* Section 10: Featured Stores */}
           <FeaturedStores
-            onSelectStore={() => handleSelectCategory('women')}
+            onSelectStore={handleOpenCategoriesTab}
             onExploreCategories={handleOpenCategoriesTab}
           />
 
@@ -472,7 +431,12 @@ function MarketplaceApp() {
       {/* VIEW 2: BRANDS */}
       {/* ========================================================================= */}
       {activeTab === 'brands' && (
-        <Suspense fallback={<div className="min-h-[50vh] flex items-center justify-center"><div className="w-8 h-8 rounded-full border-2 border-amber-400 border-t-transparent animate-spin" /></div>}>
+        <Suspense fallback={
+          <div className="max-w-7xl mx-auto w-full px-3 sm:px-6 py-6 space-y-4">
+            <div className="h-6 w-44 rounded-xl shimmer-wave" />
+            <ProductGridSkeleton count={6} />
+          </div>
+        }>
           <BrandsScreen
             brands={brands}
             products={products}
@@ -493,7 +457,12 @@ function MarketplaceApp() {
       {/* VIEW 2.5: TRENDS */}
       {/* ========================================================================= */}
       {activeTab === 'trends' && (
-        <Suspense fallback={<div className="min-h-[50vh] flex items-center justify-center"><div className="w-8 h-8 rounded-full border-2 border-amber-400 border-t-transparent animate-spin" /></div>}>
+        <Suspense fallback={
+          <div className="max-w-7xl mx-auto w-full px-3 sm:px-6 py-6 space-y-4">
+            <div className="h-44 w-full rounded-3xl shimmer-wave" />
+            <ProductGridSkeleton count={6} />
+          </div>
+        }>
           <TrendsScreen
             products={products}
             currency={currentCurrency}
@@ -514,7 +483,12 @@ function MarketplaceApp() {
       {/* ========================================================================= */}
       {activeTab === 'categories' && (
         <div className="flex-1 w-full">
-          <Suspense fallback={<div className="min-h-[50vh] flex items-center justify-center"><div className="w-8 h-8 rounded-full border-2 border-amber-400 border-t-transparent animate-spin" /></div>}>
+          <Suspense fallback={
+            <div className="max-w-7xl mx-auto w-full px-3 sm:px-6 py-6 space-y-4">
+              <div className="h-28 w-full rounded-3xl shimmer-wave" />
+              <ProductGridSkeleton count={8} />
+            </div>
+          }>
             {!activeCategory ? (
               <MainCategoriesScreen
                 categories={appCategories}
@@ -621,7 +595,7 @@ function MarketplaceApp() {
 
           {/* VIEW 5: PROFILE */}
           {activeTab === 'profile' && (
-            <Suspense fallback={<div className="min-h-[50vh] flex items-center justify-center"><div className="w-8 h-8 rounded-full border-2 border-amber-400 border-t-transparent animate-spin" /></div>}>
+            <Suspense fallback={<ProfileSkeleton />}>
               <ProfileView
                 onNavigateHome={() => {
                   setActiveTab('home');
@@ -740,7 +714,7 @@ function MarketplaceApp() {
             onClose={() => setIsNotifsOpen(false)}
             onSelectAction={(notif) => {
               if (notif.type === 'deal') {
-                handleSelectCategory('women');
+                handleOpenCategoriesTab();
               } else if (notif.type === 'order') {
                 setActiveTab('profile');
               }
@@ -813,10 +787,11 @@ function MarketplaceApp() {
         {/* 13. Dynamic Admin-Controlled Popup Offer */}
         <PromoOffersModal
           onOpenCategory={(target) => {
-            setSelectedCategoryId(target || 'women');
-            setSelectedSubcategory(null);
-            setActiveTab('categories');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            if (target && target !== 'all') {
+              handleSelectCategory(target);
+            } else {
+              handleOpenCategoriesTab();
+            }
           }}
         />
 

@@ -2,16 +2,9 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { Category, Product, CurrencyCode } from '../../types';
 import { ProductCard } from '../products/ProductCard';
 import { MAIN_CATEGORY_METAS, getSubcategoryImage } from '../../data/categoryImages';
-import { 
-  ArrowRight, 
-  SlidersHorizontal, 
-  ArrowDownUp, 
-  X, 
-  Check, 
-  Sparkles,
-  Search,
-  ShoppingCart
-} from 'lucide-react';
+import { ArrowRight, SlidersHorizontal, ArrowDownUp, X, Check, Sparkles, Search, ShoppingCart } from 'lucide-react';
+import { CachedImage } from '../common/CachedImage';
+import { ProductGridSkeleton } from '../common/ProductSkeleton';
 
 interface CategoryLandingPageProps {
   category: Category;
@@ -206,13 +199,16 @@ export const CategoryLandingPage: React.FC<CategoryLandingPageProps> = React.mem
       {/* ========================================================================= */}
       {!selectedSubcategory && (
         <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden bg-neutral-900 border border-neutral-800 shadow-xl min-h-[160px] sm:min-h-[220px] flex flex-col justify-end p-5 sm:p-7">
-          <img
+          <CachedImage
             src={categoryMeta?.bannerImage || category.bannerImage || category.image}
             alt={category.name}
-            referrerPolicy="no-referrer"
-            className="absolute inset-0 w-full h-full object-cover object-center"
+            preset="banner"
+            priority
+            fallbackText={category.name}
+            containerClassName="absolute inset-0 w-full h-full"
+            className="w-full h-full object-cover object-center"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/60 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/60 to-transparent pointer-events-none" />
 
           <div className="relative z-10 space-y-1 sm:space-y-1.5 max-w-lg">
             <span className="text-[11px] sm:text-xs font-bold text-amber-400">
@@ -280,11 +276,12 @@ export const CategoryLandingPage: React.FC<CategoryLandingPageProps> = React.mem
                   }`}
                 >
                   <div className="w-full h-full rounded-full overflow-hidden bg-neutral-950">
-                    <img
+                    <CachedImage
                       src={subImage}
                       alt={subName}
-                      loading="lazy"
-                      referrerPolicy="no-referrer"
+                      preset="thumb"
+                      fallbackText={subName}
+                      containerClassName="w-full h-full"
                       className="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-300"
                     />
                   </div>
@@ -344,7 +341,9 @@ export const CategoryLandingPage: React.FC<CategoryLandingPageProps> = React.mem
       {/* ========================================================================= */}
       {/* 5. 2-COLUMN PRODUCT GRID (Matching Reference Design Product Grid) */}
       {/* ========================================================================= */}
-      {filteredProducts.length > 0 ? (
+      {products.length === 0 ? (
+        <ProductGridSkeleton count={8} className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5" />
+      ) : filteredProducts.length > 0 ? (
         <div className="space-y-6">
           <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5">
             {displayedProducts.map((product) => (

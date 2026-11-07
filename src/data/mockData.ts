@@ -1,4 +1,4 @@
-import { Product, Category, Store, Address, PaymentOption, NotificationItem, Order, CartItem, SocialMediaItem, BranchItem, FooterConfig, FooterLinkItem, FooterTrustBadge } from '../types';
+import { Product, Category, Store, Address, PaymentOption, NotificationItem, Order, SocialMediaItem, BranchItem, FooterConfig } from '../types';
 
 export const YEMEN_CITIES = [
   'صنعاء',
@@ -1799,7 +1799,7 @@ export const DEFAULT_POPUP_OFFER = {
   couponCode: 'DAJJAH10',
   ctaText: 'انسخ الكوبون وتسوق الآن',
   linkType: 'category' as const,
-  linkTarget: 'women',
+  linkTarget: 'all',
   showFrequency: 'once_per_session' as const,
   delaySeconds: 3,
   animationType: 'bounce' as const,

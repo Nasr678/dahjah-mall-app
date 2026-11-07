@@ -15,7 +15,6 @@ import {
   ChevronDown, 
   Clock, 
   Phone,
-  ShieldCheck,
   Building2,
   MapPin,
   ExternalLink
@@ -89,7 +88,7 @@ export const CustomerServiceModal: React.FC<CustomerServiceModalProps> = ({ isOp
               <a
                 href={whatsappUrl}
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 className="p-3 rounded-2xl bg-emerald-950/40 border border-emerald-500/30 hover:border-emerald-400 flex items-center gap-3 transition-colors cursor-pointer"
               >
                 <div className="w-9 h-9 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center flex-shrink-0">
@@ -138,7 +137,7 @@ export const CustomerServiceModal: React.FC<CustomerServiceModalProps> = ({ isOp
                         <a
                           href={b.googleMapsUrl}
                           target="_blank"
-                          rel="noreferrer"
+                          rel="noopener noreferrer"
                           className="px-2 py-1 rounded-lg bg-neutral-800 hover:bg-neutral-750 text-amber-400 text-[10px] font-bold flex items-center gap-1 flex-shrink-0 cursor-pointer"
                         >
                           <ExternalLink className="w-3 h-3" />

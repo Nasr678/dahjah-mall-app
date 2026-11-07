@@ -1,17 +1,13 @@
 import React, { useState } from 'react';
 import { 
   MapPin, 
-  Navigation, 
   Check, 
   X, 
   Home, 
   Briefcase, 
   Bookmark, 
-  Search, 
-  AlertCircle, 
   Compass, 
   Building2,
-  Sparkles,
   Phone,
   User
 } from 'lucide-react';

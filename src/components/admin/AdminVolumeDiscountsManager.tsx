@@ -5,11 +5,7 @@ import {
   Trash2, 
   Edit3, 
   Check, 
-  X, 
-  Sparkles, 
-  TrendingUp, 
-  Tag,
-  AlertCircle
+  X
 } from 'lucide-react';
 import { VolumeDiscountRule } from '../../types';
 import { useMarketplace } from '../../context/MarketplaceContext';

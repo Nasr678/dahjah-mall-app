@@ -19,7 +19,6 @@ import {
   Review
 } from '../types';
 import { 
-  DEFAULT_EXCHANGE_RATES, 
   getStoredExchangeRates, 
   saveStoredExchangeRates, 
   getStoredCurrency, 
@@ -32,7 +31,6 @@ import { calculateDeliveryFee } from '../services/deliveryService';
 import { 
   PRODUCTS, 
   CATEGORIES, 
-  INITIAL_ORDERS, 
   NOTIFICATIONS,
   DEFAULT_BANNERS,
   DEFAULT_POPUP_OFFER,
@@ -48,7 +46,6 @@ import {
   updateDoc 
 } from 'firebase/firestore';
 import { 
-  auth,
   db,
   sanitizeForFirestore,
   firebaseAuthService, 
@@ -89,7 +86,7 @@ const DEFAULT_APP_SETTINGS: AppSettings = {
       subtitle: 'عرض المزيد / View more',
       subtitleEn: 'View more',
       linkType: 'deals',
-      linkTarget: 'women',
+      linkTarget: 'all',
       icon: 'Zap',
       buttonSize: 'small',
       styleVariant: 'amber',
@@ -181,7 +178,6 @@ interface MarketplaceContextType {
   loginWithEmail: (email: string, pass: string) => Promise<UserProfile>;
   registerWithEmail: (email: string, pass: string, name: string, phone: string, city: string) => Promise<UserProfile>;
   loginWithGoogle: () => Promise<UserProfile>;
-  loginWithFacebook: () => Promise<UserProfile>;
   sendPasswordReset: (email: string) => Promise<void>;
   logoutUser: () => Promise<void>;
   logout: () => Promise<void>;
@@ -594,12 +590,6 @@ export const MarketplaceProvider: React.FC<{ children: React.ReactNode }> = ({ c
 
   const loginWithGoogle = async (): Promise<UserProfile> => {
     const profile = await firebaseAuthService.loginWithGoogle();
-    setCurrentUser(profile);
-    return profile;
-  };
-
-  const loginWithFacebook = async (): Promise<UserProfile> => {
-    const profile = await firebaseAuthService.loginWithFacebook();
     setCurrentUser(profile);
     return profile;
   };
@@ -1411,7 +1401,6 @@ export const MarketplaceProvider: React.FC<{ children: React.ReactNode }> = ({ c
     loginWithEmail,
     registerWithEmail,
     loginWithGoogle,
-    loginWithFacebook,
     sendPasswordReset,
     logoutUser,
     logout: logoutUser,

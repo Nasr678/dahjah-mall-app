@@ -1,6 +1,6 @@
 import React from 'react';
-import { ShieldCheck, Flame, Sparkles, Truck, ArrowLeft, Coins, CheckCircle2 } from 'lucide-react';
-import { getOptimizedImageUrl } from '../../utils/imageOptimizer';
+import { Flame, Truck, ArrowLeft, Coins, CheckCircle2 } from 'lucide-react';
+import { CachedImage } from '../common/CachedImage';
 
 interface FeaturedStoresProps {
   onSelectStore?: (storeId: string) => void;
@@ -16,8 +16,6 @@ export const FeaturedStores: React.FC<FeaturedStoresProps> = React.memo(({ onSel
     }
   };
 
-  const bannerImg = getOptimizedImageUrl('https://images.unsplash.com/photo-1469334031218-e382a71b716b', 'banner');
-
   return (
     <section className="w-full space-y-4 pt-4 pb-2">
       {/* 1. Cinematic Dajjah Official Mall Banner */}
@@ -26,13 +24,12 @@ export const FeaturedStores: React.FC<FeaturedStoresProps> = React.memo(({ onSel
         className="group relative rounded-3xl overflow-hidden bg-neutral-900 border border-neutral-800 hover:border-amber-500/50 transition-all duration-300 cursor-pointer shadow-2xl p-5 sm:p-8 flex flex-col justify-between min-h-[200px] sm:min-h-[260px]"
       >
         {/* Background Editorial Fashion Image with Gradient */}
-        <img
-          src={bannerImg}
+        <CachedImage
+          src="https://images.unsplash.com/photo-1469334031218-e382a71b716b"
           alt="ضَجّة مول — الموضة والأناقة"
-          loading="lazy"
-          decoding="async"
-          referrerPolicy="no-referrer"
-          className="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 opacity-40 sm:opacity-50"
+          preset="banner"
+          containerClassName="absolute inset-0 w-full h-full"
+          className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 opacity-40 sm:opacity-50"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/80 to-neutral-950/30" />
 

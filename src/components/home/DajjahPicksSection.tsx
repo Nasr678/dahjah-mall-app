@@ -2,6 +2,7 @@ import React, { useMemo, memo } from 'react';
 import { Product, CurrencyCode } from '../../types';
 import { ProductCard } from '../products/ProductCard';
 import { ArrowLeft, Award } from 'lucide-react';
+import { ProductGridSkeleton } from '../common/ProductSkeleton';
 
 interface DajjahPicksSectionProps {
   products: Product[];
@@ -30,6 +31,20 @@ export const DajjahPicksSection: React.FC<DajjahPicksSectionProps> = memo(({
   }, [products]);
 
   const wishlistSet = useMemo(() => new Set(wishlist), [wishlist]);
+
+  if (products.length === 0) {
+    return (
+      <section className="space-y-6">
+        <div className="flex items-end justify-between gap-4">
+          <div className="space-y-1">
+            <div className="h-4 w-28 rounded shimmer-wave" />
+            <div className="h-7 w-44 rounded shimmer-wave" />
+          </div>
+        </div>
+        <ProductGridSkeleton count={6} />
+      </section>
+    );
+  }
 
   if (picks.length === 0) return null;
 

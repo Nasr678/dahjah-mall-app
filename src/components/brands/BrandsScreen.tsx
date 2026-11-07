@@ -2,6 +2,8 @@ import React, { useState, useMemo } from 'react';
 import { Brand, Product, CurrencyCode } from '../../types';
 import { ProductCard } from '../products/ProductCard';
 import { Sparkles, ArrowRight, Layers, Search, ShieldCheck, CheckCircle2 } from 'lucide-react';
+import { CachedImage } from '../common/CachedImage';
+import { ProductGridSkeleton } from '../common/ProductSkeleton';
 
 interface BrandsScreenProps {
   brands: Brand[];
@@ -119,10 +121,11 @@ export const BrandsScreen: React.FC<BrandsScreenProps> = ({
             <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center gap-5">
               {/* Brand Logo */}
               <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-neutral-950 border border-neutral-700 p-2 flex items-center justify-center overflow-hidden shadow-xl shadow-black/60 shrink-0">
-                <img
+                <CachedImage
                   src={selectedBrand.logo}
                   alt={selectedBrand.name}
-                  referrerPolicy="no-referrer"
+                  preset="thumb"
+                  containerClassName="w-full h-full"
                   className="w-full h-full object-contain"
                 />
               </div>
@@ -168,7 +171,9 @@ export const BrandsScreen: React.FC<BrandsScreenProps> = ({
               </h3>
             </div>
 
-            {brandProducts.length === 0 ? (
+            {products.length === 0 ? (
+              <ProductGridSkeleton count={6} />
+            ) : brandProducts.length === 0 ? (
               <div className="py-16 text-center bg-neutral-900/40 rounded-3xl border border-neutral-800 p-6">
                 <Layers className="w-12 h-12 text-neutral-700 mx-auto mb-3" />
                 <h4 className="text-base font-bold text-white mb-1">لا توجد منتجات مضافة لهذا البراند حالياً</h4>
@@ -297,10 +302,11 @@ export const BrandsScreen: React.FC<BrandsScreenProps> = ({
                   >
                     {/* Brand Logo Container */}
                     <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-neutral-950 border border-neutral-800 group-hover:border-amber-500/40 p-3 flex items-center justify-center overflow-hidden transition-colors shadow-inner mb-3">
-                      <img
+                      <CachedImage
                         src={brand.logo}
                         alt={brand.name}
-                        referrerPolicy="no-referrer"
+                        preset="thumb"
+                        containerClassName="w-full h-full"
                         className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105"
                       />
                     </div>

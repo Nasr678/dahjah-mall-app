@@ -8,14 +8,7 @@ import {
   X, 
   ArrowUp, 
   ArrowDown, 
-  Smartphone, 
-  Landmark, 
-  Banknote, 
-  ShieldCheck, 
-  Upload, 
-  AlertCircle,
-  HelpCircle,
-  QrCode
+  Upload
 } from 'lucide-react';
 import { PaymentOption, PaymentCategory } from '../../types';
 import { useMarketplace } from '../../context/MarketplaceContext';

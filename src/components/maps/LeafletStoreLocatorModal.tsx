@@ -3,14 +3,11 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { 
   Store, 
-  MapPin, 
   Phone, 
   Clock, 
   Navigation, 
   Star, 
   X, 
-  ExternalLink, 
-  Sparkles,
   Layers
 } from 'lucide-react';
 import { 

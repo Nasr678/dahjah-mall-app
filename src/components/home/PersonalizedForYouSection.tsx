@@ -2,6 +2,7 @@ import React, { useMemo, memo } from 'react';
 import { Product, CurrencyCode } from '../../types';
 import { ProductCard } from '../products/ProductCard';
 import { ArrowLeft, Wand2 } from 'lucide-react';
+import { ProductGridSkeleton } from '../common/ProductSkeleton';
 
 interface PersonalizedForYouSectionProps {
   products: Product[];
@@ -51,6 +52,20 @@ export const PersonalizedForYouSection: React.FC<PersonalizedForYouSectionProps>
   }, [products]);
 
   const wishlistSet = useMemo(() => new Set(wishlist), [wishlist]);
+
+  if (products.length === 0) {
+    return (
+      <section className="space-y-6">
+        <div className="flex items-end justify-between gap-4">
+          <div className="space-y-1">
+            <div className="h-4 w-28 rounded shimmer-wave" />
+            <div className="h-7 w-44 rounded shimmer-wave" />
+          </div>
+        </div>
+        <ProductGridSkeleton count={6} />
+      </section>
+    );
+  }
 
   if (personalizedProducts.length === 0) return null;
 

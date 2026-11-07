@@ -4,10 +4,8 @@ import {
   X, 
   Check, 
   RefreshCw, 
-  ArrowRightLeft, 
   ShieldCheck, 
   Sliders, 
-  AlertTriangle,
   Info
 } from 'lucide-react';
 import { CurrencyCode, ExchangeRates } from '../../types';

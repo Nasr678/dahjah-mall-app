@@ -1,6 +1,6 @@
 import React from 'react';
 import { Category } from '../../types';
-import { getOptimizedImageUrl } from '../../utils/imageOptimizer';
+import { CachedImage } from '../common/CachedImage';
 
 interface EditorialCategoriesProps {
   categories: Category[];
@@ -84,12 +84,11 @@ export const EditorialCategories: React.FC<EditorialCategoriesProps> = React.mem
                 }`}
               >
                 <div className="w-full h-full rounded-xl overflow-hidden bg-neutral-950">
-                  <img
-                    src={getOptimizedImageUrl(item.image, 'thumb')}
+                  <CachedImage
+                    src={item.image}
                     alt={item.name}
-                    loading="lazy"
-                    decoding="async"
-                    referrerPolicy="no-referrer"
+                    preset="thumb"
+                    containerClassName="w-full h-full"
                     className="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-300"
                   />
                 </div>

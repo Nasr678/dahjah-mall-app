@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'motion/react';
 import { Product, CurrencyCode } from '../../types';
-import { getOptimizedImageUrl } from '../../utils/imageOptimizer';
+import { CachedImage } from '../common/CachedImage';
 import { triggerFlyToCart, safeHaptic } from '../cart/FlyToCartOverlay';
 import { 
   X, 
@@ -243,10 +243,13 @@ export const ProductQuickViewModal: React.FC<ProductQuickViewModalProps> = ({
               ref={imageRef}
               className="relative w-32 h-40 sm:w-40 sm:h-48 rounded-2xl overflow-hidden bg-neutral-950 border border-neutral-800 flex-shrink-0 shadow-lg group select-none"
             >
-              <img
-                src={getOptimizedImageUrl(images[activeImageIndex], 'card')}
+              <CachedImage
+                src={images[activeImageIndex]}
                 alt={product.name}
-                loading="eager"
+                preset="card"
+                fallbackText={product.name}
+                priority
+                containerClassName="w-full h-full"
                 className="w-full h-full object-cover object-center transition-all duration-200"
               />
 
@@ -386,9 +389,9 @@ export const ProductQuickViewModal: React.FC<ProductQuickViewModalProps> = ({
                       : 'border-neutral-800 opacity-60 hover:opacity-100'
                   }`}
                 >
-                  <img
-                    src={getOptimizedImageUrl(imgUrl, 'thumb')}
-                    alt={`thumbnail-${idx}`}
+                  <CachedImage
+                    src={imgUrl}
+                    alt={`${product.name} thumbnail ${idx + 1}`}
                     className="w-full h-full object-cover"
                   />
                 </button>

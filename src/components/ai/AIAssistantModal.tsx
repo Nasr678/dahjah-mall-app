@@ -8,15 +8,8 @@ import {
   X, 
   Send, 
   Sparkles, 
-  Bot, 
-  User, 
   ShoppingCart, 
-  ArrowLeft, 
-  Flame, 
-  HelpCircle,
-  RefreshCw,
-  Star,
-  CheckCircle2
+  RefreshCw
 } from 'lucide-react';
 
 interface AIAssistantModalProps {
@@ -110,7 +103,7 @@ export const AIAssistantModal: React.FC<AIAssistantModalProps> = ({
   const performBackgroundFirebaseSearch = useCallback(async (
     messageId: string, 
     suggestedIds: string[], 
-    queryText: string
+    _queryText?: string
   ) => {
     if (!suggestedIds || suggestedIds.length === 0) {
       setMessages((prev) =>

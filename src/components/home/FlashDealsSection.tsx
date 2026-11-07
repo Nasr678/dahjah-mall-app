@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo, memo } from 'react';
 import { Product, CurrencyCode } from '../../types';
 import { ProductCard } from '../products/ProductCard';
 import { Flame, Clock, ChevronLeft } from 'lucide-react';
+import { ProductGridSkeleton } from '../common/ProductSkeleton';
 
 const FlashCountdownTimer: React.FC = memo(() => {
   const [timeLeft, setTimeLeft] = useState({
@@ -104,6 +105,18 @@ export const FlashDealsSection: React.FC<FlashDealsSectionProps> = memo(({
   }, [products]);
 
   const wishlistSet = useMemo(() => new Set(wishlist), [wishlist]);
+
+  if (products.length === 0) {
+    return (
+      <div className="w-full bg-neutral-900/60 border border-neutral-800 rounded-3xl p-4 sm:p-6 space-y-4">
+        <div className="flex items-center justify-between">
+          <div className="h-6 w-36 rounded-xl shimmer-wave" />
+          <div className="h-6 w-28 rounded-xl shimmer-wave" />
+        </div>
+        <ProductGridSkeleton count={4} className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4" />
+      </div>
+    );
+  }
 
   if (flashProducts.length === 0) return null;
 

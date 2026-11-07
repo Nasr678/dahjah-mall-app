@@ -4,7 +4,7 @@ import { Tag, ArrowLeft, ArrowRight } from 'lucide-react';
 import { useMarketplace } from '../../context/MarketplaceContext';
 import { BannerItem } from '../../types';
 import { DEFAULT_BANNERS } from '../../data/mockData';
-import { getOptimizedImageUrl } from '../../utils/imageOptimizer';
+import { CachedImage } from '../common/CachedImage';
 
 interface HeroCarouselProps {
   banners?: BannerItem[];
@@ -117,10 +117,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = memo(({
     }
   };
 
-  const bannerImgSrc = getOptimizedImageUrl(
-    currentBanner.imageUrl || 'https://images.unsplash.com/photo-1566174053879-31528523f8ae?q=80&w=1000&auto=format&fit=crop',
-    'banner'
-  );
+  const bannerImgSrc = currentBanner.imageUrl || 'https://images.unsplash.com/photo-1566174053879-31528523f8ae?q=80&w=1000&auto=format&fit=crop';
 
   return (
     <div 
@@ -145,14 +142,13 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = memo(({
           className="absolute inset-0 will-change-transform"
         >
           {/* Background Image */}
-          <img
+          <CachedImage
             src={bannerImgSrc}
             alt={currentBanner.title}
-            loading="eager"
-            fetchPriority="high"
-            decoding="async"
+            preset="banner"
+            priority={true}
+            containerClassName="w-full h-full"
             className="w-full h-full object-cover object-center"
-            referrerPolicy="no-referrer"
           />
 
           {/* High-End Editorial Gradient Overlays */}

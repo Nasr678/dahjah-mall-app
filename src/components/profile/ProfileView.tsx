@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { User, Order, CurrencyCode, Address } from '../../types';
+import { Order } from '../../types';
 import { useMarketplace } from '../../context/MarketplaceContext';
 import { OrderTrackingModal } from '../orders/OrderTrackingModal';
 import { 
   User as UserIcon, 
   Package, 
-  Heart, 
   Headphones, 
   Truck, 
   Settings, 
@@ -18,11 +17,8 @@ import {
   FileText, 
   Clock, 
   Gift, 
-  Eye, 
-  BookmarkCheck, 
   HelpCircle,
   ChevronLeft,
-  CalendarCheck,
   ShieldCheck,
   LogOut,
   LogIn,
@@ -32,7 +28,7 @@ import {
 
 interface ProfileViewProps {
   onOpenAuth: () => void;
-  onOpenWishlist: () => void;
+  onOpenWishlist?: () => void;
   onOpenSupport: () => void;
   onOpenSettings: () => void;
   onOpenAdmin?: () => void;
@@ -44,7 +40,6 @@ interface ProfileViewProps {
 
 export const ProfileView: React.FC<ProfileViewProps> = ({
   onOpenAuth,
-  onOpenWishlist,
   onOpenSupport,
   onOpenSettings,
   onOpenAdmin,
@@ -55,9 +50,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
   const {
     currentUser,
     orders,
-    currentCurrency,
     formatPrice,
-    wishlist,
     coupons,
     isAdmin,
     logout,

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Category } from '../../types';
 import { Search, Camera, Grid, ArrowRight, ChevronLeft, LogIn } from 'lucide-react';
-import { getOptimizedImageUrl } from '../../utils/imageOptimizer';
+import { CachedImage } from '../common/CachedImage';
 
 interface MainCategoriesScreenProps {
   categories: Category[];
@@ -394,12 +394,11 @@ export const MainCategoriesScreen: React.FC<MainCategoriesScreenProps> = ({
               >
                 {/* Rounded Circle / Squircle Thumbnail */}
                 <div className="relative w-full aspect-square rounded-full overflow-hidden bg-neutral-900 border border-neutral-800 group-hover:border-amber-400 shadow-sm p-0.5 transition-all">
-                  <img
-                    src={getOptimizedImageUrl(sub.image, 'thumb')}
+                  <CachedImage
+                    src={sub.image}
                     alt={sub.name}
-                    loading="lazy"
-                    decoding="async"
-                    referrerPolicy="no-referrer"
+                    preset="thumb"
+                    containerClassName="w-full h-full rounded-full overflow-hidden"
                     className="w-full h-full object-cover rounded-full group-hover:scale-105 transition-transform duration-300"
                   />
                 </div>

@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import confetti from 'canvas-confetti';
-import { CartItem, CurrencyCode, PaymentMethodType, Order, Address } from '../../types';
+import { PaymentMethodType, Order } from '../../types';
 import { PAYMENT_METHODS } from '../../data/mockData';
 import { WalletLogo } from '../common/WalletLogo';
 import { LocationPickerModal } from '../location/LocationPickerModal';
+import { CachedImage } from '../common/CachedImage';
 import { useMarketplace } from '../../context/MarketplaceContext';
 import { 
   X, 
@@ -14,22 +15,12 @@ import {
   ArrowRight, 
   CheckCircle2, 
   Truck, 
-  Tag, 
   ShieldCheck, 
-  CreditCard, 
-  Clock, 
-  Sparkles, 
   MapPin, 
-  Phone, 
-  User, 
   Banknote, 
   Copy, 
   Check, 
   Info, 
-  Plus, 
-  Compass, 
-  AlertCircle,
-  Package,
   ChevronLeft,
   Gift
 } from 'lucide-react';
@@ -55,19 +46,15 @@ export const CartModal: React.FC<CartModalProps> = ({
     cart,
     removeFromCart,
     updateCartQuantity,
-    clearCart,
-    currentCurrency,
     formatPrice,
     calculateCheckoutTotals,
     selectedAddress,
-    addresses,
     setSelectedAddress,
     addOrUpdateAddress,
     applyCoupon,
     removeCoupon,
     activeCoupon,
     createOrder,
-    currentUser,
     appSettings,
   } = useMarketplace();
 
@@ -113,8 +100,7 @@ export const CartModal: React.FC<CartModalProps> = ({
       }
     }
   }, [paymentMethodsList, selectedPayment]);
-  const [customerName, setCustomerName] = useState(currentUser?.name || '');
-  const [customerPhone, setCustomerPhone] = useState(currentUser?.phone || '');
+
   const [transactionRef, setTransactionRef] = useState('');
   const [orderNotes, setOrderNotes] = useState('');
   const [copiedField, setCopiedField] = useState<string | null>(null);
@@ -127,14 +113,6 @@ export const CartModal: React.FC<CartModalProps> = ({
   const [giftRecipientPhone, setGiftRecipientPhone] = useState('');
   const [giftMessage, setGiftMessage] = useState('');
   const [hidePriceInInvoice, setHidePriceInInvoice] = useState(true);
-  
-  // Update customer details if user signs in
-  useEffect(() => {
-    if (currentUser) {
-      if (currentUser.name) setCustomerName(currentUser.name);
-      if (currentUser.phone) setCustomerPhone(currentUser.phone);
-    }
-  }, [currentUser]);
   
   // Location modal trigger
   const [isLocationPickerOpen, setIsLocationPickerOpen] = useState(false);
@@ -294,11 +272,12 @@ export const CartModal: React.FC<CartModalProps> = ({
                           key={item.id}
                           className="flex items-center gap-3 p-3 rounded-2xl bg-neutral-950 border border-neutral-800/80 hover:border-neutral-700 transition-colors"
                         >
-                          <img
+                          <CachedImage
                             src={item.product.images[0]}
                             alt={item.product.name}
-                            referrerPolicy="no-referrer"
-                            className="w-16 h-16 rounded-xl object-cover border border-neutral-800 flex-shrink-0"
+                            preset="thumb"
+                            containerClassName="w-16 h-16 rounded-xl overflow-hidden border border-neutral-800 flex-shrink-0"
+                            className="w-full h-full object-cover"
                           />
 
                           <div className="flex-1 min-w-0">

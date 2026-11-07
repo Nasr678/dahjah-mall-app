@@ -3,7 +3,7 @@ import { motion } from 'motion/react';
 import { INITIAL_NOTIFICATIONS } from '../../data/mockData';
 import { NotificationItem } from '../../types';
 import { useMarketplace } from '../../context/MarketplaceContext';
-import { X, Bell, Flame, Package, Tag, Check, Sparkles } from 'lucide-react';
+import { X, Bell, Flame, Package, Tag } from 'lucide-react';
 
 interface NotificationsModalProps {
   isOpen: boolean;

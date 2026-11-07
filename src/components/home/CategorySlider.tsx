@@ -1,6 +1,5 @@
 import React from 'react';
 import { CATEGORIES } from '../../data/mockData';
-import { Category } from '../../types';
 import { 
   Sparkles, 
   User, 
@@ -16,13 +15,14 @@ import {
   Home,
   ChevronLeft
 } from 'lucide-react';
+import { CachedImage } from '../common/CachedImage';
 
 interface CategorySliderProps {
   onSelectCategory: (categoryId: string) => void;
   selectedCategory?: string;
 }
 
-const iconMap: Record<string, any> = {
+const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   Sparkles,
   User,
   Baby,
@@ -74,12 +74,15 @@ export const CategorySlider: React.FC<CategorySliderProps> = ({
               }`}
             >
               <div className="relative w-12 h-12 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl overflow-hidden mb-2 sm:mb-2.5 bg-neutral-950 p-0.5 sm:p-1 border border-neutral-800 group-hover:border-amber-500/40 transition-colors">
-                <img
+                <CachedImage
                   src={cat.image}
                   alt={cat.name}
-                  className="w-full h-full object-cover rounded-lg sm:rounded-xl group-hover:scale-110 transition-transform duration-500"
+                  preset="thumb"
+                  fallbackText={cat.name}
+                  containerClassName="w-full h-full rounded-lg sm:rounded-xl overflow-hidden"
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />
-                <div className="absolute inset-0 bg-neutral-950/20 group-hover:bg-transparent transition-colors" />
+                <div className="absolute inset-0 bg-neutral-950/20 group-hover:bg-transparent transition-colors pointer-events-none" />
                 <div className="absolute bottom-0.5 right-0.5 sm:bottom-1 sm:right-1 p-0.5 sm:p-1 rounded-md sm:rounded-lg bg-neutral-950/80 text-amber-400 backdrop-blur-sm">
                   <Icon className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                 </div>

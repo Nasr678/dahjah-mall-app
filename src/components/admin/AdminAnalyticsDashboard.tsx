@@ -7,9 +7,6 @@ import {
   DollarSign, 
   Percent, 
   Eye, 
-  ShoppingCart, 
-  ArrowUpRight, 
-  Sparkles,
   Award
 } from 'lucide-react';
 import { useMarketplace } from '../../context/MarketplaceContext';
@@ -23,7 +20,6 @@ export const AdminAnalyticsDashboard: React.FC = () => {
     .filter((o) => o.status !== 'cancelled')
     .reduce((sum, o) => sum + (o.totalYER || 0), 0);
 
-  const deliveredOrdersCount = orders.filter((o) => o.status === 'delivered').length;
   const inProgressOrdersCount = orders.filter((o) => o.status !== 'delivered' && o.status !== 'cancelled').length;
 
   // Best selling products derived from orders

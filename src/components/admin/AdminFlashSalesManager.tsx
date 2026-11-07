@@ -7,11 +7,7 @@ import {
   Check, 
   X, 
   Clock, 
-  Percent, 
-  Upload, 
-  Tag, 
-  Sparkles,
-  AlertCircle
+  Upload
 } from 'lucide-react';
 import { FlashSaleConfig } from '../../types';
 import { useMarketplace } from '../../context/MarketplaceContext';

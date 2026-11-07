@@ -4,7 +4,6 @@ import {
   Plus, 
   Trash2, 
   Edit3, 
-  Check, 
   X, 
   MapPin, 
   Phone, 
@@ -14,8 +13,6 @@ import {
   Eye, 
   EyeOff, 
   Save, 
-  Image as ImageIcon,
-  Compass,
   CheckCircle2
 } from 'lucide-react';
 import { BranchItem } from '../../types';
@@ -466,7 +463,7 @@ export const AdminBranchesManager: React.FC = () => {
                   <a
                     href={b.googleMapsUrl}
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                     className="p-2 rounded-xl bg-neutral-800 hover:bg-neutral-750 text-neutral-300 hover:text-amber-400 text-xs transition-colors"
                     title="فتح في Google Maps"
                   >

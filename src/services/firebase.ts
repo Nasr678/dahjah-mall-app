@@ -5,7 +5,6 @@ import {
   createUserWithEmailAndPassword, 
   signInWithPopup,
   GoogleAuthProvider,
-  FacebookAuthProvider,
   sendPasswordResetEmail,
   signOut, 
   onAuthStateChanged,
@@ -24,21 +23,18 @@ import {
   getDoc, 
   getDocs, 
   setDoc, 
-  addDoc, 
   updateDoc, 
   deleteDoc, 
   query, 
   where, 
-  orderBy, 
   onSnapshot,
   Unsubscribe,
-  serverTimestamp,
   writeBatch,
   runTransaction
 } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import firebaseConfig from '../../firebase-applet-config.json';
-import { Product, Order, Address, UserProfile, CartItem, ExchangeRates, Category, Store, Brand, AppSettings, FooterConfig, Review, ReviewItem } from '../types';
+import { Product, Order, Address, UserProfile, CartItem, ExchangeRates, Category, Store, Brand, AppSettings, FooterConfig, ReviewItem } from '../types';
 import { PRODUCTS, CATEGORIES, STORES, DEFAULT_FOOTER_CONFIG } from '../data/mockData';
 import { DEFAULT_EXCHANGE_RATES, getRegionFromCity } from './currencyService';
 
@@ -48,12 +44,12 @@ const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
 // Firebase Services (per Firebase skill specification)
 export const auth = getAuth(app);
 
-// Suppress transient backend unreachable warnings from logging in dev console
+// Suppress transient backend unreachable and offline warning messages in client console
 try {
-  setLogLevel('error');
+  setLogLevel('silent');
 } catch {}
 
-// Initialize Firestore with persistent offline caching for ultra-fast performance on Android and web
+// Initialize Firestore with resilient multi-tier fallback targeting the designated databaseId
 let firestoreInstance;
 try {
   firestoreInstance = initializeFirestore(
@@ -62,8 +58,6 @@ try {
       localCache: persistentLocalCache({
         tabManager: persistentMultipleTabManager(),
       }),
-      experimentalForceLongPolling: true,
-      experimentalAutoDetectLongPolling: true,
     },
     firebaseConfig.firestoreDatabaseId
   );
@@ -73,13 +67,11 @@ try {
       app,
       {
         localCache: memoryLocalCache(),
-        experimentalForceLongPolling: true,
-        experimentalAutoDetectLongPolling: true,
       },
       firebaseConfig.firestoreDatabaseId
     );
   } catch {
-    firestoreInstance = getFirestore(app);
+    firestoreInstance = getFirestore(app, firebaseConfig.firestoreDatabaseId);
   }
 }
 
@@ -102,19 +94,6 @@ export async function withFirestoreTimeout<T>(promise: Promise<T>, timeoutMs = 2
     clearTimeout(timer);
     return fallbackValue;
   }
-}
-
-// Validate Connection to Firestore (Firebase Skill standard)
-async function testFirestoreConnection() {
-  try {
-    const { getDocFromServer } = await import('firebase/firestore');
-    await withFirestoreTimeout(getDocFromServer(doc(db, 'test', 'connection')), 1500, null);
-  } catch {
-    // Graceful offline fallback
-  }
-}
-if (typeof window !== 'undefined') {
-  testFirestoreConnection();
 }
 
 // Check if Firebase is active
@@ -275,6 +254,15 @@ export function translateAuthError(error: any): string {
     return 'تم إغلاق نافذة تسجيل الدخول قبل إكمال العملية.';
   }
 
+  // Internal assertion failed / pending promise was never set
+  if (
+    msg.includes('internal assertion failed') ||
+    msg.includes('pending promise was never set') ||
+    code === 'auth/internal-error'
+  ) {
+    return 'حدث تعارض أثناء فتح نافذة تسجيل الدخول. يرجى المحاولة مرة أخرى أو استخدام تسجيل الدخول بالبريد الإلكتروني.';
+  }
+
   // Popup blocked
   if (code === 'auth/popup-blocked' || msg.includes('popup-blocked')) {
     return 'تم حظر النافذة المنبثقة من قبل المتصفح أو WebView. يرجى السماح بالنوافذ أو تسجيل الدخول بالبريد الإلكتروني مباشرة.';
@@ -333,6 +321,9 @@ export function translateAuthError(error: any): string {
  * 1. AUTHENTICATION SERVICES
  * ============================================================
  */
+
+// Mutex lock to prevent concurrent popups causing Firebase Auth internal assertion errors
+let activeGoogleLoginPromise: Promise<UserProfile> | null = null;
 
 export const firebaseAuthService = {
   // Register with Email & Password
@@ -445,138 +436,105 @@ export const firebaseAuthService = {
     }
   },
 
-  // Google Sign-In with Android WebView & Timeout protection
+  // Google Sign-In with mutex lock and assertion protection
   async loginWithGoogle(): Promise<UserProfile> {
-    const provider = new GoogleAuthProvider();
-    provider.setCustomParameters({ prompt: 'select_account' });
-
-    // Race against 25s timeout to prevent infinite hanging in Android WebView or slow popups
-    let result: any;
-    try {
-      const popupPromise = signInWithPopup(auth, provider);
-      const timeoutPromise = new Promise((_, reject) => {
-        setTimeout(() => {
-          const timeoutErr: any = new Error('انتهت مهلة تسجيل الدخول. يمكنك تسجيل الدخول بالبريد الإلكتروني وكلمة المرور.');
-          timeoutErr.code = 'auth/timeout';
-          reject(timeoutErr);
-        }, 25000);
-      });
-      result = await Promise.race([popupPromise, timeoutPromise]);
-    } catch (popupError: any) {
-      const code = popupError?.code || '';
-      if (code === 'auth/popup-blocked') {
-        popupError.message = 'تم حظر النافذة المنبثقة من قبل المتصفح أو WebView. يرجى تسجيل الدخول بالبريد الإلكتروني وكلمة المرور مباشرة.';
-      } else if (code === 'auth/disallowed-useragent') {
-        popupError.message = 'بيئة WebView الحالية تمنع نافذة Google المنبثقة. يرجى تسجيل الدخول بالبريد الإلكتروني وكلمة المرور.';
-      }
-      throw popupError;
+    if (activeGoogleLoginPromise) {
+      return activeGoogleLoginPromise;
     }
 
-    const fbUser = result.user;
-    const userDocRef = doc(db, 'users', fbUser.uid);
-    let snap: any = null;
-    try {
-      snap = await withFirestoreTimeout(getDoc(userDocRef), 3000, null);
-    } catch {}
-
-    const isEmailAdmin = (fbUser.email?.toLowerCase().trim() === 'nsralnaty93@gmail.com');
-
-    if (snap && snap.exists()) {
-      const existingData = snap.data() as UserProfile;
-      // Update avatar or email if changed
-      const updated: Partial<UserProfile> = {
-        avatarUrl: fbUser.photoURL || existingData.avatarUrl,
-        email: fbUser.email || existingData.email,
-        name: fbUser.displayName || existingData.name,
-        role: isEmailAdmin ? 'admin' : existingData.role,
-        memberTier: isEmailAdmin ? 'مالك التطبيق — Admin' : existingData.memberTier,
-      };
+    activeGoogleLoginPromise = (async () => {
       try {
-        await withFirestoreTimeout(updateDoc(userDocRef, sanitizeForFirestore(updated)), 2000, null);
-      } catch {}
-      return { ...existingData, ...updated };
-    } else {
-      const region = getRegionFromCity('صنعاء');
-      const newProfile: UserProfile = {
-        id: fbUser.uid,
-        name: fbUser.displayName || (isEmailAdmin ? 'ناصر العناتي (المالك)' : 'مستخدم Google'),
-        phone: fbUser.phoneNumber || '',
-        email: fbUser.email || '',
-        avatarUrl: fbUser.photoURL || undefined,
-        city: 'صنعاء',
-        preferredRegion: region,
-        preferredCurrency: 'YER_NORTH',
-        walletBalanceYER: 10000,
-        points: 200,
-        memberTier: isEmailAdmin ? 'مالك التطبيق — Admin' : 'عضو فضي',
-        role: isEmailAdmin ? 'admin' : 'customer',
-        savedAddresses: [],
-        favoriteProductIds: [],
-        createdAt: new Date().toISOString(),
-      };
-      try {
-        await withFirestoreTimeout(setDoc(userDocRef, sanitizeForFirestore(newProfile)), 3000, null);
-      } catch {}
-      return newProfile;
-    }
-  },
+        const provider = new GoogleAuthProvider();
+        provider.setCustomParameters({ prompt: 'select_account' });
 
-  // Facebook Sign-In
-  async loginWithFacebook(): Promise<UserProfile> {
-    const provider = new FacebookAuthProvider();
-    let result: any;
-    try {
-      const popupPromise = signInWithPopup(auth, provider);
-      const timeoutPromise = new Promise((_, reject) => {
-        setTimeout(() => {
-          const timeoutErr: any = new Error('انتهت مهلة تسجيل الدخول.');
-          timeoutErr.code = 'auth/timeout';
-          reject(timeoutErr);
-        }, 25000);
-      });
-      result = await Promise.race([popupPromise, timeoutPromise]);
-    } catch (popupError: any) {
-      if (popupError?.code === 'auth/popup-blocked') {
-        popupError.message = 'تم حظر النافذة المنبثقة في المتصفح. يمكنك تسجيل الدخول بالبريد الإلكتروني.';
+        let result: any;
+        try {
+          result = await signInWithPopup(auth, provider);
+        } catch (popupError: any) {
+          const code = popupError?.code || '';
+          const msg = String(popupError?.message || '');
+
+          if (
+            code === 'auth/popup-closed-by-user' ||
+            code === 'auth/cancelled-popup-request' ||
+            msg.includes('popup-closed-by-user') ||
+            msg.includes('cancelled-popup-request')
+          ) {
+            const err: any = new Error('تم إغلاق نافذة تسجيل الدخول قبل إكمال العملية.');
+            err.code = 'auth/popup-closed-by-user';
+            throw err;
+          }
+
+          if (
+            msg.includes('INTERNAL ASSERTION FAILED') ||
+            msg.includes('Pending promise was never set')
+          ) {
+            const err: any = new Error('حدث تعارض أثناء فتح نافذة تسجيل الدخول. يرجى المحاولة مرة أخرى أو استخدام تسجيل الدخول بالبريد الإلكتروني.');
+            err.code = 'auth/internal-error';
+            throw err;
+          }
+
+          if (code === 'auth/popup-blocked' || msg.includes('popup-blocked')) {
+            popupError.message = 'تم حظر النافذة المنبثقة من قبل المتصفح أو WebView. يرجى السماح بالنوافذ أو تسجيل الدخول بالبريد الإلكتروني مباشرة.';
+          } else if (code === 'auth/disallowed-useragent' || msg.includes('disallowed-useragent')) {
+            popupError.message = 'بيئة WebView الحالية تمنع نافذة Google المنبثقة. يرجى تسجيل الدخول بالبريد الإلكتروني وكلمة المرور.';
+          }
+
+          throw popupError;
+        }
+
+        const fbUser = result.user;
+        const userDocRef = doc(db, 'users', fbUser.uid);
+        let snap: any = null;
+        try {
+          snap = await withFirestoreTimeout(getDoc(userDocRef), 3000, null);
+        } catch {}
+
+        const isEmailAdmin = (fbUser.email?.toLowerCase().trim() === 'nsralnaty93@gmail.com');
+
+        if (snap && snap.exists()) {
+          const existingData = snap.data() as UserProfile;
+          const updated: Partial<UserProfile> = {
+            avatarUrl: fbUser.photoURL || existingData.avatarUrl,
+            email: fbUser.email || existingData.email,
+            name: fbUser.displayName || existingData.name,
+            role: isEmailAdmin ? 'admin' : existingData.role,
+            memberTier: isEmailAdmin ? 'مالك التطبيق — Admin' : existingData.memberTier,
+          };
+          try {
+            await withFirestoreTimeout(updateDoc(userDocRef, sanitizeForFirestore(updated)), 2000, null);
+          } catch {}
+          return { ...existingData, ...updated };
+        } else {
+          const region = getRegionFromCity('صنعاء');
+          const newProfile: UserProfile = {
+            id: fbUser.uid,
+            name: fbUser.displayName || (isEmailAdmin ? 'ناصر العناتي (المالك)' : 'مستخدم Google'),
+            phone: fbUser.phoneNumber || '',
+            email: fbUser.email || '',
+            avatarUrl: fbUser.photoURL || undefined,
+            city: 'صنعاء',
+            preferredRegion: region,
+            preferredCurrency: 'YER_NORTH',
+            walletBalanceYER: 10000,
+            points: 200,
+            memberTier: isEmailAdmin ? 'مالك التطبيق — Admin' : 'عضو فضي',
+            role: isEmailAdmin ? 'admin' : 'customer',
+            savedAddresses: [],
+            favoriteProductIds: [],
+            createdAt: new Date().toISOString(),
+          };
+          try {
+            await withFirestoreTimeout(setDoc(userDocRef, sanitizeForFirestore(newProfile)), 3000, null);
+          } catch {}
+          return newProfile;
+        }
+      } finally {
+        activeGoogleLoginPromise = null;
       }
-      throw popupError;
-    }
-    const fbUser = result.user;
+    })();
 
-    const userDocRef = doc(db, 'users', fbUser.uid);
-    const snap = await getDoc(userDocRef);
-
-    if (snap.exists()) {
-      const existingData = snap.data() as UserProfile;
-      const updated: Partial<UserProfile> = {
-        avatarUrl: fbUser.photoURL || existingData.avatarUrl,
-        email: fbUser.email || existingData.email,
-      };
-      await updateDoc(userDocRef, sanitizeForFirestore(updated));
-      return { ...existingData, ...updated };
-    } else {
-      const region = getRegionFromCity('صنعاء');
-      const isEmailAdmin = (fbUser.email?.toLowerCase().trim() === 'nsralnaty93@gmail.com');
-      const newProfile: UserProfile = {
-        id: fbUser.uid,
-        name: fbUser.displayName || 'مستخدم Facebook',
-        phone: fbUser.phoneNumber || '',
-        email: fbUser.email || '',
-        avatarUrl: fbUser.photoURL || undefined,
-        city: 'صنعاء',
-        preferredRegion: region,
-        preferredCurrency: 'YER_NORTH',
-        walletBalanceYER: 10000,
-        points: 200,
-        memberTier: 'عضو فضي',
-        role: isEmailAdmin ? 'admin' : 'customer',
-        savedAddresses: [],
-        favoriteProductIds: [],
-        createdAt: new Date().toISOString(),
-      };
-      await setDoc(userDocRef, sanitizeForFirestore(newProfile));
-      return newProfile;
-    }
+    return activeGoogleLoginPromise;
   },
 
   // Quick phone / guest login sync
@@ -985,69 +943,90 @@ export async function uploadBrandImage(file: File, type: 'logo' | 'cover' = 'log
 }
 
 /**
- * Client-side lightweight image compression
- * Scales down large images and outputs optimized JPEG
+ * Client-side ultra-fast image compression
+ * Uses URL.createObjectURL and HTML5 canvas to scale and compress in milliseconds
  */
-export async function compressImage(file: File, maxWidth = 1200, quality = 0.82): Promise<Blob> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = (event) => {
-      const img = new Image();
-      img.src = event.target?.result as string;
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        let width = img.width;
-        let height = img.height;
+export async function compressImage(file: File, maxWidth = 1080, quality = 0.78): Promise<Blob> {
+  // If already small (< 100KB), return as is without re-encoding
+  if (file.size < 100 * 1024 && (file.type === 'image/jpeg' || file.type === 'image/webp' || file.type === 'image/png')) {
+    return file;
+  }
 
-        if (width > maxWidth) {
+  return new Promise((resolve) => {
+    const objectUrl = URL.createObjectURL(file);
+    const img = new Image();
+
+    img.onload = () => {
+      URL.revokeObjectURL(objectUrl);
+      const canvas = document.createElement('canvas');
+      let width = img.naturalWidth || img.width;
+      let height = img.naturalHeight || img.height;
+
+      if (width > maxWidth || height > maxWidth) {
+        if (width >= height) {
           height = Math.round((height * maxWidth) / width);
           width = maxWidth;
+        } else {
+          width = Math.round((width * maxWidth) / height);
+          height = maxWidth;
         }
+      }
 
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext('2d');
-        if (!ctx) {
-          resolve(file);
-          return;
-        }
-        ctx.drawImage(img, 0, 0, width, height);
-        canvas.toBlob(
-          (blob) => {
-            if (blob) {
-              resolve(blob);
-            } else {
-              resolve(file);
-            }
-          },
-          'image/jpeg',
-          quality
-        );
-      };
-      img.onerror = (err) => reject(err);
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d', { alpha: false });
+      if (!ctx) {
+        resolve(file);
+        return;
+      }
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'medium';
+      ctx.drawImage(img, 0, 0, width, height);
+
+      canvas.toBlob(
+        (blob) => {
+          if (blob && blob.size > 0) {
+            resolve(blob);
+          } else {
+            resolve(file);
+          }
+        },
+        'image/jpeg',
+        quality
+      );
     };
-    reader.onerror = (err) => reject(err);
+
+    img.onerror = () => {
+      URL.revokeObjectURL(objectUrl);
+      resolve(file);
+    };
+
+    img.src = objectUrl;
   });
 }
 
 /**
- * Uploads a product image to Firebase Storage with automatic fallback
+ * Uploads a product image to Firebase Storage with ultra-fast timeout and instant fallback
  */
 export async function uploadProductImage(file: File): Promise<string> {
+  const compressedBlob = await compressImage(file, 1080, 0.78);
+  const filename = `products/${Date.now()}_${Math.random().toString(36).substring(2, 8)}.jpg`;
+  const storageRef = ref(storage, filename);
+
   try {
-    const compressedBlob = await compressImage(file, 1200, 0.82);
-    const filename = `products/${Date.now()}_${Math.random().toString(36).substring(2, 8)}.jpg`;
-    const storageRef = ref(storage, filename);
-    
-    const snapshot = await uploadBytes(storageRef, compressedBlob, {
+    const uploadTask = uploadBytes(storageRef, compressedBlob, {
       contentType: 'image/jpeg',
     });
-    const downloadURL = await getDownloadURL(snapshot.ref);
-    return downloadURL;
+
+    // 6s timeout race to prevent admin dashboard from hanging on slow or offline network
+    const timeoutPromise = new Promise<never>((_, reject) => {
+      setTimeout(() => reject(new Error('Storage upload timeout')), 6000);
+    });
+
+    const snapshot = await Promise.race([uploadTask, timeoutPromise]);
+    return await getDownloadURL(snapshot.ref);
   } catch (storageError) {
-    console.warn('Firebase Storage direct upload note (falling back to optimized Data URL):', storageError);
-    const compressedBlob = await compressImage(file, 900, 0.78);
+    console.warn('Firebase Storage direct upload fast fallback to optimized Data URL:', storageError);
     return new Promise((resolve) => {
       const reader = new FileReader();
       reader.onloadend = () => resolve(reader.result as string);

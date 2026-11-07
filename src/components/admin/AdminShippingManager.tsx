@@ -8,11 +8,7 @@ import {
   X, 
   MapPin, 
   Clock, 
-  DollarSign, 
-  ShieldCheck, 
-  Percent, 
-  Sliders,
-  AlertCircle
+  DollarSign
 } from 'lucide-react';
 import { ShippingZoneConfig, RegionType } from '../../types';
 import { useMarketplace } from '../../context/MarketplaceContext';

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion } from 'motion/react';
 import { Product, CurrencyCode } from '../../types';
 import { useMarketplace } from '../../context/MarketplaceContext';
+import { CachedImage } from '../common/CachedImage';
 import { 
   Search, 
   X, 
@@ -14,10 +14,7 @@ import {
   Star,
   Upload,
   Loader2,
-  CheckCircle2,
-  AlertCircle,
-  Tag,
-  ArrowRight
+  CheckCircle2
 } from 'lucide-react';
 
 interface SmartSearchModalProps {
@@ -434,10 +431,12 @@ export const SmartSearchModal: React.FC<SmartSearchModalProps> = ({
                       }}
                       className="flex items-center gap-3 p-2.5 rounded-2xl bg-neutral-900 border border-neutral-800 hover:border-amber-500/50 cursor-pointer transition-all hover:bg-neutral-850 group"
                     >
-                      <img
+                      <CachedImage
                         src={m.product.images[0]}
                         alt={m.product.name}
-                        className="w-16 h-16 rounded-xl object-cover flex-shrink-0"
+                        preset="thumb"
+                        containerClassName="w-16 h-16 rounded-xl overflow-hidden flex-shrink-0"
+                        className="w-full h-full object-cover"
                       />
                       <div className="flex-1 overflow-hidden text-right">
                         <div className="flex items-center justify-between mb-1">
@@ -532,10 +531,12 @@ export const SmartSearchModal: React.FC<SmartSearchModalProps> = ({
                     }}
                     className="flex gap-3 p-3 rounded-2xl bg-neutral-900/80 border border-neutral-800 hover:border-amber-500/40 cursor-pointer transition-all hover:bg-neutral-850 group"
                   >
-                    <img
+                    <CachedImage
                       src={prod.images[0]}
                       alt={prod.name}
-                      className="w-20 h-20 rounded-xl object-cover flex-shrink-0"
+                      preset="thumb"
+                      containerClassName="w-20 h-20 rounded-xl overflow-hidden flex-shrink-0"
+                      className="w-full h-full object-cover"
                     />
                     <div className="flex-1 flex flex-col justify-between overflow-hidden">
                       <div>
@@ -628,10 +629,12 @@ export const SmartSearchModal: React.FC<SmartSearchModalProps> = ({
                     }}
                     className="flex items-center gap-2.5 p-3 rounded-2xl bg-neutral-900/60 border border-neutral-800 hover:border-amber-500/40 text-right group transition-all"
                   >
-                    <img
+                    <CachedImage
                       src={cat.image}
                       alt={cat.name}
-                      className="w-10 h-10 rounded-xl object-cover"
+                      preset="thumb"
+                      containerClassName="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0"
+                      className="w-full h-full object-cover"
                     />
                     <div className="truncate">
                       <div className="text-xs font-bold text-white group-hover:text-amber-400 truncate">

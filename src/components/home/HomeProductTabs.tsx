@@ -2,6 +2,7 @@ import React, { useState, useMemo, memo } from 'react';
 import { Product, CurrencyCode } from '../../types';
 import { ProductCard } from '../products/ProductCard';
 import { Sparkles, Tag, Crown, Heart, ArrowLeft } from 'lucide-react';
+import { ProductGridSkeleton } from '../common/ProductSkeleton';
 
 interface HomeProductTabsProps {
   products: Product[];
@@ -145,19 +146,23 @@ export const HomeProductTabs: React.FC<HomeProductTabsProps> = memo(({
       </div>
 
       {/* Responsive Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-2.5 sm:gap-4">
-        {displayedProducts.map((product) => (
-          <ProductCard
-            key={product.id}
-            product={product}
-            currency={currency}
-            isFavorite={wishlistSet.has(product.id)}
-            onToggleFavorite={onToggleFavorite}
-            onAddToCart={onAddToCart}
-            onSelectProduct={onSelectProduct}
-          />
-        ))}
-      </div>
+      {products.length === 0 ? (
+        <ProductGridSkeleton count={6} className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-2.5 sm:gap-4" />
+      ) : (
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-2.5 sm:gap-4">
+          {displayedProducts.map((product) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              currency={currency}
+              isFavorite={wishlistSet.has(product.id)}
+              onToggleFavorite={onToggleFavorite}
+              onAddToCart={onAddToCart}
+              onSelectProduct={onSelectProduct}
+            />
+          ))}
+        </div>
+      )}
     </section>
   );
 });

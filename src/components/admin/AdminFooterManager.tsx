@@ -20,20 +20,8 @@ import {
   Image as ImageIcon, 
   Upload,
   ExternalLink,
-  ChevronRight,
   ChevronLeft,
-  Info,
   CheckCircle2,
-  Lock,
-  Globe,
-  Truck,
-  Building2,
-  MapPin,
-  Play,
-  HelpCircle,
-  Coins,
-  Headphones,
-  Bot,
   FileText
 } from 'lucide-react';
 import { useMarketplace } from '../../context/MarketplaceContext';

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion } from 'motion/react';
-import { getOptimizedImageUrl } from '../../utils/imageOptimizer';
+import { CachedImage } from '../common/CachedImage';
 
 export interface FlyEventDetail {
   id?: string;
@@ -159,37 +159,50 @@ export const FlyToCartOverlay: React.FC = () => {
 
   return (
     <div className="fixed inset-0 pointer-events-none z-[999999] overflow-hidden">
-      {particles.map((p) => (
-        <motion.div
-          key={p.id}
-          initial={{
-            transform: `translate3d(${p.startX - 28}px, ${p.startY - 28}px, 0px) scale(1) rotate(0deg)`,
-            opacity: 1,
-          }}
-          animate={{
-            transform: `translate3d(${p.targetX - 14}px, ${p.targetY - 14}px, 0px) scale(0.24) rotate(-18deg)`,
-            opacity: 0.65,
-          }}
-          transition={{
-            duration: 0.42, // Ultra responsive 420ms
-            ease: [0.18, 0.89, 0.32, 1.05], // Fast crisp curve
-          }}
-          onAnimationComplete={() => onParticleComplete(p.id)}
-          className="absolute top-0 left-0 w-14 h-14 rounded-2xl overflow-hidden border-2 border-amber-400 bg-neutral-900 shadow-2xl shadow-amber-500/40 ring-2 ring-amber-400/50 gpu-layer"
-          style={{
-            willChange: 'transform, opacity',
-            transformOrigin: 'center center',
-          }}
-        >
-          <img
-            src={getOptimizedImageUrl(p.imageUrl, 'thumb')}
-            alt="Flying Product"
-            className="w-full h-full object-cover"
-            referrerPolicy="no-referrer"
-          />
-          <div className="absolute inset-0 bg-gradient-to-tr from-amber-500/30 to-transparent pointer-events-none" />
-        </motion.div>
-      ))}
+      {particles.map((p) => {
+        const midX = (p.startX + p.targetX) / 2 + (p.startX < p.targetX ? -28 : 28);
+        const arcApexY = Math.min(p.targetY, p.startY) - Math.max(55, Math.abs(p.startY - p.targetY) * 0.2);
+
+        return (
+          <motion.div
+            key={p.id}
+            initial={{
+              x: p.startX - 26,
+              y: p.startY - 26,
+              scale: 1,
+              rotate: 0,
+              opacity: 1,
+            }}
+            animate={{
+              x: [p.startX - 26, midX - 18, p.targetX - 8],
+              y: [p.startY - 26, arcApexY, p.targetY - 8],
+              scale: [1, 0.72, 0.16],
+              rotate: [0, -14, 18],
+              opacity: [1, 1, 0.3],
+            }}
+            transition={{
+              duration: 0.5,
+              times: [0, 0.44, 1],
+              ease: ['easeOut', 'easeInOut'],
+            }}
+            onAnimationComplete={() => onParticleComplete(p.id)}
+            className="absolute top-0 left-0 w-14 h-14 rounded-2xl overflow-hidden border-2 border-amber-400 bg-neutral-900 shadow-2xl shadow-amber-500/50 ring-2 ring-amber-400/60 gpu-layer"
+            style={{
+              willChange: 'transform, opacity',
+              transformOrigin: 'center center',
+            }}
+          >
+            <CachedImage
+              src={p.imageUrl}
+              alt="Flying Product"
+              preset="thumb"
+              containerClassName="w-full h-full"
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-tr from-amber-500/30 to-transparent pointer-events-none" />
+          </motion.div>
+        );
+      })}
     </div>
   );
 };

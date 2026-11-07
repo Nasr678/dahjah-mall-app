@@ -7,13 +7,11 @@ import {
   MapPin, 
   Phone, 
   X, 
-  ChevronRight, 
   ShieldCheck, 
   UserCheck, 
   Navigation, 
   AlertCircle,
   Copy,
-  ExternalLink,
   RotateCw,
   MessageCircle
 } from 'lucide-react';
@@ -21,6 +19,7 @@ import { Order, OrderStatus } from '../../types';
 import { formatPriceWithCurrency } from '../../services/currencyService';
 import { LeafletOrderTracker } from '../maps/LeafletOrderTracker';
 import { createWhatsAppLink } from '../../utils/whatsappHelper';
+import { CachedImage } from '../common/CachedImage';
 
 interface OrderTrackingModalProps {
   isOpen: boolean;
@@ -251,7 +250,7 @@ export const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
                   <a
                     href={createWhatsAppLink(order.courier?.phone || '775889900', `السلام عليكم يا كابتن، بخصوص طلبي من ضَجّة مول رقم (${order.orderNumber || order.id})`)}
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                     className="p-2.5 sm:p-3 rounded-2xl bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border border-emerald-500/40 shadow-md transition-all flex items-center gap-1.5 text-xs font-black cursor-pointer"
                     title="مراسلة المندوب عبر واتساب"
                   >
@@ -315,10 +314,12 @@ export const OrderTrackingModal: React.FC<OrderTrackingModalProps> = ({
               {order.items.map((item, i) => (
                 <div key={i} className="py-2 flex items-center justify-between text-xs">
                   <div className="flex items-center gap-2">
-                    <img
+                    <CachedImage
                       src={item.product.images[0]}
                       alt={item.product.name}
-                      className="w-10 h-10 rounded-lg object-cover bg-neutral-900 border border-neutral-800"
+                      preset="thumb"
+                      containerClassName="w-10 h-10 rounded-lg overflow-hidden bg-neutral-900 border border-neutral-800 flex-shrink-0"
+                      className="w-full h-full object-cover"
                     />
                     <div>
                       <div className="font-bold text-white truncate max-w-[200px]">{item.product.name}</div>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Eye, Type, Sparkles, Volume2, Check } from 'lucide-react';
+import { X, Eye, Type, Volume2 } from 'lucide-react';
 
 interface AccessibilityModalProps {
   isOpen: boolean;

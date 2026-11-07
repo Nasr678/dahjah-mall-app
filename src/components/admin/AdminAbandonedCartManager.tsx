@@ -1,15 +1,10 @@
 import React, { useState } from 'react';
 import { 
   ShoppingCart, 
-  Clock, 
-  Bell, 
   Check, 
-  MessageSquare, 
-  AlertCircle, 
   Users, 
   Send, 
-  Sliders,
-  DollarSign
+  Sliders
 } from 'lucide-react';
 import { AbandonedCartConfig, AbandonedCartRecord, Product } from '../../types';
 import { useMarketplace } from '../../context/MarketplaceContext';

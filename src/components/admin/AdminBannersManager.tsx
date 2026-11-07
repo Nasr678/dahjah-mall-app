@@ -11,11 +11,9 @@ import {
   ArrowDown, 
   Eye, 
   EyeOff, 
-  Tag, 
   Sparkles, 
   CheckCircle2, 
-  AlertCircle,
-  ExternalLink
+  AlertCircle
 } from 'lucide-react';
 import { BannerItem } from '../../types';
 import { useMarketplace } from '../../context/MarketplaceContext';

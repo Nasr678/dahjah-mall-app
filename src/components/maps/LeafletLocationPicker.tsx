@@ -5,12 +5,7 @@ import {
   MapPin, 
   Search, 
   Layers, 
-  Plus, 
-  Minus, 
   Compass, 
-  Check, 
-  Building, 
-  Sparkles,
   Navigation
 } from 'lucide-react';
 import { 

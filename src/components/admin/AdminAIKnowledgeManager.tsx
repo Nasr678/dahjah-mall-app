@@ -7,16 +7,7 @@ import {
   Edit3, 
   CheckCircle2, 
   AlertCircle, 
-  Sparkles, 
-  BookOpen, 
-  HelpCircle, 
-  ShieldCheck, 
-  CreditCard, 
-  Truck, 
-  Store, 
-  MessageSquare,
-  FileText,
-  RotateCcw
+  Sparkles
 } from 'lucide-react';
 import { AIKnowledgeBaseItem } from '../../types';
 import { useMarketplace } from '../../context/MarketplaceContext';
