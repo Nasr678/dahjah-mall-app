@@ -33,10 +33,21 @@ import {
   runTransaction
 } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import firebaseConfig from '../../firebase-applet-config.json';
+import appletConfig from '../../firebase-applet-config.json';
 import { Product, Order, Address, UserProfile, CartItem, ExchangeRates, Category, Store, Brand, AppSettings, FooterConfig, ReviewItem } from '../types';
 import { PRODUCTS, CATEGORIES, STORES, DEFAULT_FOOTER_CONFIG } from '../data/mockData';
 import { DEFAULT_EXCHANGE_RATES, getRegionFromCity } from './currencyService';
+
+// Production Firebase Configuration for dahjahmall
+export const firebaseConfig = {
+  apiKey: appletConfig.apiKey?.startsWith("AIzaSyCt") ? appletConfig.apiKey : "AIzaSyCtZE3oEttNgQxktucrMWSw",
+  authDomain: "dahjahmall.firebaseapp.com",
+  projectId: "dahjahmall",
+  storageBucket: "dahjahmall.firebasestorage.app",
+  messagingSenderId: "884142305809",
+  appId: appletConfig.appId?.startsWith("1:884142305809") ? appletConfig.appId : "1:884142305809:web:3a0826380a",
+  firestoreDatabaseId: appletConfig.firestoreDatabaseId || "(default)",
+};
 
 // Initialize Firebase App
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
