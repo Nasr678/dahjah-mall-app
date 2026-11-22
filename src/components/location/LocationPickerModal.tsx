@@ -82,28 +82,28 @@ export const LocationPickerModal: React.FC<LocationPickerModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-[9995] flex items-center justify-center p-2 sm:p-4 bg-neutral-950/85 backdrop-blur-xl overflow-y-auto">
-      <div className="relative w-full max-w-2xl bg-neutral-900 border border-neutral-800 rounded-3xl shadow-2xl text-white my-auto overflow-hidden flex flex-col max-h-[92vh]">
+    <div className="fixed inset-0 z-[9995] flex items-center justify-center p-2 sm:p-4 bg-neutral-950/50 backdrop-blur-md overflow-y-auto">
+      <div className="relative w-full max-w-2xl bg-white border border-neutral-200 rounded-3xl shadow-2xl text-neutral-900 my-auto overflow-hidden flex flex-col max-h-[92vh]">
         {/* Modal Header */}
-        <div className="p-4 sm:p-5 border-b border-neutral-800 flex items-center justify-between bg-neutral-950/80 backdrop-blur-md">
+        <div className="p-4 sm:p-5 border-b border-neutral-200 flex items-center justify-between bg-white/95 backdrop-blur-md">
           <div className="flex items-center gap-2.5">
-            <div className="p-2.5 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/30">
+            <div className="p-2.5 rounded-2xl bg-amber-50 text-amber-700 border border-amber-200/80">
               <MapPin className="w-5 h-5" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="text-base sm:text-lg font-black text-white">تحديد عنوان التوصيل بدقة</h3>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                <h3 className="text-base sm:text-lg font-black text-neutral-950">تحديد عنوان التوصيل بدقة</h3>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200">
                   OpenStreetMap
                 </span>
               </div>
-              <p className="text-xs text-neutral-400">حدد موقعك على الخريطة التفاعلية أو أدخل بيانات العنوان</p>
+              <p className="text-xs text-neutral-500">حدد موقعك على الخريطة التفاعلية أو أدخل بيانات العنوان</p>
             </div>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="p-2 rounded-xl bg-neutral-800/80 hover:bg-neutral-800 text-neutral-400 hover:text-white transition-colors"
+            className="p-2 rounded-xl bg-[#F6F7F9] hover:bg-neutral-200 text-neutral-600 hover:text-neutral-900 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -112,12 +112,12 @@ export const LocationPickerModal: React.FC<LocationPickerModalProps> = ({
         {/* Modal Body */}
         <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-5">
           {/* Mode Switcher Tabs */}
-          <div className="flex items-center gap-2 bg-neutral-950 p-1 rounded-2xl border border-neutral-800">
+          <div className="flex items-center gap-2 bg-[#F6F7F9] p-1.5 rounded-2xl border border-neutral-200">
             <button
               type="button"
               onClick={() => setIsManualMode(false)}
               className={`flex-1 py-2 px-3 rounded-xl text-xs sm:text-sm font-black transition-all flex items-center justify-center gap-1.5 ${
-                !isManualMode ? 'bg-amber-500 text-neutral-950 shadow-md' : 'text-neutral-400 hover:text-white'
+                !isManualMode ? 'bg-amber-400 text-neutral-950 shadow-sm' : 'text-neutral-600 hover:text-neutral-900'
               }`}
             >
               <Compass className="w-4 h-4" />
@@ -127,7 +127,7 @@ export const LocationPickerModal: React.FC<LocationPickerModalProps> = ({
               type="button"
               onClick={() => setIsManualMode(true)}
               className={`flex-1 py-2 px-3 rounded-xl text-xs sm:text-sm font-black transition-all flex items-center justify-center gap-1.5 ${
-                isManualMode ? 'bg-amber-500 text-neutral-950 shadow-md' : 'text-neutral-400 hover:text-white'
+                isManualMode ? 'bg-amber-400 text-neutral-950 shadow-sm' : 'text-neutral-600 hover:text-neutral-900'
               }`}
             >
               <Building2 className="w-4 h-4" />
@@ -137,7 +137,7 @@ export const LocationPickerModal: React.FC<LocationPickerModalProps> = ({
 
           {/* Interactive Leaflet Map (When not manual mode) */}
           {!isManualMode && (
-            <div className="space-y-2">
+            <div className="space-y-2 rounded-2xl overflow-hidden border border-neutral-200">
               <LeafletLocationPicker
                 lat={lat}
                 lng={lng}
@@ -150,7 +150,7 @@ export const LocationPickerModal: React.FC<LocationPickerModalProps> = ({
 
           {/* Address Title Selection (المنزل، العمل، عنوان آخر) */}
           <div>
-            <label className="block text-xs font-bold text-neutral-300 mb-2">نوع العنوان وتسميته:</label>
+            <label className="block text-xs font-bold text-neutral-700 mb-2">نوع العنوان وتسميته:</label>
             <div className="grid grid-cols-3 gap-2">
               {[
                 { id: 'المنزل', icon: Home, label: 'المنزل' },
@@ -166,8 +166,8 @@ export const LocationPickerModal: React.FC<LocationPickerModalProps> = ({
                     onClick={() => setAddressTitle(item.id)}
                     className={`py-2 px-3 rounded-xl border text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
                       isSelected
-                        ? 'bg-amber-500/20 border-amber-500 text-amber-300 shadow-sm'
-                        : 'bg-neutral-950 border-neutral-800 text-neutral-400 hover:text-white hover:border-neutral-700'
+                        ? 'bg-amber-50 border-amber-500 text-amber-800 shadow-sm'
+                        : 'bg-[#F6F7F9] border-neutral-200 text-neutral-600 hover:text-neutral-900 hover:border-neutral-300'
                     }`}
                   >
                     <Icon className="w-3.5 h-3.5" />
@@ -181,29 +181,29 @@ export const LocationPickerModal: React.FC<LocationPickerModalProps> = ({
           {/* Recipient Contact Details */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-bold text-neutral-300 mb-1.5">اسم المستلم الثلاثي:</label>
+              <label className="block text-xs font-bold text-neutral-700 mb-1.5">اسم المستلم الثلاثي:</label>
               <div className="relative">
-                <User className="absolute right-3 top-2.5 w-4 h-4 text-neutral-500" />
+                <User className="absolute right-3 top-2.5 w-4 h-4 text-neutral-400" />
                 <input
                   type="text"
                   value={recipientName}
                   onChange={(e) => setRecipientName(e.target.value)}
                   placeholder="مثال: ناصر العناتي"
-                  className="w-full pl-3 pr-9 py-2.5 rounded-xl bg-neutral-950 border border-neutral-800 focus:border-amber-500 text-white text-xs outline-none transition-colors"
+                  className="w-full pl-3 pr-9 py-2.5 rounded-xl bg-[#F6F7F9] border border-neutral-200 focus:bg-white focus:border-amber-500 text-neutral-900 placeholder-neutral-400 text-xs outline-none transition-colors"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-neutral-300 mb-1.5">رقم الهاتف اليمني للتواصل:</label>
+              <label className="block text-xs font-bold text-neutral-700 mb-1.5">رقم الهاتف اليمني للتواصل:</label>
               <div className="relative">
-                <Phone className="absolute right-3 top-2.5 w-4 h-4 text-neutral-500" />
+                <Phone className="absolute right-3 top-2.5 w-4 h-4 text-neutral-400" />
                 <input
                   type="tel"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="777123456"
-                  className="w-full pl-3 pr-9 py-2.5 rounded-xl bg-neutral-950 border border-neutral-800 focus:border-amber-500 text-white text-xs font-mono outline-none transition-colors"
+                  className="w-full pl-3 pr-9 py-2.5 rounded-xl bg-[#F6F7F9] border border-neutral-200 focus:bg-white focus:border-amber-500 text-neutral-900 placeholder-neutral-400 text-xs font-mono outline-none transition-colors tabular-nums"
                   dir="ltr"
                 />
               </div>
@@ -213,24 +213,24 @@ export const LocationPickerModal: React.FC<LocationPickerModalProps> = ({
           {/* City & District Fields */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-bold text-neutral-300 mb-1.5">المحافظة / المدينة:</label>
+              <label className="block text-xs font-bold text-neutral-700 mb-1.5">المحافظة / المدينة:</label>
               <input
                 type="text"
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
                 placeholder="صنعاء / عدن / تعز..."
-                className="w-full px-3 py-2.5 rounded-xl bg-neutral-950 border border-neutral-800 focus:border-amber-500 text-white text-xs outline-none transition-colors"
+                className="w-full px-3 py-2.5 rounded-xl bg-[#F6F7F9] border border-neutral-200 focus:bg-white focus:border-amber-500 text-neutral-900 placeholder-neutral-400 text-xs outline-none transition-colors"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-neutral-300 mb-1.5">المديرية / الحي:</label>
+              <label className="block text-xs font-bold text-neutral-700 mb-1.5">المديرية / الحي:</label>
               <input
                 type="text"
                 value={district}
                 onChange={(e) => setDistrict(e.target.value)}
                 placeholder="حدة / المنصورة / السبعين..."
-                className="w-full px-3 py-2.5 rounded-xl bg-neutral-950 border border-neutral-800 focus:border-amber-500 text-white text-xs outline-none transition-colors"
+                className="w-full px-3 py-2.5 rounded-xl bg-[#F6F7F9] border border-neutral-200 focus:bg-white focus:border-amber-500 text-neutral-900 placeholder-neutral-400 text-xs outline-none transition-colors"
               />
             </div>
           </div>
@@ -238,37 +238,37 @@ export const LocationPickerModal: React.FC<LocationPickerModalProps> = ({
           {/* Street & Building Fields */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-bold text-neutral-300 mb-1.5">اسم الشارع والمعلم القريب:</label>
+              <label className="block text-xs font-bold text-neutral-700 mb-1.5">اسم الشارع والمعلم القريب:</label>
               <input
                 type="text"
                 value={street}
                 onChange={(e) => setStreet(e.target.value)}
                 placeholder="شارع صخر — بجوار مركز الكمبيوتر"
-                className="w-full px-3 py-2.5 rounded-xl bg-neutral-950 border border-neutral-800 focus:border-amber-500 text-white text-xs outline-none transition-colors"
+                className="w-full px-3 py-2.5 rounded-xl bg-[#F6F7F9] border border-neutral-200 focus:bg-white focus:border-amber-500 text-neutral-900 placeholder-neutral-400 text-xs outline-none transition-colors"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-neutral-300 mb-1.5">العمارة / رقم الشقة / المنزل:</label>
+              <label className="block text-xs font-bold text-neutral-700 mb-1.5">العمارة / رقم الشقة / المنزل:</label>
               <input
                 type="text"
                 value={building}
                 onChange={(e) => setBuilding(e.target.value)}
                 placeholder="عمارة النور - الطابق الثاني - شقة 4"
-                className="w-full px-3 py-2.5 rounded-xl bg-neutral-950 border border-neutral-800 focus:border-amber-500 text-white text-xs outline-none transition-colors"
+                className="w-full px-3 py-2.5 rounded-xl bg-[#F6F7F9] border border-neutral-200 focus:bg-white focus:border-amber-500 text-neutral-900 placeholder-neutral-400 text-xs outline-none transition-colors"
               />
             </div>
           </div>
 
           {/* Additional Notes */}
           <div>
-            <label className="block text-xs font-bold text-neutral-300 mb-1.5">ملاحظات إضافية لمندوب التوصيل (اختياري):</label>
+            <label className="block text-xs font-bold text-neutral-700 mb-1.5">ملاحظات إضافية لمندوب التوصيل (اختياري):</label>
             <input
               type="text"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="مثال: الاتصال قبل الوصول بـ 15 دقيقة، الباب البني بجوار البقالة"
-              className="w-full px-3 py-2.5 rounded-xl bg-neutral-950 border border-neutral-800 focus:border-amber-500 text-white text-xs outline-none transition-colors"
+              className="w-full px-3 py-2.5 rounded-xl bg-[#F6F7F9] border border-neutral-200 focus:bg-white focus:border-amber-500 text-neutral-900 placeholder-neutral-400 text-xs outline-none transition-colors"
             />
           </div>
 
@@ -279,20 +279,20 @@ export const LocationPickerModal: React.FC<LocationPickerModalProps> = ({
               id="defaultAddressCheck"
               checked={isDefault}
               onChange={(e) => setIsDefault(e.target.checked)}
-              className="w-4 h-4 rounded text-amber-500 focus:ring-amber-500 bg-neutral-950 border-neutral-700"
+              className="w-4 h-4 rounded accent-amber-500 bg-white border-neutral-300"
             />
-            <label htmlFor="defaultAddressCheck" className="text-xs font-bold text-neutral-300 cursor-pointer">
+            <label htmlFor="defaultAddressCheck" className="text-xs font-bold text-neutral-700 cursor-pointer">
               تعيين كعنوان توصيل افتراضي لحسابي
             </label>
           </div>
         </div>
 
         {/* Modal Footer */}
-        <div className="p-4 border-t border-neutral-800 bg-neutral-950 flex items-center justify-between gap-3">
+        <div className="p-4 border-t border-neutral-200 bg-white/95 flex items-center justify-between gap-3">
           <button
             type="button"
             onClick={onClose}
-            className="px-5 py-2.5 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-xs sm:text-sm font-bold transition-all"
+            className="px-5 py-2.5 rounded-xl bg-[#F6F7F9] hover:bg-neutral-200 border border-neutral-200 text-neutral-700 text-xs sm:text-sm font-bold transition-all"
           >
             إلغاء
           </button>
@@ -300,7 +300,7 @@ export const LocationPickerModal: React.FC<LocationPickerModalProps> = ({
           <button
             type="button"
             onClick={handleSave}
-            className="px-6 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-neutral-950 text-xs sm:text-sm font-black transition-all shadow-lg active:scale-95 flex items-center gap-2"
+            className="px-6 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-500 text-neutral-950 text-xs sm:text-sm font-black transition-all shadow-md shadow-amber-500/20 active:scale-95 flex items-center gap-2"
           >
             <Check className="w-4 h-4 stroke-[3]" />
             <span>حفظ وتثبيت العنوان</span>

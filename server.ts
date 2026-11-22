@@ -1,5 +1,7 @@
-import express, { Request, Response } from 'express';
+import express, { Request, Response, NextFunction } from 'express';
+import fs from 'fs';
 import path from 'path';
+import zlib from 'zlib';
 import { createServer as createViteServer } from 'vite';
 import { GoogleGenAI } from '@google/genai';
 import dotenv from 'dotenv';
@@ -25,6 +27,76 @@ function getGeminiClient(): GoogleGenAI | null {
 async function startServer() {
   const app = express();
   const PORT = Number(process.env.PORT) || 3000;
+
+  // Lightweight zero-dependency Brotli / Gzip response compression for API & static assets
+  app.use((req: Request, res: Response, next: NextFunction) => {
+    const acceptEncoding = String(req.headers['accept-encoding'] || '');
+    const supportsBr = acceptEncoding.includes('br');
+    const supportsGzip = acceptEncoding.includes('gzip');
+
+    if (!supportsBr && !supportsGzip) {
+      return next();
+    }
+
+    const origSend = res.send.bind(res);
+    const origJson = res.json.bind(res);
+
+    const shouldCompress = (contentType: string | number | string[] | undefined, byteLength: number): boolean => {
+      if (byteLength < 1024) return false;
+      const ct = String(contentType || '').toLowerCase();
+      return (
+        !ct ||
+        ct.includes('json') ||
+        ct.includes('text/') ||
+        ct.includes('javascript') ||
+        ct.includes('svg') ||
+        ct.includes('xml')
+      );
+    };
+
+    const compressAndSend = (body: Buffer | string) => {
+      if (res.headersSent || res.getHeader('Content-Encoding')) {
+        return origSend(body);
+      }
+      const buf = Buffer.isBuffer(body) ? body : Buffer.from(String(body), 'utf8');
+      if (!shouldCompress(res.getHeader('Content-Type'), buf.length)) {
+        return origSend(body);
+      }
+      res.setHeader('Vary', 'Accept-Encoding');
+      try {
+        if (supportsBr) {
+          const compressed = zlib.brotliCompressSync(buf, {
+            params: { [zlib.constants.BROTLI_PARAM_QUALITY]: 4 },
+          });
+          res.setHeader('Content-Encoding', 'br');
+          res.setHeader('Content-Length', String(compressed.length));
+          return origSend(compressed);
+        }
+        const compressed = zlib.gzipSync(buf, { level: 6 });
+        res.setHeader('Content-Encoding', 'gzip');
+        res.setHeader('Content-Length', String(compressed.length));
+        return origSend(compressed);
+      } catch {
+        return origSend(body);
+      }
+    };
+
+    res.json = ((data: any) => {
+      if (!res.getHeader('Content-Type')) {
+        res.setHeader('Content-Type', 'application/json; charset=utf-8');
+      }
+      return compressAndSend(JSON.stringify(data));
+    }) as any;
+
+    res.send = ((body: any) => {
+      if (typeof body === 'string' || Buffer.isBuffer(body)) {
+        return compressAndSend(body);
+      }
+      return origSend(body);
+    }) as any;
+
+    next();
+  });
 
   app.use(express.json({ limit: '15mb' }));
   app.use(express.urlencoded({ extended: true, limit: '15mb' }));
@@ -1012,8 +1084,86 @@ ${catalogStr}
     app.use(vite.middlewares);
   } else {
     const distPath = path.join(process.cwd(), 'dist');
-    app.use(express.static(distPath));
+    const compressedStaticCache = new Map<string, { br?: Buffer; gz?: Buffer; contentType: string }>();
+
+    const MIME_TYPES: Record<string, string> = {
+      '.js': 'application/javascript; charset=utf-8',
+      '.mjs': 'application/javascript; charset=utf-8',
+      '.css': 'text/css; charset=utf-8',
+      '.html': 'text/html; charset=utf-8',
+      '.json': 'application/json; charset=utf-8',
+      '.svg': 'image/svg+xml; charset=utf-8',
+    };
+
+    // Compress JS/CSS/HTML/SVG/JSON assets on the fly with in-memory LRU cache
+    app.use((req: Request, res: Response, next: NextFunction) => {
+      if (req.method !== 'GET' && req.method !== 'HEAD') return next();
+      const cleanUrl = (req.path === '/' ? '/index.html' : req.path).replace(/^\/+/, '');
+      const ext = path.extname(cleanUrl).toLowerCase();
+      const contentType = MIME_TYPES[ext];
+      if (!contentType) return next();
+
+      const fullPath = path.resolve(distPath, cleanUrl);
+      if (!fullPath.startsWith(distPath + path.sep) && fullPath !== path.join(distPath, 'index.html')) {
+        return next();
+      }
+      if (!fs.existsSync(fullPath)) return next();
+
+      const acceptEncoding = String(req.headers['accept-encoding'] || '');
+      const useBr = acceptEncoding.includes('br');
+      const useGzip = !useBr && acceptEncoding.includes('gzip');
+      if (!useBr && !useGzip) return next();
+
+      let entry = compressedStaticCache.get(fullPath);
+      if (!entry) {
+        try {
+          const raw = fs.readFileSync(fullPath);
+          if (raw.length < 1024) return next();
+          entry = { contentType };
+          compressedStaticCache.set(fullPath, entry);
+        } catch {
+          return next();
+        }
+      }
+
+      if (useBr && !entry.br) {
+        entry.br = zlib.brotliCompressSync(fs.readFileSync(fullPath), {
+          params: { [zlib.constants.BROTLI_PARAM_QUALITY]: 4 },
+        });
+      } else if (useGzip && !entry.gz) {
+        entry.gz = zlib.gzipSync(fs.readFileSync(fullPath), { level: 6 });
+      }
+
+      const payload = useBr ? entry.br! : entry.gz!;
+      res.setHeader('Content-Type', entry.contentType);
+      res.setHeader('Content-Encoding', useBr ? 'br' : 'gzip');
+      res.setHeader('Vary', 'Accept-Encoding');
+      res.setHeader(
+        'Cache-Control',
+        cleanUrl.startsWith('assets/')
+          ? 'public, max-age=31536000, immutable'
+          : 'no-cache, no-store, must-revalidate'
+      );
+      return res.end(payload);
+    });
+
+    app.use(
+      express.static(distPath, {
+        etag: true,
+        lastModified: true,
+        setHeaders: (res, filePath) => {
+          if (filePath.includes(`${path.sep}assets${path.sep}`)) {
+            res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+          } else if (filePath.endsWith('index.html')) {
+            res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+          } else {
+            res.setHeader('Cache-Control', 'public, max-age=3600');
+          }
+        },
+      })
+    );
     app.get('*', (_req: Request, res: Response) => {
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
       res.sendFile(path.join(distPath, 'index.html'));
     });
   }

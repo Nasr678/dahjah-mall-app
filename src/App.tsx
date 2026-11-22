@@ -27,32 +27,30 @@ import { ProductCard } from './components/products/ProductCard';
 import { FlyToCartOverlay } from './components/cart/FlyToCartOverlay';
 import { ProductGridSkeleton, ProfileSkeleton } from './components/common/ProductSkeleton';
 
-// Views & Screens
-import { MainCategoriesScreen } from './components/categories/MainCategoriesScreen';
-import { CategoryLandingPage } from './components/categories/CategoryLandingPage';
-import { BrandsScreen } from './components/brands/BrandsScreen';
-import { TrendsScreen } from './components/trends/TrendsScreen';
-import { ProfileView } from './components/profile/ProfileView';
-import { OnboardingScreen } from './components/onboarding/OnboardingScreen';
+// Lazy-loaded Views & Screens (loaded on tab navigation)
+const MainCategoriesScreen = lazy(() => import('./components/categories/MainCategoriesScreen').then((m) => ({ default: m.MainCategoriesScreen })));
+const CategoryLandingPage = lazy(() => import('./components/categories/CategoryLandingPage').then((m) => ({ default: m.CategoryLandingPage })));
+const BrandsScreen = lazy(() => import('./components/brands/BrandsScreen').then((m) => ({ default: m.BrandsScreen })));
+const TrendsScreen = lazy(() => import('./components/trends/TrendsScreen').then((m) => ({ default: m.TrendsScreen })));
+const ProfileView = lazy(() => import('./components/profile/ProfileView').then((m) => ({ default: m.ProfileView })));
+const OnboardingScreen = lazy(() => import('./components/onboarding/OnboardingScreen').then((m) => ({ default: m.OnboardingScreen })));
 
-// Modals
-import { AuthModal } from './components/auth/AuthModal';
-import { SmartSearchModal } from './components/search/SmartSearchModal';
-import { ProductDetailsModal } from './components/products/ProductDetailsModal';
-import { ProductQuickViewModal } from './components/products/ProductQuickViewModal';
-import AIAssistantModal from './components/ai/AIAssistantModal';
-import { CartModal } from './components/cart/CartModal';
-import { NotificationsModal } from './components/notifications/NotificationsModal';
-import { LocationPickerModal } from './components/location/LocationPickerModal';
-import { SettingsModal } from './components/settings/SettingsModal';
-import { AccessibilityModal } from './components/settings/AccessibilityModal';
-import { CustomerServiceModal } from './components/support/CustomerServiceModal';
-import { PoliciesModal } from './components/policies/PoliciesModal';
-import { CurrencySettingsModal } from './components/admin/CurrencySettingsModal';
-import { PromoOffersModal } from './components/common/PromoOffersModal';
-import { LeafletStoreLocatorModal } from './components/maps/LeafletStoreLocatorModal';
-
-// Large Admin Dashboard remains lazy-loaded
+// Lazy-loaded Modals (loaded strictly when opened by the user)
+const AuthModal = lazy(() => import('./components/auth/AuthModal').then((m) => ({ default: m.AuthModal })));
+const SmartSearchModal = lazy(() => import('./components/search/SmartSearchModal').then((m) => ({ default: m.SmartSearchModal })));
+const ProductDetailsModal = lazy(() => import('./components/products/ProductDetailsModal').then((m) => ({ default: m.ProductDetailsModal })));
+const ProductQuickViewModal = lazy(() => import('./components/products/ProductQuickViewModal').then((m) => ({ default: m.ProductQuickViewModal })));
+const AIAssistantModal = lazy(() => import('./components/ai/AIAssistantModal'));
+const CartModal = lazy(() => import('./components/cart/CartModal').then((m) => ({ default: m.CartModal })));
+const NotificationsModal = lazy(() => import('./components/notifications/NotificationsModal').then((m) => ({ default: m.NotificationsModal })));
+const LocationPickerModal = lazy(() => import('./components/location/LocationPickerModal').then((m) => ({ default: m.LocationPickerModal })));
+const SettingsModal = lazy(() => import('./components/settings/SettingsModal').then((m) => ({ default: m.SettingsModal })));
+const AccessibilityModal = lazy(() => import('./components/settings/AccessibilityModal').then((m) => ({ default: m.AccessibilityModal })));
+const CustomerServiceModal = lazy(() => import('./components/support/CustomerServiceModal').then((m) => ({ default: m.CustomerServiceModal })));
+const PoliciesModal = lazy(() => import('./components/policies/PoliciesModal').then((m) => ({ default: m.PoliciesModal })));
+const CurrencySettingsModal = lazy(() => import('./components/admin/CurrencySettingsModal').then((m) => ({ default: m.CurrencySettingsModal })));
+const PromoOffersModal = lazy(() => import('./components/common/PromoOffersModal').then((m) => ({ default: m.PromoOffersModal })));
+const LeafletStoreLocatorModal = lazy(() => import('./components/maps/LeafletStoreLocatorModal').then((m) => ({ default: m.LeafletStoreLocatorModal })));
 const AdminProductDashboard = lazy(() => import('./components/admin/AdminProductDashboard'));
 
 // Icons
@@ -118,6 +116,11 @@ function MarketplaceApp() {
 
   // Direct URL Hash Route & Admin Portal listener (e.g. /#admin or ?admin=true)
   useEffect(() => {
+    // Session Start Guarantee: App always opens on Home screen
+    setActiveTab('home');
+    setSelectedCategoryId(null);
+    setSelectedSubcategory(null);
+
     const handleUrlRoute = () => {
       const hash = window.location.hash;
       const search = window.location.search;
@@ -235,14 +238,24 @@ function MarketplaceApp() {
 
   return (
     <div 
-      className="min-h-screen bg-[#07060A] text-neutral-100 flex flex-col antialiased selection:bg-amber-500 selection:text-neutral-950 font-sans"
+      className="min-h-screen bg-[#F6F7F9] text-neutral-900 flex flex-col antialiased selection:bg-amber-400/30 selection:text-neutral-950 font-sans"
       dir="rtl"
     >
       {/* 1. Splash Screen Animation */}
       {showSplash && (
         <SplashScreen
-          onComplete={() => setShowSplash(false)}
-          onSkip={() => setShowSplash(false)}
+          onComplete={() => {
+            setShowSplash(false);
+            setActiveTab('home');
+            setSelectedCategoryId(null);
+            setSelectedSubcategory(null);
+          }}
+          onSkip={() => {
+            setShowSplash(false);
+            setActiveTab('home');
+            setSelectedCategoryId(null);
+            setSelectedSubcategory(null);
+          }}
         />
       )}
 
@@ -259,9 +272,9 @@ function MarketplaceApp() {
       {toastMessage && (
         <div
           role="status"
-          className="fixed top-20 left-1/2 -translate-x-1/2 z-[100] px-4 py-2.5 rounded-full bg-neutral-900/95 border border-amber-500/50 text-amber-300 text-xs sm:text-sm font-bold shadow-2xl shadow-amber-500/20 backdrop-blur-xl flex items-center gap-2 pointer-events-none transition-all duration-300 animate-in fade-in slide-in-from-top-3"
+          className="fixed top-20 left-1/2 -translate-x-1/2 z-[100] px-4 py-2.5 rounded-full bg-white/95 border border-amber-500/40 text-neutral-900 text-xs sm:text-sm font-bold shadow-xl shadow-neutral-900/10 backdrop-blur-xl flex items-center gap-2 pointer-events-none transition-all duration-300 animate-in fade-in slide-in-from-top-3"
         >
-          <CheckCircle2 className="w-4 h-4 text-amber-400" />
+          <CheckCircle2 className="w-4 h-4 text-amber-600 flex-shrink-0" />
           <span>{toastMessage}</span>
         </div>
       )}
@@ -493,7 +506,11 @@ function MarketplaceApp() {
               <MainCategoriesScreen
                 categories={appCategories}
                 onSelectCategory={handleSelectCategory}
-                onBackToHome={() => setActiveTab('home')}
+                onBackToHome={() => {
+                  setSelectedCategoryId(null);
+                  setSelectedSubcategory(null);
+                  setActiveTab('home');
+                }}
                 onOpenSearch={() => setIsSearchOpen(true)}
                 onOpenAuth={() => setIsAuthOpen(true)}
               />
@@ -510,7 +527,11 @@ function MarketplaceApp() {
                     setSelectedCategoryId(catId);
                     setSelectedSubcategory(null);
                   }}
-                  onBackToHome={() => setActiveTab('home')}
+                  onBackToHome={() => {
+                    setSelectedCategoryId(null);
+                    setSelectedSubcategory(null);
+                    setActiveTab('home');
+                  }}
                   onBackToMainCategories={() => {
                     setSelectedCategoryId(null);
                     setSelectedSubcategory(null);
@@ -535,13 +556,13 @@ function MarketplaceApp() {
           {/* VIEW 4: WISHLIST */}
           {activeTab === 'wishlist' && (
             <div className="space-y-6">
-              <div className="flex items-center justify-between pb-4 border-b border-neutral-800">
+              <div className="flex items-center justify-between pb-4 border-b border-neutral-200">
                 <div>
-                  <h2 className="text-xl sm:text-2xl font-black text-white flex items-center gap-2">
+                  <h2 className="text-xl sm:text-2xl font-black text-neutral-900 flex items-center gap-2">
                     <Heart className="w-6 h-6 text-rose-500 fill-rose-500" />
                     <span>قائمة أمنياتي ({wishlistProducts.length})</span>
                   </h2>
-                  <p className="text-xs text-neutral-400 mt-1">
+                  <p className="text-xs text-neutral-500 mt-1">
                     منتجاتك المفضلة المحفوظة للشراء لاحقاً ومتابعة خصوماتها
                   </p>
                 </div>
@@ -553,7 +574,7 @@ function MarketplaceApp() {
                       wishlistProducts.forEach((p) => addToCart(p));
                       showToast('تمت إضافة جميع المفضلة إلى السلة!');
                     }}
-                    className="px-4 py-2 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-300 text-xs font-bold hover:bg-amber-500 hover:text-neutral-950 transition-colors"
+                    className="px-4 py-2 rounded-xl bg-amber-50 border border-amber-300 text-amber-800 text-xs font-bold hover:bg-amber-400 hover:text-neutral-950 transition-colors cursor-pointer"
                   >
                     إضافة الكل إلى السلة
                   </button>
@@ -561,16 +582,16 @@ function MarketplaceApp() {
               </div>
 
               {wishlistProducts.length === 0 ? (
-                <div className="py-20 text-center bg-neutral-900/50 rounded-3xl border border-neutral-800">
-                  <Heart className="w-12 h-12 text-neutral-700 mx-auto mb-3" />
-                  <h3 className="text-base font-bold text-white mb-1">قائمة المفضلة فارغة حالياً</h3>
-                  <p className="text-xs text-neutral-400 max-w-sm mx-auto mb-4">
+                <div className="py-20 text-center bg-white rounded-3xl border border-neutral-200/80 shadow-sm">
+                  <Heart className="w-12 h-12 text-neutral-300 mx-auto mb-3" />
+                  <h3 className="text-base font-bold text-neutral-900 mb-1">قائمة المفضلة فارغة حالياً</h3>
+                  <p className="text-xs text-neutral-500 max-w-sm mx-auto mb-4">
                     اضغط على أيقونة القلب على أي منتج أثناء التصفح لحفظه والرجوع إليه بسهولة.
                   </p>
                   <button
                     type="button"
                     onClick={() => setActiveTab('home')}
-                    className="px-5 py-2.5 rounded-xl bg-amber-500 text-neutral-950 text-xs font-bold"
+                    className="px-5 py-2.5 rounded-xl bg-neutral-900 hover:bg-amber-500 text-white hover:text-neutral-950 text-xs font-bold transition-colors cursor-pointer"
                   >
                     استكشف المنتجات الآن
                   </button>

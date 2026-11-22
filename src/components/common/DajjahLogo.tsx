@@ -51,7 +51,7 @@ export const DajjahLogo: React.FC<DajjahLogoProps> = ({
           viewBox="0 0 400 400"
           width={dimension}
           height={dimension}
-          className="relative z-10 drop-shadow-[0_8px_20px_rgba(0,0,0,0.45)]"
+          className="relative z-10 drop-shadow-[0_6px_16px_rgba(15,23,42,0.14)]"
           xmlns="http://www.w3.org/2000/svg"
         >
           <defs>
@@ -256,10 +256,10 @@ export const DajjahLogo: React.FC<DajjahLogoProps> = ({
 
       {showTagline && (
         <div className="mt-3 text-center">
-          <h1 className="text-xl md:text-2xl font-black text-amber-400 tracking-wide">
+          <h1 className="text-xl md:text-2xl font-black text-amber-700 tracking-wide">
             ضَجّة مول
           </h1>
-          <p className="text-xs md:text-sm font-bold text-neutral-300 tracking-wider mt-0.5">
+          <p className="text-xs md:text-sm font-bold text-neutral-600 tracking-wider mt-0.5">
             ضَجّة في وجه الغلاء
           </p>
         </div>

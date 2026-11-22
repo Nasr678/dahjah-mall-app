@@ -4,30 +4,32 @@ import { ProductCard } from '../products/ProductCard';
 import { Flame, Clock, ChevronLeft } from 'lucide-react';
 import { ProductGridSkeleton } from '../common/ProductSkeleton';
 
+function getSecondsUntilYemenMidnight(): { hours: number; minutes: number; seconds: number } {
+  const now = new Date();
+  const yemenTime = new Date(now.getTime() + 3 * 60 * 60 * 1000);
+  const secondsPassed =
+    yemenTime.getUTCHours() * 3600 +
+    yemenTime.getUTCMinutes() * 60 +
+    yemenTime.getUTCSeconds();
+  const remaining = Math.max(60, 86400 - secondsPassed);
+  return {
+    hours: Math.floor(remaining / 3600),
+    minutes: Math.floor((remaining % 3600) / 60),
+    seconds: remaining % 60,
+  };
+}
+
 const FlashCountdownTimer: React.FC = memo(() => {
-  const [timeLeft, setTimeLeft] = useState({
-    hours: 12,
-    minutes: 45,
-    seconds: 30,
-  });
+  const [timeLeft, setTimeLeft] = useState(getSecondsUntilYemenMidnight);
 
   useEffect(() => {
-    let timer: NodeJS.Timeout | null = null;
+    let timer: ReturnType<typeof setInterval> | null = null;
 
     const startTimer = () => {
       if (!timer) {
         timer = setInterval(() => {
           if (document.hidden) return; // Save CPU when tab is hidden
-          setTimeLeft((prev) => {
-            if (prev.seconds > 0) {
-              return { ...prev, seconds: prev.seconds - 1 };
-            } else if (prev.minutes > 0) {
-              return { ...prev, minutes: prev.minutes - 1, seconds: 59 };
-            } else if (prev.hours > 0) {
-              return { hours: prev.hours - 1, minutes: 59, seconds: 59 };
-            }
-            return prev;
-          });
+          setTimeLeft(getSecondsUntilYemenMidnight());
         }, 1000);
       }
     };
@@ -53,21 +55,21 @@ const FlashCountdownTimer: React.FC = memo(() => {
   }, []);
 
   return (
-    <div className="flex items-center justify-between sm:justify-start gap-2 bg-neutral-950/90 border border-neutral-800 px-3 py-1.5 sm:px-4 sm:py-2 rounded-2xl w-full sm:w-auto">
+    <div className="flex items-center justify-between sm:justify-start gap-2 bg-[#F6F7F9] border border-neutral-200/90 px-3 py-1.5 sm:px-4 sm:py-2 rounded-2xl w-full sm:w-auto">
       <div className="flex items-center gap-1.5">
-        <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-400" />
-        <span className="text-[11px] sm:text-xs font-bold text-neutral-400">ينتهي خلال:</span>
+        <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-600" />
+        <span className="text-[11px] sm:text-xs font-bold text-neutral-600">ينتهي خلال:</span>
       </div>
-      <div className="flex items-center gap-1 font-mono text-xs sm:text-sm font-black text-amber-400">
-        <span className="bg-neutral-900 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-lg border border-neutral-800">
+      <div className="flex items-center gap-1 font-mono tabular-nums text-xs sm:text-sm font-black text-neutral-900">
+        <span className="bg-white px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-lg border border-neutral-200 shadow-2xs">
           {String(timeLeft.hours).padStart(2, '0')}
         </span>
-        <span>:</span>
-        <span className="bg-neutral-900 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-lg border border-neutral-800">
+        <span className="text-neutral-400">:</span>
+        <span className="bg-white px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-lg border border-neutral-200 shadow-2xs">
           {String(timeLeft.minutes).padStart(2, '0')}
         </span>
-        <span>:</span>
-        <span className="bg-neutral-900 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-lg border border-neutral-800 text-rose-400">
+        <span className="text-neutral-400">:</span>
+        <span className="bg-rose-50 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-lg border border-rose-200 text-rose-600 shadow-2xs">
           {String(timeLeft.seconds).padStart(2, '0')}
         </span>
       </div>
@@ -108,7 +110,7 @@ export const FlashDealsSection: React.FC<FlashDealsSectionProps> = memo(({
 
   if (products.length === 0) {
     return (
-      <div className="w-full bg-neutral-900/60 border border-neutral-800 rounded-3xl p-4 sm:p-6 space-y-4">
+      <div className="w-full bg-white border border-neutral-200/80 rounded-3xl p-4 sm:p-6 space-y-4 shadow-xs">
         <div className="flex items-center justify-between">
           <div className="h-6 w-36 rounded-xl shimmer-wave" />
           <div className="h-6 w-28 rounded-xl shimmer-wave" />
@@ -123,25 +125,21 @@ export const FlashDealsSection: React.FC<FlashDealsSectionProps> = memo(({
   const handleViewAll = onViewAll || onViewAllOffers;
 
   return (
-    <div className="w-full bg-gradient-to-br from-neutral-900 via-neutral-900/90 to-purple-950/20 border border-amber-500/20 rounded-3xl p-3.5 sm:p-6 md:p-8 shadow-2xl relative overflow-hidden">
-      {/* Background Glow */}
-      <div className="absolute -top-24 -left-24 w-72 h-72 rounded-full bg-amber-500/10 blur-3xl pointer-events-none" />
-      <div className="absolute -bottom-24 -right-24 w-72 h-72 rounded-full bg-purple-600/10 blur-3xl pointer-events-none" />
-
+    <div className="w-full bg-white border border-amber-300/60 rounded-3xl p-3.5 sm:p-6 md:p-8 shadow-[0_8px_28px_rgba(15,23,42,0.05)] relative overflow-hidden">
       {/* Header Row with Countdown */}
-      <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6 pb-3 sm:pb-4 border-b border-neutral-800">
+      <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6 pb-3 sm:pb-4 border-b border-neutral-200/80">
         <div className="flex items-center gap-2.5 sm:gap-3">
-          <div className="p-2.5 sm:p-3 rounded-2xl bg-gradient-to-tr from-rose-600 to-amber-500 text-white shadow-lg shadow-rose-600/30 animate-pulse flex-shrink-0">
+          <div className="p-2.5 sm:p-3 rounded-2xl bg-gradient-to-tr from-rose-600 to-amber-500 text-white shadow-md shadow-rose-500/20 flex-shrink-0">
             <Flame className="w-5 h-5 sm:w-6 sm:h-6 fill-white" />
           </div>
           <div>
             <div className="flex items-center gap-2 flex-wrap">
-              <h3 className="text-lg sm:text-2xl font-black text-white">عروض ضَجّة الكبرى</h3>
-              <span className="px-2 py-0.5 rounded-full bg-rose-600/30 border border-rose-500/40 text-rose-300 text-[10px] sm:text-xs font-black">
+              <h3 className="text-lg sm:text-2xl font-black text-neutral-900">عروض ضَجّة الكبرى</h3>
+              <span className="px-2.5 py-0.5 rounded-full bg-rose-50 border border-rose-200 text-rose-700 text-[10px] sm:text-xs font-black">
                 خصم حتى 70%
               </span>
             </div>
-            <p className="text-[11px] sm:text-xs text-neutral-400 mt-0.5">
+            <p className="text-[11px] sm:text-xs text-neutral-500 mt-0.5">
               صفقات فلاش محدودة بأسعار استثنائية (ضَجّة في وجه الغلاء)
             </p>
           </div>
@@ -168,14 +166,14 @@ export const FlashDealsSection: React.FC<FlashDealsSectionProps> = memo(({
 
       {/* Footer Banner CTA */}
       {handleViewAll && (
-        <div className="mt-6 pt-4 border-t border-neutral-800/80 flex items-center justify-between">
-          <span className="text-xs text-neutral-400 hidden sm:inline">
+        <div className="mt-6 pt-4 border-t border-neutral-200/80 flex items-center justify-between">
+          <span className="text-xs text-neutral-500 hidden sm:inline">
             جميع العروض تخضع لضمان الجودة والاستبدال الفوري من ضَجّة مول
           </span>
           <button
             type="button"
             onClick={handleViewAll}
-            className="mr-auto flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-500/15 hover:bg-amber-500 border border-amber-500/40 text-amber-300 hover:text-neutral-950 text-xs font-bold transition-all"
+            className="mr-auto flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-50 hover:bg-amber-400 border border-amber-300/80 text-amber-900 hover:text-neutral-950 text-xs font-bold transition-all cursor-pointer"
           >
             <span>تصفح جميع عروض الفلاش</span>
             <ChevronLeft className="w-4 h-4" />

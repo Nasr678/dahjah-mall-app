@@ -159,13 +159,15 @@ export const AdminPoliciesManager: React.FC = () => {
   return (
     <div className="space-y-6 text-right select-none" id="admin-policies-manager">
       {/* Header */}
-      <div className="p-4 rounded-2xl bg-neutral-900 border border-neutral-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="p-5 rounded-2xl bg-white border border-neutral-200 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h3 className="text-base font-black text-white flex items-center gap-2">
-            <ShieldCheck className="w-5 h-5 text-amber-400" />
+          <h3 className="text-base font-black text-neutral-950 flex items-center gap-2">
+            <span className="w-8 h-8 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center shrink-0">
+              <ShieldCheck className="w-4 h-4 text-amber-600" />
+            </span>
             <span>إدارة السياسات والشروط والضمانات القانونية (Policies & Terms)</span>
           </h3>
-          <p className="text-xs text-neutral-400 mt-0.5">
+          <p className="text-xs text-neutral-500 mt-1">
             تحكم كامل في نصوص وبنود سياسة الخصوصية، الاسترجاع، الشحن، الشروط والأحكام، وحقوق العملاء باللغتين العربية والإنجليزية.
           </p>
         </div>
@@ -173,7 +175,7 @@ export const AdminPoliciesManager: React.FC = () => {
         <button
           type="button"
           onClick={handleAddNewPolicy}
-          className="px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-neutral-950 font-black text-xs flex items-center gap-2 cursor-pointer shadow-md transition-all whitespace-nowrap"
+          className="px-4 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-500 text-neutral-950 font-black text-xs flex items-center gap-2 cursor-pointer shadow-xs transition-all whitespace-nowrap"
         >
           <Plus className="w-4 h-4" />
           <span>إضافة وثيقة سياسة</span>
@@ -185,11 +187,11 @@ export const AdminPoliciesManager: React.FC = () => {
         <div
           className={`p-3.5 rounded-xl flex items-center gap-2 text-xs font-bold ${
             msg.type === 'success'
-              ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
-              : 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
+              ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+              : 'bg-rose-50 text-rose-700 border border-rose-200'
           }`}
         >
-          {msg.type === 'success' ? <CheckCircle2 className="w-4 h-4" /> : <AlertCircle className="w-4 h-4" />}
+          {msg.type === 'success' ? <CheckCircle2 className="w-4 h-4 shrink-0" /> : <AlertCircle className="w-4 h-4 shrink-0" />}
           <span>{msg.text}</span>
         </div>
       )}
@@ -203,8 +205,8 @@ export const AdminPoliciesManager: React.FC = () => {
               key={p.key || p.id}
               className={`flex items-center gap-1 p-1 rounded-xl transition-all border ${
                 isSelected
-                  ? 'bg-neutral-800 border-amber-400/50'
-                  : 'bg-neutral-900 border-neutral-800'
+                  ? 'bg-amber-50/60 border-amber-300 shadow-xs'
+                  : 'bg-white border-neutral-200 hover:border-neutral-300'
               }`}
             >
               <button
@@ -212,14 +214,14 @@ export const AdminPoliciesManager: React.FC = () => {
                 onClick={() => handleSelectPolicy(p.key)}
                 className={`px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-all cursor-pointer flex items-center gap-1.5 ${
                   isSelected
-                    ? 'bg-amber-400 text-neutral-950 font-black shadow-sm'
-                    : 'text-neutral-400 hover:text-white'
+                    ? 'bg-amber-400 text-neutral-950 font-black shadow-xs'
+                    : 'text-neutral-600 hover:text-neutral-950'
                 }`}
               >
                 <FileText className="w-3.5 h-3.5" />
                 <span>{p.titleAr}</span>
                 {p.isActive === false && (
-                  <span className="text-[9px] px-1 rounded bg-rose-900/60 text-rose-300">مخفية</span>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded bg-rose-50 text-rose-700 border border-rose-200">مخفية</span>
                 )}
               </button>
 
@@ -227,7 +229,7 @@ export const AdminPoliciesManager: React.FC = () => {
                 type="button"
                 disabled={index === 0}
                 onClick={() => handleMoveOrder(index, 'up')}
-                className="p-1 text-neutral-400 hover:text-white disabled:opacity-20"
+                className="p-1 text-neutral-400 hover:text-neutral-950 disabled:opacity-25 cursor-pointer"
                 title="تحريك لأعلى"
               >
                 <ArrowUp className="w-3 h-3" />
@@ -236,7 +238,7 @@ export const AdminPoliciesManager: React.FC = () => {
                 type="button"
                 disabled={index === policies.length - 1}
                 onClick={() => handleMoveOrder(index, 'down')}
-                className="p-1 text-neutral-400 hover:text-white disabled:opacity-20"
+                className="p-1 text-neutral-400 hover:text-neutral-950 disabled:opacity-25 cursor-pointer"
                 title="تحريك لأسفل"
               >
                 <ArrowDown className="w-3 h-3" />
@@ -248,27 +250,27 @@ export const AdminPoliciesManager: React.FC = () => {
 
       {/* Editor Form */}
       {activeEditingPolicy && (
-        <form onSubmit={handleSaveCurrentPolicy} className="p-5 rounded-3xl bg-neutral-900 border border-neutral-800 space-y-4 text-xs">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-neutral-800">
+        <form onSubmit={handleSaveCurrentPolicy} className="p-5 sm:p-6 rounded-3xl bg-white border border-neutral-200 shadow-xs space-y-4 text-xs">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3.5 border-b border-neutral-200">
             <div>
-              <span className="text-sm font-black text-white block">
+              <span className="text-sm font-black text-neutral-950 block">
                 تعديل: {activeEditingPolicy.titleAr}
               </span>
-              <span className="text-[10px] text-neutral-400 flex items-center gap-1 mt-0.5">
-                <Clock className="w-3 h-3 text-amber-400" />
+              <span className="text-[11px] text-neutral-500 flex items-center gap-1 mt-0.5 tabular-nums">
+                <Clock className="w-3 h-3 text-amber-600" />
                 <span>آخر تحديث: {activeEditingPolicy.lastUpdated || 'محدث اليوم'}</span>
               </span>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               {/* Active Toggle */}
               <button
                 type="button"
                 onClick={() => handleToggleActive(activeEditingPolicy.key)}
                 className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
                   activeEditingPolicy.isActive !== false
-                    ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
-                    : 'bg-neutral-800 text-neutral-400 border border-neutral-700'
+                    ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                    : 'bg-neutral-100 text-neutral-500 border border-neutral-200'
                 }`}
               >
                 {activeEditingPolicy.isActive !== false ? <ToggleRight className="w-4 h-4" /> : <ToggleLeft className="w-4 h-4" />}
@@ -276,12 +278,12 @@ export const AdminPoliciesManager: React.FC = () => {
               </button>
 
               {/* Language Switcher */}
-              <div className="flex items-center gap-1 bg-neutral-950 p-1 rounded-xl border border-neutral-800">
+              <div className="flex items-center gap-1 bg-[#F6F7F9] p-1 rounded-xl border border-neutral-200">
                 <button
                   type="button"
                   onClick={() => setLangTab('ar')}
                   className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                    langTab === 'ar' ? 'bg-amber-400 text-neutral-950 font-black' : 'text-neutral-400 hover:text-white'
+                    langTab === 'ar' ? 'bg-amber-400 text-neutral-950 font-black shadow-xs' : 'text-neutral-600 hover:text-neutral-950'
                   }`}
                 >
                   عربي (AR)
@@ -290,7 +292,7 @@ export const AdminPoliciesManager: React.FC = () => {
                   type="button"
                   onClick={() => setLangTab('en')}
                   className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                    langTab === 'en' ? 'bg-amber-400 text-neutral-950 font-black' : 'text-neutral-400 hover:text-white'
+                    langTab === 'en' ? 'bg-amber-400 text-neutral-950 font-black shadow-xs' : 'text-neutral-600 hover:text-neutral-950'
                   }`}
                 >
                   English (EN)
@@ -301,7 +303,7 @@ export const AdminPoliciesManager: React.FC = () => {
               <button
                 type="button"
                 onClick={() => handleDeletePolicy(activeEditingPolicy.key)}
-                className="p-2 rounded-xl bg-neutral-950 hover:bg-rose-900/40 text-neutral-400 hover:text-rose-400 border border-neutral-800 cursor-pointer"
+                className="p-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 cursor-pointer transition-colors"
                 title="حذف هذه الوثيقة"
               >
                 <Trash2 className="w-4 h-4" />
@@ -313,7 +315,7 @@ export const AdminPoliciesManager: React.FC = () => {
           {langTab === 'ar' ? (
             <div className="space-y-3">
               <div>
-                <label className="block text-neutral-400 font-bold mb-1">
+                <label className="block text-neutral-700 font-bold mb-1">
                   عنوان الوثيقة (بالعربية) <span className="text-rose-500">*</span>
                 </label>
                 <input
@@ -321,12 +323,12 @@ export const AdminPoliciesManager: React.FC = () => {
                   required
                   value={activeEditingPolicy.titleAr || ''}
                   onChange={(e) => handleFieldChange('titleAr', e.target.value)}
-                  className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-2 text-white font-bold"
+                  className="w-full bg-[#F6F7F9] border border-neutral-200 rounded-xl px-3.5 py-2.5 text-neutral-950 font-bold focus:outline-none focus:border-amber-500 focus:bg-white transition-colors"
                 />
               </div>
 
               <div>
-                <label className="block text-neutral-400 font-bold mb-1">
+                <label className="block text-neutral-700 font-bold mb-1">
                   محتوى وبنود السياسة (بالعربية) <span className="text-rose-500">*</span>
                 </label>
                 <textarea
@@ -334,7 +336,7 @@ export const AdminPoliciesManager: React.FC = () => {
                   required
                   value={activeEditingPolicy.contentAr || ''}
                   onChange={(e) => handleFieldChange('contentAr', e.target.value)}
-                  className="w-full bg-neutral-950 border border-neutral-800 rounded-xl p-3 text-white leading-loose font-mono text-xs"
+                  className="w-full bg-[#F6F7F9] border border-neutral-200 rounded-xl p-3.5 text-neutral-950 leading-loose font-mono text-xs focus:outline-none focus:border-amber-500 focus:bg-white transition-colors"
                 />
               </div>
             </div>
@@ -342,7 +344,7 @@ export const AdminPoliciesManager: React.FC = () => {
             /* English Fields */
             <div className="space-y-3 text-left" dir="ltr">
               <div>
-                <label className="block text-neutral-400 font-bold mb-1">
+                <label className="block text-neutral-700 font-bold mb-1">
                   Document Title (English) <span className="text-rose-500">*</span>
                 </label>
                 <input
@@ -350,12 +352,12 @@ export const AdminPoliciesManager: React.FC = () => {
                   required
                   value={activeEditingPolicy.titleEn || ''}
                   onChange={(e) => handleFieldChange('titleEn', e.target.value)}
-                  className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-2 text-white font-bold"
+                  className="w-full bg-[#F6F7F9] border border-neutral-200 rounded-xl px-3.5 py-2.5 text-neutral-950 font-bold focus:outline-none focus:border-amber-500 focus:bg-white transition-colors"
                 />
               </div>
 
               <div>
-                <label className="block text-neutral-400 font-bold mb-1">
+                <label className="block text-neutral-700 font-bold mb-1">
                   Policy Content & Articles (English) <span className="text-rose-500">*</span>
                 </label>
                 <textarea
@@ -363,18 +365,18 @@ export const AdminPoliciesManager: React.FC = () => {
                   required
                   value={activeEditingPolicy.contentEn || ''}
                   onChange={(e) => handleFieldChange('contentEn', e.target.value)}
-                  className="w-full bg-neutral-950 border border-neutral-800 rounded-xl p-3 text-white leading-loose font-mono text-xs"
+                  className="w-full bg-[#F6F7F9] border border-neutral-200 rounded-xl p-3.5 text-neutral-950 leading-loose font-mono text-xs focus:outline-none focus:border-amber-500 focus:bg-white transition-colors"
                 />
               </div>
             </div>
           )}
 
           {/* Save Action */}
-          <div className="pt-3 border-t border-neutral-800 flex justify-end">
+          <div className="pt-3 border-t border-neutral-200 flex justify-end">
             <button
               type="submit"
               disabled={isSaving}
-              className="px-6 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-neutral-950 font-black text-xs flex items-center gap-2 cursor-pointer shadow-md transition-all"
+              className="px-6 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-500 text-neutral-950 font-black text-xs flex items-center gap-2 cursor-pointer shadow-xs transition-all"
             >
               <Save className="w-4 h-4" />
               <span>{isSaving ? 'جاري الحفظ...' : 'حفظ التعديلات في قاعدة البيانات'}</span>

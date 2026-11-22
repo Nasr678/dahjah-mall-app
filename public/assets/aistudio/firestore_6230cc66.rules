@@ -1,0 +1,217 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwnerUser(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isAppAdmin() {
+      return isAuthenticated() && (
+        (request.auth.token.keys().hasAll(['email']) && 
+         request.auth.token.email == 'nsralnaty93@gmail.com' &&
+         request.auth.token.keys().hasAll(['email_verified']) &&
+         request.auth.token.email_verified == true) ||
+        (request.auth.token.keys().hasAll(['role']) && request.auth.token.role == 'admin') ||
+        (request.auth.token.keys().hasAll(['admin']) && request.auth.token.admin == true) ||
+        (exists(/databases/$(database)/documents/admins/$(request.auth.uid))) ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin')
+      );
+    }
+
+    match /test/{docId} {
+      allow read: if true;
+      allow write: if isAppAdmin();
+    }
+
+    match /admins/{adminId} {
+      allow read, write: if isAppAdmin();
+    }
+
+    
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if isAppAdmin();
+    }
+
+    match /categories/{categoryId} {
+      allow read: if true;
+      allow write: if isAppAdmin();
+    }
+
+    match /brands/{brandId} {
+      allow read: if true;
+      allow write: if isAppAdmin();
+    }
+
+    match /stores/{storeId} {
+      allow read: if true;
+      allow write: if isAppAdmin();
+    }
+
+    match /currencySettings/{settingId} {
+      allow read: if true;
+      allow write: if isAppAdmin();
+    }
+
+    match /appSettings/{settingId} {
+      allow read: if true;
+      allow write: if isAppAdmin();
+    }
+
+    match /footer_config/{configId} {
+      allow read: if true;
+      allow write: if isAppAdmin();
+    }
+
+    match /banners/{bannerId} {
+      allow read: if true;
+      allow write: if isAppAdmin();
+    }
+
+    match /aiReports/{reportId} {
+      allow create: if request.resource.data.keys().hasOnly(['messageText', 'userMessage', 'reason', 'userId', 'createdAt']) &&
+                       request.resource.data.messageText is string &&
+                       request.resource.data.messageText.size() <= 4000 &&
+                       request.resource.data.userMessage is string &&
+                       request.resource.data.userMessage.size() <= 1500;
+      allow read, update, delete: if isAppAdmin();
+    }
+
+    match /coupons/{couponId} {
+      allow read, write: if isAppAdmin();
+    }
+
+    match /paymentMethods/{methodId} {
+      allow read: if true;
+      allow write: if isAppAdmin();
+    }
+
+    match /shippingZones/{zoneId} {
+      allow read: if true;
+      allow write: if isAppAdmin();
+    }
+
+    match /policies/{policyId} {
+      allow read: if true;
+      allow write: if isAppAdmin();
+    }
+
+    match /socialMedia/{socialId} {
+      allow read: if true;
+      allow write: if isAppAdmin();
+    }
+
+    match /aiKnowledge/{knowledgeId} {
+      allow read, write: if isAppAdmin();
+    }
+
+    match /branches/{branchId} {
+      allow read: if true;
+      allow write: if isAppAdmin();
+    }
+
+    match /popups/{popupId} {
+      allow read: if true;
+      allow write: if isAppAdmin();
+    }
+
+    match /flashSales/{dealId} {
+      allow read: if true;
+      allow write: if isAppAdmin();
+    }
+
+    match /volumeDiscounts/{discountId} {
+      allow read: if true;
+      allow write: if isAppAdmin();
+    }
+
+    match /reviews/{reviewId} {
+      allow read: if true;
+      allow create: if isAuthenticated() && 
+                    request.resource.data.userId == request.auth.uid &&
+                    request.resource.data.rating >= 1 &&
+                    request.resource.data.rating <= 5;
+      allow update: if isAppAdmin() || (isAuthenticated() && resource.data.userId == request.auth.uid);
+      allow delete: if isAppAdmin() || (isAuthenticated() && resource.data.userId == request.auth.uid);
+    }
+
+    match /abandonedCarts/{cartId} {
+      allow read, write: if isOwnerUser(cartId) || isAppAdmin();
+    }
+
+    match /analytics/{eventId} {
+      allow read, write: if isAppAdmin();
+    }
+
+    
+    match /users/{userId} {
+      allow read: if isOwnerUser(userId) || isAppAdmin();
+
+      allow create: if isAuthenticated() && isOwnerUser(userId) && (
+        (!request.resource.data.keys().hasAny(['role', 'isAdmin'])) ||
+        (request.resource.data.role == 'customer') ||
+        isAppAdmin()
+      );
+
+      allow update: if (isOwnerUser(userId) && 
+        (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'isAdmin', 'memberTier']))) || isAppAdmin();
+
+      allow delete: if isOwnerUser(userId) || isAppAdmin();
+
+      match /addresses/{addressId} {
+        allow read, write: if isOwnerUser(userId) || isAppAdmin();
+      }
+
+      match /notifications/{notificationId} {
+        allow read, write: if isOwnerUser(userId) || isAppAdmin();
+      }
+    }
+
+    match /carts/{userId} {
+      allow read, write: if isOwnerUser(userId) || isAppAdmin();
+    }
+
+    match /favorites/{userId} {
+      allow read, write: if isOwnerUser(userId) || isAppAdmin();
+    }
+
+    
+    match /orders/{orderId} {
+      allow read: if isAuthenticated() && (
+        (resource.data.userId == request.auth.uid) || isAppAdmin()
+      );
+
+      allow create: if isAuthenticated() && (
+        request.resource.data.userId == request.auth.uid &&
+        request.resource.data.status == 'received' &&
+        request.resource.data.totalYER is number &&
+        request.resource.data.totalYER >= 0 &&
+        request.resource.data.items is list &&
+        request.resource.data.items.size() > 0 &&
+        request.resource.data.items.size() <= 100
+      );
+
+      allow update: if isAppAdmin() || (
+        isOwnerUser(resource.data.userId) && 
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'updatedAt']) &&
+        request.resource.data.status == 'cancelled' &&
+        resource.data.status == 'received'
+      );
+
+      allow delete: if isAppAdmin();
+    }
+
+    
+    match /notifications/{notificationId} {
+      allow read: if true;
+      allow write: if isAppAdmin();
+    }
+  }
+}

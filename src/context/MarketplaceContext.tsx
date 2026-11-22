@@ -81,10 +81,10 @@ const DEFAULT_APP_SETTINGS: AppSettings = {
   homePromoButtons: {
     button1: {
       id: 'flash_sale',
-      title: 'Flash Sale',
-      titleEn: 'Flash Sale',
-      subtitle: 'عرض المزيد / View more',
-      subtitleEn: 'View more',
+      title: 'عروض اليوم المخفضة',
+      titleEn: 'Daily Deals',
+      subtitle: 'خصومات مختارة لفترة محدودة',
+      subtitleEn: 'Limited Deals',
       linkType: 'deals',
       linkTarget: 'all',
       icon: 'Zap',
@@ -94,10 +94,10 @@ const DEFAULT_APP_SETTINGS: AppSettings = {
     },
     button2: {
       id: 'free_shipping',
-      title: 'Free Shipping',
+      title: 'شحن مجاني للمحافظات',
       titleEn: 'Free Shipping',
-      subtitle: 'اطلب بقيمة 99$ أو أكثر',
-      subtitleEn: 'Orders $99+',
+      subtitle: 'للطلبات فوق 30,000 ر.ي',
+      subtitleEn: 'Free Delivery',
       linkType: 'page',
       linkTarget: 'cart',
       icon: 'Truck',
@@ -250,6 +250,7 @@ interface MarketplaceContextType {
     };
   }) => Promise<Order>;
   updateOrderStatus: (orderId: string, newStatus: OrderStatus) => Promise<void>;
+  cancelCustomerOrder: (orderId: string) => Promise<void>;
   
   // Reviews & Rating System
   hasUserPurchasedProduct: (productId: string) => boolean;
@@ -291,9 +292,21 @@ export const MarketplaceProvider: React.FC<{ children: React.ReactNode }> = ({ c
     return cacheService.get<ExchangeRates>(CacheKeys.RATES) || getStoredExchangeRates();
   });
 
-  // User-isolated state
-  const [cart, setCart] = useState<CartItem[]>([]);
-  const [favorites, setFavorites] = useState<string[]>([]);
+  // User-isolated state (guest persistence fallback)
+  const [cart, setCart] = useState<CartItem[]>(() => {
+    try {
+      const saved = localStorage.getItem('dajjah_guest_cart');
+      if (saved) return JSON.parse(saved);
+    } catch {}
+    return [];
+  });
+  const [favorites, setFavorites] = useState<string[]>(() => {
+    try {
+      const saved = localStorage.getItem('dajjah_guest_favs');
+      if (saved) return JSON.parse(saved);
+    } catch {}
+    return [];
+  });
   const [orders, setOrders] = useState<Order[]>([]);
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
@@ -443,7 +456,31 @@ export const MarketplaceProvider: React.FC<{ children: React.ReactNode }> = ({ c
             firestoreOrderService.getUserOrders(fbUser.uid).catch(() => []),
           ]);
 
-          if (userCart && userCart.length > 0) setCart(userCart);
+          let finalCart = (userCart && userCart.length > 0) ? userCart : [];
+          try {
+            const guestCartSaved = localStorage.getItem('dajjah_guest_cart');
+            if (guestCartSaved) {
+              const guestItems: CartItem[] = JSON.parse(guestCartSaved);
+              if (guestItems && guestItems.length > 0) {
+                const map = new Map<string, CartItem>();
+                finalCart.forEach((item) => map.set(`${item.id}_${item.selectedSize || ''}_${item.selectedColor || ''}`, item));
+                guestItems.forEach((gItem) => {
+                  const key = `${gItem.id}_${gItem.selectedSize || ''}_${gItem.selectedColor || ''}`;
+                  if (map.has(key)) {
+                    const ex = map.get(key)!;
+                    map.set(key, { ...ex, quantity: ex.quantity + gItem.quantity });
+                  } else {
+                    map.set(key, gItem);
+                  }
+                });
+                finalCart = Array.from(map.values());
+                localStorage.removeItem('dajjah_guest_cart');
+                firestoreUserService.saveCart(fbUser.uid, finalCart).catch(() => {});
+              }
+            }
+          } catch {}
+
+          setCart(finalCart);
           if (userFavs && userFavs.length > 0) setFavorites(userFavs);
           if (userOrders && userOrders.length > 0) setOrders(userOrders);
           
@@ -465,13 +502,20 @@ export const MarketplaceProvider: React.FC<{ children: React.ReactNode }> = ({ c
           }
         }
       } else {
-        // Visitor is not logged in / Guest mode (Incognito / new browser)
+        // Visitor is not logged in / Guest mode: retain guest cart and favorites
         lastLoadedUserIdRef.current = null;
         setCurrentUser(null);
         setAddresses([]);
         setSelectedAddress(null);
-        setCart([]);
-        setFavorites([]);
+        try {
+          const guestCart = localStorage.getItem('dajjah_guest_cart');
+          setCart(guestCart ? JSON.parse(guestCart) : []);
+          const guestFavs = localStorage.getItem('dajjah_guest_favs');
+          setFavorites(guestFavs ? JSON.parse(guestFavs) : []);
+        } catch {
+          setCart([]);
+          setFavorites([]);
+        }
         setOrders([]);
       }
       setIsAuthLoading(false);
@@ -521,7 +565,7 @@ export const MarketplaceProvider: React.FC<{ children: React.ReactNode }> = ({ c
     }
   }, [currentUser?.id]);
 
-  // Persist cart to Firestore & local cache with debouncing to conserve battery & network
+  // Persist cart to Firestore & local cache (guest and logged-in accounts)
   useEffect(() => {
     if (currentUser?.id) {
       localStorage.setItem(`dajjah_cart_${currentUser.id}`, JSON.stringify(cart));
@@ -529,10 +573,12 @@ export const MarketplaceProvider: React.FC<{ children: React.ReactNode }> = ({ c
         firestoreUserService.saveCart(currentUser.id, cart).catch(() => {});
       }, 500);
       return () => clearTimeout(handler);
+    } else {
+      localStorage.setItem('dajjah_guest_cart', JSON.stringify(cart));
     }
   }, [cart, currentUser?.id]);
 
-  // Persist favorites to Firestore & local cache with debouncing
+  // Persist favorites to Firestore & local cache
   useEffect(() => {
     if (currentUser?.id) {
       localStorage.setItem(`dajjah_favs_${currentUser.id}`, JSON.stringify(favorites));
@@ -540,16 +586,18 @@ export const MarketplaceProvider: React.FC<{ children: React.ReactNode }> = ({ c
         firestoreUserService.saveFavorites(currentUser.id, favorites).catch(() => {});
       }, 500);
       return () => clearTimeout(handler);
+    } else {
+      localStorage.setItem('dajjah_guest_favs', JSON.stringify(favorites));
     }
   }, [favorites, currentUser?.id]);
 
-  // Currency Handlers
-  const setCurrentCurrency = (currency: CurrencyCode) => {
+  // Currency Handlers (memoized with useCallback to prevent child re-renders)
+  const setCurrentCurrency = useCallback((currency: CurrencyCode) => {
     setCurrentCurrencyState(currency);
     saveStoredCurrency(currency);
-  };
+  }, []);
 
-  const updateCurrencyRates = async (newRates: ExchangeRates) => {
+  const updateCurrencyRates = useCallback(async (newRates: ExchangeRates) => {
     setCurrencyRates(newRates);
     saveStoredExchangeRates(newRates);
     try {
@@ -557,15 +605,15 @@ export const MarketplaceProvider: React.FC<{ children: React.ReactNode }> = ({ c
     } catch (err) {
       console.error('Error saving exchange rates to Firestore:', err);
     }
-  };
+  }, []);
 
-  const formatPrice = (amountBaseYER: number, options?: { showSymbol?: boolean; detailedLabel?: boolean }) => {
+  const formatPrice = useCallback((amountBaseYER: number, options?: { showSymbol?: boolean; detailedLabel?: boolean }) => {
     return formatPriceWithCurrency(amountBaseYER, currentCurrency, currencyRates, options);
-  };
+  }, [currentCurrency, currencyRates]);
 
-  const convertPrice = (amountBaseYER: number) => {
+  const convertPrice = useCallback((amountBaseYER: number) => {
     return convertFromBaseYER(amountBaseYER, currentCurrency, currencyRates);
-  };
+  }, [currentCurrency, currencyRates]);
 
   const currentRegion: RegionType = selectedAddress?.region || (currentUser?.preferredRegion ?? 'north');
 
@@ -670,8 +718,8 @@ export const MarketplaceProvider: React.FC<{ children: React.ReactNode }> = ({ c
     setUsers((prev) => prev.map((u) => (u.id === updated.id ? updated : u)));
   };
 
-  // Cart Actions
-  const addToCart = (
+  // Cart Actions (memoized to preserve child React.memo stability)
+  const addToCart = useCallback((
     product: Product,
     optionsOrQty?: number | { color?: string; size?: string; quantity?: number },
     color?: string,
@@ -700,7 +748,10 @@ export const MarketplaceProvider: React.FC<{ children: React.ReactNode }> = ({ c
 
       if (existingIndex > -1) {
         const updated = [...prev];
-        updated[existingIndex].quantity += quantity;
+        updated[existingIndex] = {
+          ...updated[existingIndex],
+          quantity: updated[existingIndex].quantity + quantity,
+        };
         return updated;
       }
 
@@ -715,34 +766,34 @@ export const MarketplaceProvider: React.FC<{ children: React.ReactNode }> = ({ c
       };
       return [newItem, ...prev];
     });
-  };
+  }, []);
 
-  const removeFromCart = (cartItemId: string) => {
+  const removeFromCart = useCallback((cartItemId: string) => {
     setCart((prev) => prev.filter((item) => item.id !== cartItemId));
-  };
+  }, []);
 
-  const updateCartQuantity = (cartItemId: string, quantity: number) => {
+  const updateCartQuantity = useCallback((cartItemId: string, quantity: number) => {
     if (quantity <= 0) {
-      removeFromCart(cartItemId);
+      setCart((prev) => prev.filter((item) => item.id !== cartItemId));
       return;
     }
     setCart((prev) =>
       prev.map((item) => (item.id === cartItemId ? { ...item, quantity } : item))
     );
-  };
+  }, []);
 
-  const clearCart = () => {
+  const clearCart = useCallback(() => {
     setCart([]);
-  };
+  }, []);
 
   // Favorites Actions
-  const toggleFavorite = (productId: string) => {
+  const toggleFavorite = useCallback((productId: string) => {
     setFavorites((prev) =>
       prev.includes(productId) ? prev.filter((id) => id !== productId) : [...prev, productId]
     );
-  };
+  }, []);
 
-  const isFavorite = (productId: string) => favorites.includes(productId);
+  const isFavorite = useCallback((productId: string) => favorites.includes(productId), [favorites]);
 
   // Address Actions
   const addOrUpdateAddress = (newAddr: Address) => {
@@ -923,12 +974,16 @@ export const MarketplaceProvider: React.FC<{ children: React.ReactNode }> = ({ c
     setActiveCoupon(null);
   };
 
-  // Real Checkout Totals Calculation
+  // Authoritative Checkout Totals Calculation (strict catalog verification)
   const calculateCheckoutTotals = () => {
-    const subtotalBaseYER = cart.reduce(
-      (sum, item) => sum + (item.product.priceYER || 0) * item.quantity,
-      0
-    );
+    // Validate and derive authoritative price strictly from product catalog to prevent price tampering
+    const subtotalBaseYER = cart.reduce((sum, item) => {
+      const catalogProd = products.find((p) => p.id === item.product.id) || products.find((p) => p.id === item.id);
+      const verifiedPrice = (catalogProd?.priceYER && catalogProd.priceYER > 0)
+        ? catalogProd.priceYER
+        : (item.product.priceYER || 0);
+      return sum + verifiedPrice * Math.max(1, item.quantity);
+    }, 0);
 
     const totalItemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -982,7 +1037,7 @@ export const MarketplaceProvider: React.FC<{ children: React.ReactNode }> = ({ c
     };
   };
 
-  // Order Creation
+  // Order Creation (tamper-proof, stock-checked, atomic)
   const createOrder = async (orderData: {
     paymentMethod: PaymentMethodType;
     shippingAddress: Address;
@@ -996,19 +1051,52 @@ export const MarketplaceProvider: React.FC<{ children: React.ReactNode }> = ({ c
       hidePrice?: boolean;
     };
   }): Promise<Order> => {
+    // 1. Enforce authentication: Guest must be logged in to create an order
+    if (!currentUser?.id) {
+      throw new Error('يرجى تسجيل الدخول أو إنشاء حساب لإتمام وحفظ طلبك بأمان.');
+    }
+
+    if (cart.length === 0) {
+      throw new Error('سلة التسوق فارغة.');
+    }
+
+    // 2. Validate inventory stock against live catalog
+    for (const cartItem of cart) {
+      const catalogProd = products.find((p) => p.id === cartItem.product.id) || products.find((p) => p.id === cartItem.id);
+      if (!catalogProd) {
+        throw new Error(`المنتج "${cartItem.product.name}" غير متوفر حالياً في كتالوج المتجر.`);
+      }
+      if (typeof catalogProd.stock === 'number' && catalogProd.stock < cartItem.quantity) {
+        throw new Error(`عذراً، الكمية المتوفرة من "${catalogProd.name}" بالمخزون هي (${catalogProd.stock}) قطعة فقط ولا تكفي للطلب (${cartItem.quantity}).`);
+      }
+    }
+
     const totals = calculateCheckoutTotals();
     const orderId = `DJ-2026-${Math.floor(10000 + Math.random() * 90000)}`;
+
+    // Build verified order items strictly from catalog authoritative data
+    const verifiedItems = cart.map((item) => {
+      const catalogProd = products.find((p) => p.id === item.product.id) || products.find((p) => p.id === item.id);
+      const verifiedPrice = (catalogProd?.priceYER && catalogProd.priceYER > 0)
+        ? catalogProd.priceYER
+        : item.product.priceYER;
+      return {
+        ...item,
+        product: {
+          ...item.product,
+          priceYER: verifiedPrice,
+        },
+        selectedColor: item.selectedColor || null,
+        selectedSize: item.selectedSize || null,
+      };
+    });
 
     const newOrder: Order = {
       id: orderId,
       orderNumber: orderId,
-      userId: currentUser?.id || 'guest',
+      userId: currentUser.id,
       createdAt: new Date().toISOString(),
-      items: cart.map((item) => ({
-        ...item,
-        selectedColor: item.selectedColor || null,
-        selectedSize: item.selectedSize || null,
-      })),
+      items: verifiedItems,
       subtotalYER: totals.subtotalBaseYER,
       discountYER: totals.discountBaseYER,
       shippingFeeYER: totals.deliveryFeeBaseYER,
@@ -1071,7 +1159,10 @@ export const MarketplaceProvider: React.FC<{ children: React.ReactNode }> = ({ c
       ],
     };
 
-    // Store in state and Cloud Firestore
+    // 3. Save to Cloud Firestore FIRST - if it fails, throw error and do NOT show fake success!
+    await firestoreOrderService.createOrder(newOrder);
+
+    // 4. Update local state and inventory after successful save
     setOrders((prev) => {
       const updated = [newOrder, ...prev];
       if (currentUser?.id) {
@@ -1079,28 +1170,25 @@ export const MarketplaceProvider: React.FC<{ children: React.ReactNode }> = ({ c
       }
       return updated;
     });
-    // Deduct inventory stock for purchased items
-    cart.forEach((cartItem) => {
-      const matchedProd = products.find((p) => p.id === cartItem.id);
-      if (matchedProd && typeof matchedProd.stock === 'number') {
-        const updatedStock = Math.max(0, matchedProd.stock - cartItem.quantity);
-        updateProductStock(cartItem.id, updatedStock).catch(() => {});
-      }
-    });
+
+    // Deduct inventory stock for purchased items in local state
+    setProducts((prev) =>
+      prev.map((p) => {
+        const itemInCart = cart.find((c) => c.product.id === p.id || c.id === p.id);
+        if (itemInCart && typeof p.stock === 'number') {
+          return { ...p, stock: Math.max(0, p.stock - itemInCart.quantity) };
+        }
+        return p;
+      })
+    );
 
     clearCart();
     setActiveCoupon(null);
 
-    try {
-      await firestoreOrderService.createOrder(newOrder);
-    } catch (err) {
-      console.error('Firestore create order notice:', err);
-    }
-
     // Push notification
     const orderNotification: NotificationItem = {
       id: `notif-${Date.now()}`,
-      userId: currentUser?.id || 'guest',
+      userId: currentUser.id,
       title: `تم تأكيد طلبك بنجاح (${orderId})`,
       message: `طلبك بقيمة ${formatPrice(newOrder.totalYER)} قيد التجهيز الآن وسيصلك إلى ${orderData.shippingAddress.city}.`,
       date: 'الآن',
@@ -1117,7 +1205,60 @@ export const MarketplaceProvider: React.FC<{ children: React.ReactNode }> = ({ c
     return newOrder;
   };
 
+  // Customer order cancellation with strict lifecycle guard
+  const cancelCustomerOrder = async (orderId: string): Promise<void> => {
+    const existing = orders.find((o) => o.id === orderId);
+    if (!existing) {
+      throw new Error('الطلب غير موجود في النظام.');
+    }
+    if (existing.status !== 'received') {
+      throw new Error('لا يمكن إلغاء الطلب لأنه بدأ بالفعل في مرحلة التجهيز أو الشحن أو تم تسليمه.');
+    }
+    if (!currentUser?.id) {
+      throw new Error('يجب تسجيل الدخول لإلغاء الطلب.');
+    }
+
+    await firestoreOrderService.cancelCustomerOrder(orderId, currentUser.id);
+
+    // Restore stock in local state
+    setProducts((prev) =>
+      prev.map((p) => {
+        const itemInOrder = existing.items.find((item) => item.product?.id === p.id || item.id === p.id);
+        if (itemInOrder && typeof p.stock === 'number') {
+          return { ...p, stock: p.stock + itemInOrder.quantity };
+        }
+        return p;
+      })
+    );
+
+    // Update order in state
+    setOrders((prev) =>
+      prev.map((ord) => {
+        if (ord.id !== orderId) return ord;
+        const updatedTimeline = ord.timeline.map((step) => {
+          if (step.status === 'received') {
+            return { ...step, description: 'تم إلغاء الطلب بناءً على رغبة العميل' };
+          }
+          return { ...step, current: false };
+        });
+        return {
+          ...ord,
+          status: 'cancelled',
+          updatedAt: new Date().toISOString(),
+          timeline: updatedTimeline,
+        };
+      })
+    );
+  };
+
   const updateOrderStatus = async (orderId: string, newStatus: OrderStatus) => {
+    if (!isAdmin && newStatus !== 'cancelled') {
+      throw new Error('فقط مدير المتجر يمكنه تعديل مراحل الطلب والتوصيل.');
+    }
+    if (!isAdmin && newStatus === 'cancelled') {
+      return cancelCustomerOrder(orderId);
+    }
+
     setOrders((prev) =>
       prev.map((ord) => {
         if (ord.id !== orderId) return ord;
@@ -1142,6 +1283,7 @@ export const MarketplaceProvider: React.FC<{ children: React.ReactNode }> = ({ c
       await firestoreOrderService.updateOrderStatus(orderId, newStatus);
     } catch (err) {
       console.error('Firestore update order status notice:', err);
+      throw err;
     }
   };
 
@@ -1433,6 +1575,7 @@ export const MarketplaceProvider: React.FC<{ children: React.ReactNode }> = ({ c
     calculateCheckoutTotals,
     createOrder,
     updateOrderStatus,
+    cancelCustomerOrder,
     hasUserPurchasedProduct,
     submitProductReview,
     markNotificationAsRead,
@@ -1460,6 +1603,16 @@ export const MarketplaceProvider: React.FC<{ children: React.ReactNode }> = ({ c
     appSettings,
     footerConfig,
     isBackendConnected,
+    setCurrentCurrency,
+    updateCurrencyRates,
+    formatPrice,
+    convertPrice,
+    addToCart,
+    removeFromCart,
+    updateCartQuantity,
+    clearCart,
+    toggleFavorite,
+    isFavorite,
     hasUserPurchasedProduct,
     submitProductReview,
   ]);

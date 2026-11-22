@@ -170,7 +170,7 @@ export const ProductQuickViewModal: React.FC<ProductQuickViewModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-[9995] flex items-end sm:items-center justify-center bg-black/85 backdrop-blur-md overflow-hidden p-0 sm:p-4">
+    <div className="fixed inset-0 z-[9995] flex items-end sm:items-center justify-center bg-neutral-950/50 backdrop-blur-md overflow-hidden p-0 sm:p-4">
       {/* Backdrop */}
       <div 
         onClick={onClose}
@@ -183,27 +183,27 @@ export const ProductQuickViewModal: React.FC<ProductQuickViewModalProps> = ({
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: '100%' }}
         transition={{ type: 'spring', damping: 28, stiffness: 320 }}
-        className="relative w-full max-w-lg bg-neutral-900 border-t sm:border border-neutral-800 rounded-t-3xl sm:rounded-3xl shadow-2xl text-white max-h-[92vh] sm:max-h-[88vh] flex flex-col overflow-hidden z-10 gpu-layer"
+        className="relative w-full max-w-lg bg-white border-t sm:border border-neutral-200 rounded-t-3xl sm:rounded-3xl shadow-2xl text-neutral-900 max-h-[92vh] sm:max-h-[88vh] flex flex-col overflow-hidden z-10 gpu-layer"
       >
         {/* Top Drag Handle Bar (iOS / Modern Bottom Sheet style) */}
-        <div className="w-full pt-2.5 pb-1 flex justify-center bg-neutral-950/90 sm:hidden">
-          <div className="w-12 h-1.5 rounded-full bg-neutral-700/80" />
+        <div className="w-full pt-2.5 pb-1 flex justify-center bg-white sm:hidden">
+          <div className="w-12 h-1.5 rounded-full bg-neutral-300" />
         </div>
 
         {/* Top Header Bar: [إغلاق] [اسم مختصر] [المفضلة ومشاركة] */}
-        <div className="flex items-center justify-between px-4 py-2.5 border-b border-neutral-800/80 bg-neutral-950/90 backdrop-blur-md z-20">
+        <div className="flex items-center justify-between px-4 py-2.5 border-b border-neutral-200/80 bg-white/95 backdrop-blur-md z-20">
           <button
             type="button"
             onClick={onClose}
-            className="flex items-center gap-1.5 p-2 rounded-full text-neutral-300 hover:text-white hover:bg-neutral-800 transition-colors cursor-pointer active:scale-95"
+            className="flex items-center gap-1.5 p-2 rounded-full text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100 transition-colors cursor-pointer active:scale-95"
             aria-label="إغلاق"
           >
             <X className="w-5 h-5" />
-            <span className="text-xs font-bold text-neutral-400 sm:inline hidden">إغلاق</span>
+            <span className="text-xs font-bold text-neutral-500 sm:inline hidden">إغلاق</span>
           </button>
 
-          <span className="text-xs font-black text-amber-400 flex items-center gap-1">
-            <Sparkles className="w-3.5 h-3.5" />
+          <span className="text-xs font-black text-amber-800 flex items-center gap-1 bg-amber-50 px-3 py-1 rounded-full border border-amber-200/80">
+            <Sparkles className="w-3.5 h-3.5 text-amber-600" />
             <span>الشراء السريع</span>
           </span>
 
@@ -214,8 +214,8 @@ export const ProductQuickViewModal: React.FC<ProductQuickViewModalProps> = ({
               onClick={() => onToggleFavorite(product)}
               className={`p-2 rounded-full border transition-all active:scale-90 cursor-pointer ${
                 isFavorite
-                  ? 'bg-rose-600/20 border-rose-500/50 text-rose-500'
-                  : 'bg-neutral-800/80 border-neutral-700 text-neutral-300 hover:text-white'
+                  ? 'bg-rose-50 border-rose-200 text-rose-600'
+                  : 'bg-[#F6F7F9] border-neutral-200 text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100'
               }`}
               title="المفضلة"
             >
@@ -226,7 +226,7 @@ export const ProductQuickViewModal: React.FC<ProductQuickViewModalProps> = ({
             <button
               type="button"
               onClick={handleShare}
-              className="p-2 rounded-full bg-neutral-800/80 border border-neutral-700 text-neutral-300 hover:text-white transition-colors cursor-pointer active:scale-95"
+              className="p-2 rounded-full bg-[#F6F7F9] border border-neutral-200 text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100 transition-colors cursor-pointer active:scale-95"
               title="مشاركة المنتج"
             >
               <Share2 className="w-4 h-4" />
@@ -241,7 +241,7 @@ export const ProductQuickViewModal: React.FC<ProductQuickViewModalProps> = ({
             {/* Interactive Image Gallery Carousel with Flipping */}
             <div 
               ref={imageRef}
-              className="relative w-32 h-40 sm:w-40 sm:h-48 rounded-2xl overflow-hidden bg-neutral-950 border border-neutral-800 flex-shrink-0 shadow-lg group select-none"
+              className="relative w-32 h-40 sm:w-40 sm:h-48 rounded-2xl overflow-hidden bg-[#F3F4F6] border border-neutral-200/80 flex-shrink-0 shadow-sm group select-none"
             >
               <CachedImage
                 src={images[activeImageIndex]}
@@ -259,7 +259,7 @@ export const ProductQuickViewModal: React.FC<ProductQuickViewModalProps> = ({
                   <button
                     type="button"
                     onClick={(e) => { e.stopPropagation(); prevImage(); }}
-                    className="absolute left-1 top-1/2 -translate-y-1/2 p-1 rounded-full bg-black/60 text-white hover:bg-black/85 backdrop-blur-sm transition-all cursor-pointer active:scale-90"
+                    className="absolute left-1 top-1/2 -translate-y-1/2 p-1 rounded-full bg-white/90 text-neutral-800 hover:bg-amber-400 hover:text-neutral-950 shadow-sm border border-neutral-200/80 transition-all cursor-pointer active:scale-90"
                     aria-label="الصورة السابقة"
                   >
                     <ChevronLeft className="w-3.5 h-3.5" />
@@ -267,21 +267,21 @@ export const ProductQuickViewModal: React.FC<ProductQuickViewModalProps> = ({
                   <button
                     type="button"
                     onClick={(e) => { e.stopPropagation(); nextImage(); }}
-                    className="absolute right-1 top-1/2 -translate-y-1/2 p-1 rounded-full bg-black/60 text-white hover:bg-black/85 backdrop-blur-sm transition-all cursor-pointer active:scale-90"
+                    className="absolute right-1 top-1/2 -translate-y-1/2 p-1 rounded-full bg-white/90 text-neutral-800 hover:bg-amber-400 hover:text-neutral-950 shadow-sm border border-neutral-200/80 transition-all cursor-pointer active:scale-90"
                     aria-label="الصورة التالية"
                   >
                     <ChevronRight className="w-3.5 h-3.5" />
                   </button>
 
                   {/* Image Counter Badge (1/3) */}
-                  <div className="absolute bottom-1.5 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-black/75 backdrop-blur-sm text-[9px] font-mono font-bold text-amber-300 border border-neutral-700/60">
+                  <div className="absolute bottom-1.5 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-white/95 backdrop-blur-sm text-[9px] font-mono font-bold text-neutral-800 border border-neutral-200 shadow-sm tabular-nums">
                     {activeImageIndex + 1} / {images.length}
                   </div>
                 </>
               )}
 
               {product.discountPercentage && (
-                <div className="absolute top-1.5 right-1.5 flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-rose-600 text-white text-[10px] font-black shadow-md">
+                <div className="absolute top-1.5 right-1.5 flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-rose-600 text-white text-[10px] font-black shadow-md tabular-nums">
                   <Flame className="w-2.5 h-2.5 fill-white" />
                   <span>{product.discountPercentage}%-</span>
                 </div>
@@ -291,41 +291,41 @@ export const ProductQuickViewModal: React.FC<ProductQuickViewModalProps> = ({
             {/* Product Name, Rating & Price */}
             <div className="flex-1 flex flex-col justify-between self-stretch min-w-0">
               <div>
-                <div className="flex items-center gap-1 text-[11px] text-amber-400 mb-1">
-                  <Star className="w-3.5 h-3.5 fill-amber-400" />
+                <div className="flex items-center gap-1 text-[11px] text-amber-700 mb-1 tabular-nums">
+                  <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
                   <span className="font-bold">{product.rating}</span>
                   <span className="text-neutral-500 text-[10px]">({product.reviewCount} تقييم)</span>
                 </div>
 
-                <h2 className="text-xs sm:text-sm font-black text-white leading-snug line-clamp-2 mb-2">
+                <h2 className="text-xs sm:text-sm font-black text-neutral-900 leading-snug line-clamp-2 mb-2">
                   {product.name}
                 </h2>
 
                 {/* Price Display */}
-                <div className="flex items-baseline gap-2 mb-1">
-                  <span className="text-base sm:text-xl font-black text-amber-400">
+                <div className="flex items-baseline gap-2 mb-1 tabular-nums">
+                  <span className="text-base sm:text-xl font-black text-neutral-950">
                     {formatPrice(product.priceYER)}
                   </span>
                   {product.originalPriceYER && (
-                    <span className="text-xs text-neutral-500 line-through">
+                    <span className="text-xs text-neutral-400 line-through">
                       {formatPrice(product.originalPriceYER)}
                     </span>
                   )}
                 </div>
 
                 {/* Stock Tag */}
-                <div className="flex items-center gap-1.5 text-[10px] text-neutral-400 mt-1">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                  <span className="text-emerald-400 font-semibold">متوفر في المستودع</span>
+                <div className="flex items-center gap-1.5 text-[10px] text-neutral-600 mt-1">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                  <span className="text-emerald-700 font-bold">متوفر في المستودع</span>
                   {product.stock <= 8 && (
-                    <span className="text-amber-400">
+                    <span className="text-amber-700 font-bold tabular-nums">
                       (متبقي {product.stock} فقط)
                     </span>
                   )}
                 </div>
 
                 {/* SKU Field for Inventory Management (رمز التخزين لإدارة الجرد) */}
-                <div className="mt-2 pt-2 border-t border-neutral-800/80 flex items-center justify-between gap-2">
+                <div className="mt-2 pt-2 border-t border-neutral-200/80 flex items-center justify-between gap-2">
                   <div className="flex items-center gap-1.5 text-[10px]">
                     <span className="text-neutral-500 font-medium">رمز المخزون:</span>
                     <button
@@ -341,19 +341,19 @@ export const ProductQuickViewModal: React.FC<ProductQuickViewModalProps> = ({
                         } catch {}
                       }}
                       title="انقر لنسخ رمز المنتج (SKU)"
-                      className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-neutral-800/90 hover:bg-neutral-800 border border-neutral-700/70 hover:border-amber-500/50 text-[10px] text-amber-300 hover:text-amber-200 transition-colors group cursor-pointer active:scale-95 shadow-sm"
+                      className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-[#F6F7F9] hover:bg-amber-50 border border-neutral-200 hover:border-amber-400 text-[10px] text-amber-800 transition-colors group cursor-pointer active:scale-95"
                     >
-                      <Barcode className="w-3.5 h-3.5 text-amber-400 group-hover:scale-105 transition-transform" />
+                      <Barcode className="w-3.5 h-3.5 text-amber-600 group-hover:scale-105 transition-transform" />
                       <span className="font-mono font-bold tracking-wider">{productSku}</span>
                       {copiedSku ? (
-                        <Check className="w-3 h-3 text-emerald-400" />
+                        <Check className="w-3 h-3 text-emerald-600" />
                       ) : (
-                        <Copy className="w-2.5 h-2.5 text-neutral-500 group-hover:text-amber-300" />
+                        <Copy className="w-2.5 h-2.5 text-neutral-400 group-hover:text-amber-700" />
                       )}
                     </button>
                   </div>
                   {product.brandName && (
-                    <span className="text-[9px] text-neutral-400 bg-neutral-800/50 px-1.5 py-0.5 rounded border border-neutral-700/30 truncate max-w-[100px]">
+                    <span className="text-[9px] text-neutral-600 bg-[#F6F7F9] px-1.5 py-0.5 rounded border border-neutral-200 truncate max-w-[100px] font-semibold">
                       {product.brandName}
                     </span>
                   )}
@@ -367,7 +367,7 @@ export const ProductQuickViewModal: React.FC<ProductQuickViewModalProps> = ({
                   onClose();
                   onOpenFullDetails(product);
                 }}
-                className="text-[11px] font-bold text-amber-400 hover:text-amber-300 flex items-center gap-1 w-fit mt-2 pt-1 border-t border-neutral-800/80 cursor-pointer active:scale-95 transition-transform"
+                className="text-[11px] font-bold text-amber-700 hover:text-amber-800 flex items-center gap-1 w-fit mt-2 pt-1.5 border-t border-neutral-200/80 cursor-pointer active:scale-95 transition-transform"
               >
                 <span>عرض التفاصيل الكاملة والتقييمات</span>
                 <ChevronLeft className="w-3.5 h-3.5" />
@@ -383,10 +383,10 @@ export const ProductQuickViewModal: React.FC<ProductQuickViewModalProps> = ({
                   key={idx}
                   type="button"
                   onClick={() => setActiveImageIndex(idx)}
-                  className={`relative w-12 h-14 rounded-xl overflow-hidden border-2 flex-shrink-0 transition-all cursor-pointer ${
+                  className={`relative w-12 h-14 rounded-xl overflow-hidden border-2 flex-shrink-0 transition-all cursor-pointer bg-[#F3F4F6] ${
                     activeImageIndex === idx
-                      ? 'border-amber-400 ring-2 ring-amber-400/30 scale-105'
-                      : 'border-neutral-800 opacity-60 hover:opacity-100'
+                      ? 'border-amber-500 ring-2 ring-amber-400/30 scale-105'
+                      : 'border-neutral-200 opacity-70 hover:opacity-100'
                   }`}
                 >
                   <CachedImage
@@ -401,7 +401,7 @@ export const ProductQuickViewModal: React.FC<ProductQuickViewModalProps> = ({
 
           {/* Validation Error Banner */}
           {validationError && (
-            <div className="flex items-center gap-2 p-2.5 rounded-xl bg-rose-500/15 border border-rose-500/40 text-rose-300 text-xs font-bold animate-pulse">
+            <div className="flex items-center gap-2 p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-bold animate-pulse">
               <AlertCircle className="w-4 h-4 flex-shrink-0" />
               <span>{validationError}</span>
             </div>
@@ -409,10 +409,10 @@ export const ProductQuickViewModal: React.FC<ProductQuickViewModalProps> = ({
 
           {/* Color Selector */}
           {product.colors && product.colors.length > 0 && (
-            <div className="space-y-1.5 pt-2 border-t border-neutral-800/60">
+            <div className="space-y-1.5 pt-2.5 border-t border-neutral-200/70">
               <div className="flex items-center justify-between text-xs">
-                <span className="font-bold text-neutral-300">اللون:</span>
-                <span className="text-amber-400 font-bold">{selectedColor || 'اختر اللون'}</span>
+                <span className="font-bold text-neutral-700">اللون:</span>
+                <span className="text-amber-700 font-bold">{selectedColor || 'اختر اللون'}</span>
               </div>
               <div className="flex flex-wrap gap-2">
                 {product.colors.map((c) => {
@@ -428,16 +428,16 @@ export const ProductQuickViewModal: React.FC<ProductQuickViewModalProps> = ({
                       }}
                       className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-semibold transition-all cursor-pointer active:scale-95 ${
                         isSelected
-                          ? 'border-amber-400 bg-amber-400/15 text-white ring-1 ring-amber-400/50'
-                          : 'border-neutral-800 bg-neutral-950 text-neutral-400 hover:border-neutral-700'
+                          ? 'border-amber-500 bg-amber-50 text-neutral-950 ring-1 ring-amber-400/50'
+                          : 'border-neutral-200 bg-[#F6F7F9] text-neutral-700 hover:border-neutral-300'
                       }`}
                     >
                       <span
-                        className="w-3.5 h-3.5 rounded-full border border-white/20 shadow-inner flex-shrink-0"
+                        className="w-3.5 h-3.5 rounded-full border border-black/15 shadow-inner flex-shrink-0"
                         style={{ backgroundColor: c.hex }}
                       />
                       <span>{c.name}</span>
-                      {isSelected && <Check className="w-3 h-3 text-amber-400 mr-0.5" />}
+                      {isSelected && <Check className="w-3 h-3 text-amber-700 mr-0.5" />}
                     </button>
                   );
                 })}
@@ -447,10 +447,10 @@ export const ProductQuickViewModal: React.FC<ProductQuickViewModalProps> = ({
 
           {/* Size Selector */}
           {product.sizes && product.sizes.length > 0 && (
-            <div className="space-y-1.5 pt-2 border-t border-neutral-800/60">
+            <div className="space-y-1.5 pt-2.5 border-t border-neutral-200/70">
               <div className="flex items-center justify-between text-xs">
-                <span className="font-bold text-neutral-300">المقاس:</span>
-                <span className="text-amber-400 font-bold">{selectedSize || 'اختر المقاس'}</span>
+                <span className="font-bold text-neutral-700">المقاس:</span>
+                <span className="text-amber-700 font-bold">{selectedSize || 'اختر المقاس'}</span>
               </div>
               <div className="flex flex-wrap gap-2">
                 {product.sizes.map((s) => {
@@ -466,8 +466,8 @@ export const ProductQuickViewModal: React.FC<ProductQuickViewModalProps> = ({
                       }}
                       className={`min-w-10 px-3.5 py-1.5 rounded-xl border text-xs font-bold transition-all cursor-pointer active:scale-95 ${
                         isSelected
-                          ? 'border-amber-400 bg-amber-400 text-neutral-950 shadow-md ring-1 ring-amber-400'
-                          : 'border-neutral-800 bg-neutral-950 text-neutral-300 hover:border-neutral-700'
+                          ? 'border-amber-500 bg-amber-400 text-neutral-950 shadow-sm ring-1 ring-amber-400'
+                          : 'border-neutral-200 bg-[#F6F7F9] text-neutral-700 hover:border-neutral-300'
                       }`}
                     >
                       {s}
@@ -479,27 +479,27 @@ export const ProductQuickViewModal: React.FC<ProductQuickViewModalProps> = ({
           )}
 
           {/* Quantity Selector & Total Price Preview */}
-          <div className="flex items-center justify-between pt-2 border-t border-neutral-800/60 text-xs">
+          <div className="flex items-center justify-between pt-2.5 border-t border-neutral-200/70 text-xs">
             <div>
-              <span className="font-bold text-neutral-300 block">الكمية:</span>
-              <span className="text-[10px] text-amber-400/90 font-medium">
+              <span className="font-bold text-neutral-800 block">الكمية:</span>
+              <span className="text-[11px] text-amber-700 font-bold tabular-nums">
                 الإجمالي: {formatPrice((product.priceYER || 0) * quantity)}
               </span>
             </div>
 
-            <div className="flex items-center bg-neutral-950 border border-neutral-800 rounded-xl p-1">
+            <div className="flex items-center bg-[#F6F7F9] border border-neutral-200 rounded-xl p-1">
               <button
                 type="button"
                 onClick={() => {
                   setQuantity((q) => Math.max(1, q - 1));
                   safeHaptic(15);
                 }}
-                className="w-8 h-8 rounded-lg bg-neutral-900 hover:bg-neutral-800 text-neutral-200 font-bold flex items-center justify-center transition-colors cursor-pointer active:scale-90"
+                className="w-8 h-8 rounded-lg bg-white hover:bg-neutral-100 border border-neutral-200/80 text-neutral-800 font-bold flex items-center justify-center transition-colors cursor-pointer active:scale-90"
                 aria-label="إنقاص الكمية"
               >
                 <Minus className="w-3.5 h-3.5" />
               </button>
-              <span className="w-10 text-center text-sm font-black text-white">
+              <span className="w-10 text-center text-sm font-black text-neutral-950 tabular-nums">
                 {quantity}
               </span>
               <button
@@ -508,7 +508,7 @@ export const ProductQuickViewModal: React.FC<ProductQuickViewModalProps> = ({
                   setQuantity((q) => Math.min(product.stock || 99, q + 1));
                   safeHaptic(15);
                 }}
-                className="w-8 h-8 rounded-lg bg-neutral-900 hover:bg-neutral-800 text-neutral-200 font-bold flex items-center justify-center transition-colors cursor-pointer active:scale-90"
+                className="w-8 h-8 rounded-lg bg-white hover:bg-neutral-100 border border-neutral-200/80 text-neutral-800 font-bold flex items-center justify-center transition-colors cursor-pointer active:scale-90"
                 aria-label="زيادة الكمية"
               >
                 <Plus className="w-3.5 h-3.5" />
@@ -517,28 +517,28 @@ export const ProductQuickViewModal: React.FC<ProductQuickViewModalProps> = ({
           </div>
 
           {/* Fast Guarantee Strip */}
-          <div className="p-2.5 rounded-xl bg-neutral-950/80 border border-neutral-800/80 flex items-center justify-between text-[11px] text-neutral-400">
+          <div className="p-3 rounded-xl bg-[#F6F7F9] border border-neutral-200/80 flex items-center justify-between text-[11px] text-neutral-600 font-semibold">
             <div className="flex items-center gap-1.5">
-              <Truck className="w-3.5 h-3.5 text-amber-400" />
+              <Truck className="w-3.5 h-3.5 text-amber-600" />
               <span>توصيل فوري ومعاينة قبل الدفع</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
               <span>ضمان أصلي 100%</span>
             </div>
           </div>
         </div>
 
         {/* Bottom Fixed Action Buttons: [ أضف إلى السلة ] [ اشتري الآن ] */}
-        <div className="p-3.5 sm:p-4 pb-[max(0.85rem,env(safe-area-inset-bottom))] border-t border-neutral-800 bg-neutral-950/98 backdrop-blur-xl flex items-center gap-2 sm:gap-3 z-30">
+        <div className="p-3.5 sm:p-4 pb-[max(0.85rem,env(safe-area-inset-bottom))] border-t border-neutral-200 bg-white/95 backdrop-blur-xl flex items-center gap-2 sm:gap-3 z-30">
           {/* Add to Cart CTA with Fly Animation trigger */}
           <button
             type="button"
             onClick={handleAddToCartClick}
             className={`flex-1 flex items-center justify-center gap-1.5 py-3 px-3 rounded-2xl border font-black text-xs sm:text-sm active:scale-[0.98] transition-all cursor-pointer ${
               isAddingAnimation
-                ? 'bg-emerald-500 text-neutral-950 border-emerald-400 shadow-lg shadow-emerald-500/25'
-                : 'bg-amber-500/20 hover:bg-amber-500/30 border-amber-500/50 text-amber-300 hover:text-white'
+                ? 'bg-emerald-600 text-white border-emerald-500 shadow-md'
+                : 'bg-neutral-900 hover:bg-neutral-800 border-neutral-900 text-white'
             }`}
           >
             {isAddingAnimation ? (
@@ -548,7 +548,7 @@ export const ProductQuickViewModal: React.FC<ProductQuickViewModalProps> = ({
               </>
             ) : (
               <>
-                <ShoppingCart className="w-4 h-4" />
+                <ShoppingCart className="w-4 h-4 text-amber-400" />
                 <span>أضف إلى السلة</span>
               </>
             )}
@@ -558,7 +558,7 @@ export const ProductQuickViewModal: React.FC<ProductQuickViewModalProps> = ({
           <button
             type="button"
             onClick={handleBuyNowClick}
-            className="flex-1 flex items-center justify-center gap-1.5 py-3 px-3 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-neutral-950 font-black text-xs sm:text-sm shadow-lg shadow-amber-500/25 active:scale-[0.98] transition-all cursor-pointer"
+            className="flex-1 flex items-center justify-center gap-1.5 py-3 px-3 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 hover:from-amber-400 hover:to-amber-500 text-neutral-950 font-black text-xs sm:text-sm shadow-md shadow-amber-500/20 active:scale-[0.98] transition-all cursor-pointer"
           >
             <Sparkles className="w-4 h-4" />
             <span>اشتري الآن</span>

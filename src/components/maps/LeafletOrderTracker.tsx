@@ -161,22 +161,22 @@ export const LeafletOrderTracker: React.FC<LeafletOrderTrackerProps> = ({
   }, [routePositions, originLat, originLng, destLat, destLng, courierInfo, hubIcon, courierIcon, destIcon, order.status, mapCenter]);
 
   return (
-    <div className={`relative w-full rounded-3xl overflow-hidden border border-neutral-800 bg-neutral-950 shadow-2xl flex flex-col ${className}`}>
+    <div className={`relative w-full rounded-3xl overflow-hidden border border-neutral-200 bg-white shadow-sm flex flex-col ${className}`}>
       {/* Live Map Top Floating Status Banner */}
       <div className="absolute top-3 inset-x-3 z-[1000] flex items-center justify-between pointer-events-none">
-        <div className="px-3 py-1.5 rounded-2xl bg-neutral-900/90 backdrop-blur-md border border-neutral-700/80 shadow-xl flex items-center gap-2">
+        <div className="px-3 py-1.5 rounded-2xl bg-white/95 backdrop-blur-md border border-neutral-200 shadow-lg flex items-center gap-2">
           <div className="relative">
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 block"></span>
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 block animate-ping absolute inset-0 opacity-75"></span>
           </div>
           <div className="text-xs">
-            <span className="font-bold text-white">تتبع المسار المباشر</span>
-            <span className="text-neutral-400 mr-1.5 hidden sm:inline">• {courierInfo.label}</span>
+            <span className="font-bold text-neutral-950">تتبع المسار المباشر</span>
+            <span className="text-neutral-500 mr-1.5 hidden sm:inline">• {courierInfo.label}</span>
           </div>
         </div>
 
         {order.status === 'out_for_delivery' && (
-          <div className="px-3 py-1.5 rounded-2xl bg-amber-500/90 backdrop-blur-md text-neutral-950 font-black text-xs shadow-xl flex items-center gap-1.5">
+          <div className="px-3 py-1.5 rounded-2xl bg-amber-400 text-neutral-950 font-black text-xs shadow-lg flex items-center gap-1.5 tabular-nums">
             <Clock className="w-3.5 h-3.5" />
             <span>متوقع: 15-25 دقيقة</span>
           </div>
@@ -193,9 +193,9 @@ export const LeafletOrderTracker: React.FC<LeafletOrderTrackerProps> = ({
       </div>
 
       {/* Footer Info Strip */}
-      <div className="px-4 py-2.5 bg-neutral-950 border-t border-neutral-800 flex items-center justify-between text-xs text-neutral-400 z-10">
+      <div className="px-4 py-2.5 bg-[#F6F7F9] border-t border-neutral-200 flex items-center justify-between text-xs text-neutral-600 z-10">
         <div className="flex items-center gap-2">
-          <Truck className="w-3.5 h-3.5 text-amber-400" />
+          <Truck className="w-3.5 h-3.5 text-amber-600" />
           <span>تحديث لحظي لحركة مندوب التوصيل في أرجاء المدينة</span>
         </div>
         <div className="flex items-center gap-1 text-[11px] font-mono text-neutral-500">

@@ -302,21 +302,21 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
   // Security Access Guard
   if (!isAdmin) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-        <div className="bg-neutral-900 border border-neutral-800 rounded-3xl p-6 sm:p-8 max-w-md w-full text-center space-y-4 shadow-2xl">
-          <div className="w-16 h-16 rounded-2xl bg-rose-500/20 border border-rose-500/30 flex items-center justify-center mx-auto text-rose-400">
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#1A1A1A]/50 backdrop-blur-md">
+        <div className="bg-white border border-[#E5DFD7] rounded-3xl p-6 sm:p-8 max-w-md w-full text-center space-y-4 shadow-2xl">
+          <div className="w-16 h-16 rounded-2xl bg-[#8B2635]/10 border border-[#8B2635]/20 flex items-center justify-center mx-auto text-[#8B2635]">
             <Lock className="w-8 h-8" />
           </div>
-          <h3 className="text-xl font-black text-white">منطقة محمية — صلاحيات المالك فقط</h3>
-          <p className="text-sm text-neutral-400 leading-relaxed">
+          <h3 className="text-xl font-black text-[#1A1A1A]">منطقة محمية — صلاحيات المالك فقط</h3>
+          <p className="text-sm text-[#6B6B6B] leading-relaxed">
             عذرًا، لوحة التحكم وإدارة المنتجات والمخزون مخصصة لمالك المنصة والمسؤولين المصرح لهم عبر Firebase.
           </p>
-          <div className="p-3 rounded-xl bg-neutral-950 border border-neutral-800 text-xs text-neutral-400">
-            الحساب الحالي: <span className="font-bold text-white">{currentUser?.email || currentUser?.phone || 'غير مسجل'}</span>
+          <div className="p-3 rounded-xl bg-[#FAF9F7] border border-[#E5DFD7] text-xs text-[#6B6B6B]">
+            الحساب الحالي: <span className="font-bold text-[#1A1A1A]">{currentUser?.email || currentUser?.phone || 'غير مسجل'}</span>
           </div>
           <button
             onClick={onClose}
-            className="w-full py-3 px-4 rounded-xl bg-amber-500 hover:bg-amber-400 text-neutral-950 font-black transition-all"
+            className="w-full py-3 px-4 rounded-xl bg-[#8B2635] hover:bg-[#721D2A] text-white font-black transition-all cursor-pointer"
           >
             العودة للمتجر
           </button>
@@ -696,21 +696,21 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
   });
 
   return (
-    <div className="fixed inset-0 z-50 bg-neutral-950/95 backdrop-blur-md overflow-y-auto">
+    <div className="fixed inset-0 z-50 bg-[#FAF9F7] overflow-y-auto text-[#1A1A1A]">
       {/* Header Bar */}
-      <header className="sticky top-0 z-40 bg-neutral-900/90 backdrop-blur-md border-b border-neutral-800 px-4 sm:px-6 py-4 flex items-center justify-between shadow-xl">
+      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#E5DFD7] px-4 sm:px-6 py-4 flex items-center justify-between shadow-sm">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400">
+          <div className="w-10 h-10 rounded-xl bg-[#8B2635]/10 border border-[#8B2635]/20 flex items-center justify-center text-[#8B2635]">
             <ShieldCheck className="w-6 h-6" />
           </div>
           <div>
-            <h1 className="text-lg sm:text-xl font-black text-white flex items-center gap-2">
+            <h1 className="text-lg sm:text-xl font-black text-[#1A1A1A] flex items-center gap-2">
               <span>لوحة إدارة المنتجات والمخزون</span>
-              <span className="px-2 py-0.5 rounded-md bg-amber-500 text-neutral-950 text-[10px] font-black uppercase">
+              <span className="px-2 py-0.5 rounded-md bg-[#D4AF37]/20 text-[#8B6F15] border border-[#D4AF37]/40 text-[10px] font-black uppercase">
                 المالك فقط
               </span>
             </h1>
-            <p className="text-xs text-neutral-400">
+            <p className="text-xs text-[#6B6B6B]">
               متصل مباشرة بقاعدة بيانات Cloud Firestore السحابية
             </p>
           </div>
@@ -719,7 +719,7 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
         <div className="flex items-center gap-3">
           <button
             onClick={handleOpenAddForm}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-neutral-950 font-black text-xs sm:text-sm shadow-lg shadow-amber-500/20 transition-all cursor-pointer"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#8B2635] hover:bg-[#721D2A] text-white font-black text-xs sm:text-sm shadow-md shadow-[#8B2635]/20 transition-all cursor-pointer"
           >
             <Plus className="w-4 h-4" />
             <span>إضافة منتج جديد</span>
@@ -727,7 +727,7 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
 
           <button
             onClick={onClose}
-            className="p-2.5 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-300 hover:text-white transition-all cursor-pointer"
+            className="p-2.5 rounded-xl bg-[#F4F1EA] hover:bg-[#E5DFD7] text-[#1A1A1A] transition-all cursor-pointer border border-[#E5DFD7]"
             title="إغلاق لوحة الإدارة"
           >
             <X className="w-5 h-5" />
@@ -738,14 +738,14 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
       {/* Main Container */}
       <main className="max-w-7xl mx-auto p-4 sm:p-6 space-y-6">
         {/* Navigation Tabs (Products / Orders / Categories / Brands / Customers / Settings) */}
-        <div className="flex items-center justify-between border-b border-neutral-800 pb-3 gap-4 overflow-x-auto">
+        <div className="flex items-center justify-between border-b border-[#E5DFD7] pb-3 gap-4 overflow-x-auto">
           <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
             <button
               onClick={() => setAdminTab('analytics')}
               className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
                 adminTab === 'analytics'
-                  ? 'bg-amber-500 text-neutral-950 font-black shadow-md'
-                  : 'bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-white'
+                  ? 'bg-[#8B2635] text-white font-black shadow-md shadow-[#8B2635]/20'
+                  : 'bg-white border border-[#E5DFD7] text-[#6B6B6B] hover:text-[#1A1A1A] hover:border-[#8B2635]/30'
               }`}
             >
               <TrendingUp className="w-4 h-4" />
@@ -756,8 +756,8 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
               onClick={() => setAdminTab('products')}
               className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
                 adminTab === 'products'
-                  ? 'bg-amber-500 text-neutral-950 font-black shadow-md'
-                  : 'bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-white'
+                  ? 'bg-[#8B2635] text-white font-black shadow-md shadow-[#8B2635]/20'
+                  : 'bg-white border border-[#E5DFD7] text-[#6B6B6B] hover:text-[#1A1A1A] hover:border-[#8B2635]/30'
               }`}
             >
               <Package className="w-4 h-4" />
@@ -768,8 +768,8 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
               onClick={() => setAdminTab('categories')}
               className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
                 adminTab === 'categories'
-                  ? 'bg-amber-500 text-neutral-950 font-black shadow-md'
-                  : 'bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-white'
+                  ? 'bg-[#8B2635] text-white font-black shadow-md shadow-[#8B2635]/20'
+                  : 'bg-white border border-[#E5DFD7] text-[#6B6B6B] hover:text-[#1A1A1A] hover:border-[#8B2635]/30'
               }`}
             >
               <Layers className="w-4 h-4" />
@@ -780,8 +780,8 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
               onClick={() => setAdminTab('paymentMethods')}
               className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
                 adminTab === 'paymentMethods'
-                  ? 'bg-amber-500 text-neutral-950 font-black shadow-md'
-                  : 'bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-white'
+                  ? 'bg-[#8B2635] text-white font-black shadow-md shadow-[#8B2635]/20'
+                  : 'bg-white border border-[#E5DFD7] text-[#6B6B6B] hover:text-[#1A1A1A] hover:border-[#8B2635]/30'
               }`}
             >
               <CreditCard className="w-4 h-4" />
@@ -792,8 +792,8 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
               onClick={() => setAdminTab('shipping')}
               className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
                 adminTab === 'shipping'
-                  ? 'bg-amber-500 text-neutral-950 font-black shadow-md'
-                  : 'bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-white'
+                  ? 'bg-[#8B2635] text-white font-black shadow-md shadow-[#8B2635]/20'
+                  : 'bg-white border border-[#E5DFD7] text-[#6B6B6B] hover:text-[#1A1A1A] hover:border-[#8B2635]/30'
               }`}
             >
               <Truck className="w-4 h-4" />
@@ -804,8 +804,8 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
               onClick={() => setAdminTab('flashSales')}
               className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
                 adminTab === 'flashSales'
-                  ? 'bg-amber-500 text-neutral-950 font-black shadow-md'
-                  : 'bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-white'
+                  ? 'bg-[#8B2635] text-white font-black shadow-md shadow-[#8B2635]/20'
+                  : 'bg-white border border-[#E5DFD7] text-[#6B6B6B] hover:text-[#1A1A1A] hover:border-[#8B2635]/30'
               }`}
             >
               <Flame className="w-4 h-4" />
@@ -816,8 +816,8 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
               onClick={() => setAdminTab('volumeDiscounts')}
               className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
                 adminTab === 'volumeDiscounts'
-                  ? 'bg-amber-500 text-neutral-950 font-black shadow-md'
-                  : 'bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-white'
+                  ? 'bg-[#8B2635] text-white font-black shadow-md shadow-[#8B2635]/20'
+                  : 'bg-white border border-[#E5DFD7] text-[#6B6B6B] hover:text-[#1A1A1A] hover:border-[#8B2635]/30'
               }`}
             >
               <Percent className="w-4 h-4" />
@@ -828,8 +828,8 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
               onClick={() => setAdminTab('abandonedCarts')}
               className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
                 adminTab === 'abandonedCarts'
-                  ? 'bg-amber-500 text-neutral-950 font-black shadow-md'
-                  : 'bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-white'
+                  ? 'bg-[#8B2635] text-white font-black shadow-md shadow-[#8B2635]/20'
+                  : 'bg-white border border-[#E5DFD7] text-[#6B6B6B] hover:text-[#1A1A1A] hover:border-[#8B2635]/30'
               }`}
             >
               <ShoppingBag className="w-4 h-4" />
@@ -840,8 +840,8 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
               onClick={() => setAdminTab('reviews')}
               className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
                 adminTab === 'reviews'
-                  ? 'bg-amber-500 text-neutral-950 font-black shadow-md'
-                  : 'bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-white'
+                  ? 'bg-[#8B2635] text-white font-black shadow-md shadow-[#8B2635]/20'
+                  : 'bg-white border border-[#E5DFD7] text-[#6B6B6B] hover:text-[#1A1A1A] hover:border-[#8B2635]/30'
               }`}
             >
               <CheckCircle className="w-4 h-4" />
@@ -852,8 +852,8 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
               onClick={() => setAdminTab('brands')}
               className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
                 adminTab === 'brands'
-                  ? 'bg-amber-500 text-neutral-950 font-black shadow-md'
-                  : 'bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-white'
+                  ? 'bg-[#8B2635] text-white font-black shadow-md shadow-[#8B2635]/20'
+                  : 'bg-white border border-[#E5DFD7] text-[#6B6B6B] hover:text-[#1A1A1A] hover:border-[#8B2635]/30'
               }`}
             >
               <Sparkles className="w-4 h-4" />
@@ -864,8 +864,8 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
               onClick={() => setAdminTab('banners')}
               className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
                 adminTab === 'banners'
-                  ? 'bg-amber-500 text-neutral-950 font-black shadow-md'
-                  : 'bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-white'
+                  ? 'bg-[#8B2635] text-white font-black shadow-md shadow-[#8B2635]/20'
+                  : 'bg-white border border-[#E5DFD7] text-[#6B6B6B] hover:text-[#1A1A1A] hover:border-[#8B2635]/30'
               }`}
             >
               <ImageIcon className="w-4 h-4" />
@@ -876,8 +876,8 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
               onClick={() => setAdminTab('popups')}
               className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
                 adminTab === 'popups'
-                  ? 'bg-amber-500 text-neutral-950 font-black shadow-md'
-                  : 'bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-white'
+                  ? 'bg-[#8B2635] text-white font-black shadow-md shadow-[#8B2635]/20'
+                  : 'bg-white border border-[#E5DFD7] text-[#6B6B6B] hover:text-[#1A1A1A] hover:border-[#8B2635]/30'
               }`}
             >
               <Gift className="w-4 h-4" />
@@ -888,8 +888,8 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
               onClick={() => setAdminTab('policies')}
               className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
                 adminTab === 'policies'
-                  ? 'bg-amber-500 text-neutral-950 font-black shadow-md'
-                  : 'bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-white'
+                  ? 'bg-[#8B2635] text-white font-black shadow-md shadow-[#8B2635]/20'
+                  : 'bg-white border border-[#E5DFD7] text-[#6B6B6B] hover:text-[#1A1A1A] hover:border-[#8B2635]/30'
               }`}
             >
               <ShieldCheck className="w-4 h-4" />
@@ -900,8 +900,8 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
               onClick={() => setAdminTab('social')}
               className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
                 adminTab === 'social'
-                  ? 'bg-amber-500 text-neutral-950 font-black shadow-md'
-                  : 'bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-white'
+                  ? 'bg-[#8B2635] text-white font-black shadow-md shadow-[#8B2635]/20'
+                  : 'bg-white border border-[#E5DFD7] text-[#6B6B6B] hover:text-[#1A1A1A] hover:border-[#8B2635]/30'
               }`}
             >
               <Share2 className="w-4 h-4" />
@@ -912,8 +912,8 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
               onClick={() => setAdminTab('branches')}
               className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
                 adminTab === 'branches'
-                  ? 'bg-amber-500 text-neutral-950 font-black shadow-md'
-                  : 'bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-white'
+                  ? 'bg-[#8B2635] text-white font-black shadow-md shadow-[#8B2635]/20'
+                  : 'bg-white border border-[#E5DFD7] text-[#6B6B6B] hover:text-[#1A1A1A] hover:border-[#8B2635]/30'
               }`}
             >
               <Building2 className="w-4 h-4" />
@@ -924,11 +924,11 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
               onClick={() => setAdminTab('footer')}
               className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
                 adminTab === 'footer'
-                  ? 'bg-amber-500 text-neutral-950 font-black shadow-md'
-                  : 'bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-white'
+                  ? 'bg-[#8B2635] text-white font-black shadow-md shadow-[#8B2635]/20'
+                  : 'bg-white border border-[#E5DFD7] text-[#6B6B6B] hover:text-[#1A1A1A] hover:border-[#8B2635]/30'
               }`}
             >
-              <Sliders className="w-4 h-4 text-amber-400" />
+              <Sliders className="w-4 h-4" />
               <span>إدارة التذييل والمحتوى السفلي</span>
             </button>
 
@@ -936,8 +936,8 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
               onClick={() => setAdminTab('aiKnowledge')}
               className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
                 adminTab === 'aiKnowledge'
-                  ? 'bg-amber-500 text-neutral-950 font-black shadow-md'
-                  : 'bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-white'
+                  ? 'bg-[#8B2635] text-white font-black shadow-md shadow-[#8B2635]/20'
+                  : 'bg-white border border-[#E5DFD7] text-[#6B6B6B] hover:text-[#1A1A1A] hover:border-[#8B2635]/30'
               }`}
             >
               <Bot className="w-4 h-4" />
@@ -948,8 +948,8 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
               onClick={() => setAdminTab('coupons')}
               className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
                 adminTab === 'coupons'
-                  ? 'bg-amber-500 text-neutral-950 font-black shadow-md'
-                  : 'bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-white'
+                  ? 'bg-[#8B2635] text-white font-black shadow-md shadow-[#8B2635]/20'
+                  : 'bg-white border border-[#E5DFD7] text-[#6B6B6B] hover:text-[#1A1A1A] hover:border-[#8B2635]/30'
               }`}
             >
               <Percent className="w-4 h-4" />
@@ -960,8 +960,8 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
               onClick={() => setAdminTab('rates')}
               className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
                 adminTab === 'rates'
-                  ? 'bg-amber-500 text-neutral-950 font-black shadow-md'
-                  : 'bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-white'
+                  ? 'bg-[#8B2635] text-white font-black shadow-md shadow-[#8B2635]/20'
+                  : 'bg-white border border-[#E5DFD7] text-[#6B6B6B] hover:text-[#1A1A1A] hover:border-[#8B2635]/30'
               }`}
             >
               <Coins className="w-4 h-4" />
@@ -972,8 +972,8 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
               onClick={() => setAdminTab('contact')}
               className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
                 adminTab === 'contact'
-                  ? 'bg-amber-500 text-neutral-950 font-black shadow-md'
-                  : 'bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-white'
+                  ? 'bg-[#8B2635] text-white font-black shadow-md shadow-[#8B2635]/20'
+                  : 'bg-white border border-[#E5DFD7] text-[#6B6B6B] hover:text-[#1A1A1A] hover:border-[#8B2635]/30'
               }`}
             >
               <PhoneCall className="w-4 h-4" />
@@ -984,8 +984,8 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
               onClick={() => setAdminTab('guide')}
               className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
                 adminTab === 'guide'
-                  ? 'bg-amber-500 text-neutral-950 font-black shadow-md'
-                  : 'bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-white'
+                  ? 'bg-[#8B2635] text-white font-black shadow-md shadow-[#8B2635]/20'
+                  : 'bg-white border border-[#E5DFD7] text-[#6B6B6B] hover:text-[#1A1A1A] hover:border-[#8B2635]/30'
               }`}
             >
               <BookOpen className="w-4 h-4" />
@@ -996,8 +996,8 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
               onClick={() => setAdminTab('orders')}
               className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
                 adminTab === 'orders'
-                  ? 'bg-amber-500 text-neutral-950 font-black shadow-md'
-                  : 'bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-white'
+                  ? 'bg-[#8B2635] text-white font-black shadow-md shadow-[#8B2635]/20'
+                  : 'bg-white border border-[#E5DFD7] text-[#6B6B6B] hover:text-[#1A1A1A] hover:border-[#8B2635]/30'
               }`}
             >
               <ShoppingBag className="w-4 h-4" />
@@ -1008,8 +1008,8 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
               onClick={() => setAdminTab('customers')}
               className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
                 adminTab === 'customers'
-                  ? 'bg-amber-500 text-neutral-950 font-black shadow-md'
-                  : 'bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-white'
+                  ? 'bg-[#8B2635] text-white font-black shadow-md shadow-[#8B2635]/20'
+                  : 'bg-white border border-[#E5DFD7] text-[#6B6B6B] hover:text-[#1A1A1A] hover:border-[#8B2635]/30'
               }`}
             >
               <UsersIcon className="w-4 h-4" />
@@ -1020,8 +1020,8 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
               onClick={() => setAdminTab('settings')}
               className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all cursor-pointer ${
                 adminTab === 'settings'
-                  ? 'bg-amber-500 text-neutral-950 font-black shadow-md'
-                  : 'bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-white'
+                  ? 'bg-[#8B2635] text-white font-black shadow-md shadow-[#8B2635]/20'
+                  : 'bg-white border border-[#E5DFD7] text-[#6B6B6B] hover:text-[#1A1A1A] hover:border-[#8B2635]/30'
               }`}
             >
               <Settings className="w-4 h-4" />
@@ -1029,7 +1029,7 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
             </button>
           </div>
 
-          <div className="text-xs text-neutral-400 hidden sm:flex items-center gap-2 whitespace-nowrap">
+          <div className="text-xs text-[#6B6B6B] hidden sm:flex items-center gap-2 whitespace-nowrap">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
             <span>المزامنة الحية مفعلة</span>
           </div>
@@ -1040,8 +1040,8 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
           <div
             className={`p-3.5 rounded-2xl flex items-center justify-between text-xs sm:text-sm font-bold ${
               statusMessage.type === 'success'
-                ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
-                : 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
+                ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                : 'bg-rose-50 text-rose-700 border border-rose-200'
             }`}
           >
             <div className="flex items-center gap-2">
@@ -1052,7 +1052,7 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
               )}
               <span>{statusMessage.text}</span>
             </div>
-            <button onClick={() => setStatusMessage(null)} className="text-neutral-400 hover:text-white">
+            <button onClick={() => setStatusMessage(null)} className="text-[#6B6B6B] hover:text-[#1A1A1A]">
               <X className="w-4 h-4" />
             </button>
           </div>
@@ -1064,15 +1064,15 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
         {adminTab === 'products' && (
           <div className="space-y-6">
             {/* Search & Filters Toolbar */}
-            <div className="p-4 rounded-2xl bg-neutral-900 border border-neutral-800 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="p-4 rounded-2xl bg-white border border-[#E5DFD7] shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
               <div className="relative w-full md:w-80">
-                <Search className="w-4 h-4 text-neutral-500 absolute right-3 top-1/2 -translate-y-1/2" />
+                <Search className="w-4 h-4 text-[#6B6B6B] absolute right-3 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
                   placeholder="ابحث بالاسم أو القسم الفرعي..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-neutral-950 border border-neutral-800 rounded-xl pr-9 pl-3 py-2 text-xs sm:text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-amber-500"
+                  className="w-full bg-[#FAF9F7] border border-[#E5DFD7] rounded-xl pr-9 pl-3 py-2 text-xs sm:text-sm text-[#1A1A1A] placeholder-[#6B6B6B] focus:outline-none focus:border-[#8B2635]"
                 />
               </div>
 
@@ -1082,8 +1082,8 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                   onClick={() => setFilterCategory('all')}
                   className={`px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-all ${
                     filterCategory === 'all'
-                      ? 'bg-amber-500 text-neutral-950 font-black'
-                      : 'bg-neutral-950 text-neutral-400 hover:text-white border border-neutral-800'
+                      ? 'bg-[#8B2635] text-white font-black'
+                      : 'bg-[#FAF9F7] text-[#6B6B6B] hover:text-[#1A1A1A] border border-[#E5DFD7]'
                   }`}
                 >
                   الكل
@@ -1094,8 +1094,8 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                     onClick={() => setFilterCategory(cat.id)}
                     className={`px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-all ${
                       filterCategory === cat.id
-                        ? 'bg-amber-500 text-neutral-950 font-black'
-                        : 'bg-neutral-950 text-neutral-400 hover:text-white border border-neutral-800'
+                        ? 'bg-[#8B2635] text-white font-black'
+                        : 'bg-[#FAF9F7] text-[#6B6B6B] hover:text-[#1A1A1A] border border-[#E5DFD7]'
                     }`}
                   >
                     {cat.name}
@@ -1108,7 +1108,7 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                 <select
                   value={filterFlag}
                   onChange={(e) => setFilterFlag(e.target.value as any)}
-                  className="bg-neutral-950 border border-neutral-800 text-neutral-300 rounded-xl px-3 py-2 text-xs font-bold focus:outline-none focus:border-amber-500 w-full md:w-auto"
+                  className="bg-[#FAF9F7] border border-[#E5DFD7] text-[#1A1A1A] rounded-xl px-3 py-2 text-xs font-bold focus:outline-none focus:border-[#8B2635] w-full md:w-auto"
                 >
                   <option value="all">جميع الحالات</option>
                   <option value="bestSeller">🔥 الأكثر مبيعاً</option>
@@ -1120,11 +1120,11 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
             </div>
 
             {/* Products Table / Cards Grid */}
-            <div className="bg-neutral-900 border border-neutral-800 rounded-3xl overflow-hidden shadow-xl">
+            <div className="bg-white border border-[#E5DFD7] rounded-3xl overflow-hidden shadow-sm">
               <div className="overflow-x-auto">
                 <table className="w-full text-right border-collapse">
                   <thead>
-                    <tr className="bg-neutral-950/80 border-b border-neutral-800 text-[11px] font-black text-neutral-400 uppercase tracking-wider">
+                    <tr className="bg-[#F4F1EA] border-b border-[#E5DFD7] text-[11px] font-black text-[#6B6B6B] uppercase tracking-wider">
                       <th className="p-4">المنتج</th>
                       <th className="p-4">القسم / الفرعي</th>
                       <th className="p-4">السعر الأساسي</th>
@@ -1134,15 +1134,15 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                       <th className="p-4 text-center">الإجراءات</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-neutral-800/60 text-xs text-neutral-300">
+                  <tbody className="divide-y divide-[#E5DFD7]/60 text-xs text-[#1A1A1A]">
                     {filteredProducts.length === 0 ? (
                       <tr>
-                        <td colSpan={7} className="text-center py-12 text-neutral-500 space-y-2">
-                          <Package className="w-10 h-10 mx-auto text-neutral-600 mb-2" />
-                          <p className="font-bold text-sm">لا توجد منتجات مطابقة لخيارات البحث أو التصفية.</p>
+                        <td colSpan={7} className="text-center py-12 text-[#6B6B6B] space-y-2">
+                          <Package className="w-10 h-10 mx-auto text-[#B5ADA3] mb-2" />
+                          <p className="font-bold text-sm text-[#1A1A1A]">لا توجد منتجات مطابقة لخيارات البحث أو التصفية.</p>
                           <button
                             onClick={handleOpenAddForm}
-                            className="inline-flex items-center gap-1.5 text-xs text-amber-400 font-bold hover:underline"
+                            className="inline-flex items-center gap-1.5 text-xs text-[#8B2635] font-bold hover:underline"
                           >
                             <Plus className="w-3.5 h-3.5" />
                             <span>أضف منتجك الأول الآن</span>
@@ -1153,11 +1153,11 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                       filteredProducts.map((prod) => {
                         const currentCat = categories.find((c) => c.id === prod.category)?.name || prod.category;
                         return (
-                          <tr key={prod.id} className="hover:bg-neutral-800/40 transition-colors">
+                          <tr key={prod.id} className="hover:bg-[#FAF9F7] transition-colors">
                             {/* Product Info with Image */}
                             <td className="p-4">
                               <div className="flex items-center gap-3">
-                                <div className="w-12 h-14 rounded-xl overflow-hidden bg-neutral-950 border border-neutral-800 flex-shrink-0">
+                                <div className="w-12 h-14 rounded-xl overflow-hidden bg-[#FAF9F7] border border-[#E5DFD7] flex-shrink-0">
                                   <img
                                     src={prod.images?.[0] || 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=200&auto=format&fit=crop'}
                                     alt={prod.name}
@@ -1166,32 +1166,32 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                                   />
                                 </div>
                                 <div>
-                                  <h4 className="font-bold text-white line-clamp-1">{prod.arabicName || prod.name}</h4>
-                                  <p className="text-[11px] text-neutral-400 line-clamp-1">{prod.description}</p>
+                                  <h4 className="font-bold text-[#1A1A1A] line-clamp-1">{prod.arabicName || prod.name}</h4>
+                                  <p className="text-[11px] text-[#6B6B6B] line-clamp-1">{prod.description}</p>
                                 </div>
                               </div>
                             </td>
 
                             {/* Category & Subcategory */}
                             <td className="p-4">
-                              <span className="px-2 py-0.5 rounded-md bg-neutral-800 text-amber-300 font-bold text-[11px]">
+                              <span className="px-2 py-0.5 rounded-md bg-[#F4F1EA] border border-[#E5DFD7] text-[#8B6F15] font-bold text-[11px]">
                                 {currentCat}
                               </span>
-                              <span className="block text-[11px] text-neutral-400 mt-1">
+                              <span className="block text-[11px] text-[#6B6B6B] mt-1">
                                 {prod.subcategory}
                               </span>
                             </td>
 
                             {/* Price */}
                             <td className="p-4">
-                              <div className="font-black text-white">{formatPrice(prod.priceYER)}</div>
+                              <div className="font-black text-[#1A1A1A]">{formatPrice(prod.priceYER)}</div>
                               {prod.originalPriceYER && prod.originalPriceYER > prod.priceYER && (
-                                <div className="text-[10px] text-neutral-500 line-through">
+                                <div className="text-[10px] text-[#6B6B6B] line-through">
                                   {formatPrice(prod.originalPriceYER)}
                                 </div>
                               )}
                               {prod.discountPercentage && (
-                                <span className="text-[10px] text-emerald-400 font-bold">
+                                <span className="text-[10px] text-emerald-700 font-bold">
                                   خصم {prod.discountPercentage}%
                                 </span>
                               )}
@@ -1202,7 +1202,7 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                               <div className="flex items-center gap-2">
                                 <button
                                   onClick={() => handleQuickStockChange(prod.id, -1, prod.stock || 0)}
-                                  className="w-6 h-6 rounded-md bg-neutral-800 hover:bg-neutral-700 text-neutral-300 flex items-center justify-center font-bold"
+                                  className="w-6 h-6 rounded-md bg-[#F4F1EA] hover:bg-[#E5DFD7] text-[#1A1A1A] border border-[#E5DFD7] flex items-center justify-center font-bold"
                                   title="إنقاص المخزون"
                                 >
                                   -
@@ -1210,15 +1210,15 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                                 <span
                                   className={`px-2 py-0.5 rounded font-black text-xs ${
                                     (prod.stock || 0) <= 5
-                                      ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
-                                      : 'bg-neutral-800 text-white'
+                                      ? 'bg-rose-50 text-rose-700 border border-rose-200'
+                                      : 'bg-[#F4F1EA] text-[#1A1A1A] border border-[#E5DFD7]'
                                   }`}
                                 >
                                   {prod.stock || 0}
                                 </span>
                                 <button
                                   onClick={() => handleQuickStockChange(prod.id, 1, prod.stock || 0)}
-                                  className="w-6 h-6 rounded-md bg-neutral-800 hover:bg-neutral-700 text-neutral-300 flex items-center justify-center font-bold"
+                                  className="w-6 h-6 rounded-md bg-[#F4F1EA] hover:bg-[#E5DFD7] text-[#1A1A1A] border border-[#E5DFD7] flex items-center justify-center font-bold"
                                   title="زيادة المخزون"
                                 >
                                   +
@@ -1229,20 +1229,20 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                             {/* Sizes & Colors count */}
                             <td className="p-4">
                               <div className="text-[11px] space-y-1">
-                                <div className="text-neutral-400">
-                                  المقاسات: <span className="text-white font-bold">{prod.sizes?.join(', ') || '—'}</span>
+                                <div className="text-[#6B6B6B]">
+                                  المقاسات: <span className="text-[#1A1A1A] font-bold">{prod.sizes?.join(', ') || '—'}</span>
                                 </div>
                                 <div className="flex items-center gap-1">
                                   {prod.colors?.slice(0, 4).map((c, i) => (
                                     <span
                                       key={i}
-                                      className="w-3.5 h-3.5 rounded-full border border-neutral-700 inline-block"
+                                      className="w-3.5 h-3.5 rounded-full border border-[#E5DFD7] inline-block"
                                       style={{ backgroundColor: c.hex }}
                                       title={c.name}
                                     />
                                   ))}
                                   {prod.colors && prod.colors.length > 4 && (
-                                    <span className="text-[10px] text-neutral-500">+{prod.colors.length - 4}</span>
+                                    <span className="text-[10px] text-[#6B6B6B]">+{prod.colors.length - 4}</span>
                                   )}
                                 </div>
                               </div>
@@ -1252,17 +1252,17 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                             <td className="p-4">
                               <div className="flex flex-wrap gap-1">
                                 {prod.isBestSeller && (
-                                  <span className="px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 text-[10px] font-bold">
+                                  <span className="px-1.5 py-0.5 rounded bg-amber-50 text-[#8B6F15] border border-amber-200 text-[10px] font-bold">
                                     الأكثر مبيعاً
                                   </span>
                                 )}
                                 {prod.isNewArrival && (
-                                  <span className="px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-300 text-[10px] font-bold">
+                                  <span className="px-1.5 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200 text-[10px] font-bold">
                                     جديد
                                   </span>
                                 )}
                                 {prod.isFlashDeal && (
-                                  <span className="px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-300 text-[10px] font-bold">
+                                  <span className="px-1.5 py-0.5 rounded bg-rose-50 text-rose-700 border border-rose-200 text-[10px] font-bold">
                                     عرض خاص
                                   </span>
                                 )}
@@ -1274,14 +1274,14 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                               <div className="flex items-center justify-center gap-2">
                                 <button
                                   onClick={() => handleOpenEditForm(prod)}
-                                  className="p-2 rounded-xl bg-neutral-800 hover:bg-amber-500 hover:text-neutral-950 text-neutral-300 transition-all"
+                                  className="p-2 rounded-xl bg-[#F4F1EA] border border-[#E5DFD7] hover:bg-[#8B2635] hover:text-white hover:border-[#8B2635] text-[#1A1A1A] transition-all"
                                   title="تعديل المنتج"
                                 >
                                   <Edit3 className="w-4 h-4" />
                                 </button>
                                 <button
                                   onClick={() => setDeleteConfirmProduct(prod)}
-                                  className="p-2 rounded-xl bg-neutral-800 hover:bg-rose-600 hover:text-white text-neutral-300 transition-all"
+                                  className="p-2 rounded-xl bg-[#F4F1EA] border border-[#E5DFD7] hover:bg-rose-600 hover:text-white hover:border-rose-600 text-rose-700 transition-all"
                                   title="حذف المنتج"
                                 >
                                   <Trash2 className="w-4 h-4" />
@@ -1306,45 +1306,45 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Categories List */}
             <div className="md:col-span-1 space-y-3">
-              <h3 className="text-sm font-black text-white mb-2">الأقسام الرئيسية الستة</h3>
+              <h3 className="text-sm font-black text-[#1A1A1A] mb-2">الأقسام الرئيسية الستة</h3>
               {categories.map((cat) => (
                 <div
                   key={cat.id}
                   onClick={() => setSelectedCatToEdit(cat)}
                   className={`p-4 rounded-2xl border transition-all cursor-pointer flex items-center justify-between ${
                     selectedCatToEdit?.id === cat.id
-                      ? 'bg-amber-500/15 border-amber-500 text-amber-300 shadow-lg'
-                      : 'bg-neutral-900 border-neutral-800 hover:border-neutral-700 text-white'
+                      ? 'bg-[#8B2635]/10 border-[#8B2635] text-[#8B2635] shadow-sm'
+                      : 'bg-white border-[#E5DFD7] hover:border-[#D4AF37] text-[#1A1A1A]'
                   }`}
                 >
                   <div className="flex items-center gap-3">
                     <img
                       src={cat.image}
                       alt={cat.name}
-                      className="w-10 h-10 rounded-xl object-cover"
+                      className="w-10 h-10 rounded-xl object-cover border border-[#E5DFD7]"
                       referrerPolicy="no-referrer"
                     />
                     <div>
                       <h4 className="font-bold text-sm">{cat.name}</h4>
-                      <p className="text-xs text-neutral-400">{cat.subcategories.length} أقسام فرعية</p>
+                      <p className="text-xs text-[#6B6B6B]">{cat.subcategories.length} أقسام فرعية</p>
                     </div>
                   </div>
-                  <ChevronRight className="w-4 h-4 text-neutral-500" />
+                  <ChevronRight className="w-4 h-4 text-[#6B6B6B]" />
                 </div>
               ))}
             </div>
 
             {/* Subcategories & Details Editor Panel */}
-            <div className="md:col-span-2 bg-neutral-900 border border-neutral-800 rounded-3xl p-6 shadow-xl space-y-6">
+            <div className="md:col-span-2 bg-white border border-[#E5DFD7] rounded-3xl p-6 shadow-sm space-y-6">
               {selectedCatToEdit ? (
                 <>
-                  <div className="flex items-center justify-between border-b border-neutral-800 pb-4">
+                  <div className="flex items-center justify-between border-b border-[#E5DFD7] pb-4">
                     <div>
-                      <h3 className="text-lg font-black text-white flex items-center gap-2">
+                      <h3 className="text-lg font-black text-[#1A1A1A] flex items-center gap-2">
                         <span>إدارة وتعديل قسم:</span>
-                        <span className="text-amber-400">{selectedCatToEdit.name}</span>
+                        <span className="text-[#8B2635]">{selectedCatToEdit.name}</span>
                       </h3>
-                      <p className="text-xs text-neutral-400 mt-0.5">{selectedCatToEdit.subtitle}</p>
+                      <p className="text-xs text-[#6B6B6B] mt-0.5">{selectedCatToEdit.subtitle}</p>
                     </div>
                     <button
                       onClick={async () => {
@@ -1360,7 +1360,7 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                         setStatusMessage({ type: 'success', text: `تم حفظ تعديلات قسم "${updatedCat.name}" بنجاح!` });
                         setTimeout(() => setStatusMessage(null), 3000);
                       }}
-                      className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-neutral-950 font-black text-xs flex items-center gap-1.5 transition-all shadow-md cursor-pointer"
+                      className="px-4 py-2 rounded-xl bg-[#8B2635] hover:bg-[#721D2A] text-white font-black text-xs flex items-center gap-1.5 transition-all shadow-sm cursor-pointer"
                     >
                       <Save className="w-4 h-4" />
                       <span>حفظ تفاصيل القسم</span>
@@ -1368,42 +1368,42 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                   </div>
 
                   {/* Category Image & Info Inputs */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 rounded-2xl bg-neutral-950/70 border border-neutral-800">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 rounded-2xl bg-[#FAF9F7] border border-[#E5DFD7]">
                     <div>
-                      <label className="block text-xs font-bold text-neutral-300 mb-1">اسم القسم بالعربية</label>
+                      <label className="block text-xs font-bold text-[#1A1A1A] mb-1">اسم القسم بالعربية</label>
                       <input
                         type="text"
                         defaultValue={selectedCatToEdit.name}
                         onChange={(e) => setEditCatName(e.target.value)}
-                        className="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500"
+                        className="w-full bg-white border border-[#E5DFD7] rounded-xl px-3 py-2 text-xs text-[#1A1A1A] focus:outline-none focus:border-[#8B2635]"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-bold text-neutral-300 mb-1">الوصف المختصر (Subtitle)</label>
+                      <label className="block text-xs font-bold text-[#1A1A1A] mb-1">الوصف المختصر (Subtitle)</label>
                       <input
                         type="text"
                         defaultValue={selectedCatToEdit.subtitle}
                         onChange={(e) => setEditCatSubtitle(e.target.value)}
-                        className="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500"
+                        className="w-full bg-white border border-[#E5DFD7] rounded-xl px-3 py-2 text-xs text-[#1A1A1A] focus:outline-none focus:border-[#8B2635]"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-bold text-neutral-300 mb-1">رابط صورة الأيقونة / الغلاف</label>
+                      <label className="block text-xs font-bold text-[#1A1A1A] mb-1">رابط صورة الأيقونة / الغلاف</label>
                       <input
                         type="text"
                         defaultValue={selectedCatToEdit.image}
                         onChange={(e) => setEditCatImage(e.target.value)}
-                        className="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500"
+                        className="w-full bg-white border border-[#E5DFD7] rounded-xl px-3 py-2 text-xs text-[#1A1A1A] focus:outline-none focus:border-[#8B2635]"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-bold text-neutral-300 mb-1">رابط صورة البانر العريض</label>
+                      <label className="block text-xs font-bold text-[#1A1A1A] mb-1">رابط صورة البانر العريض</label>
                       <input
                         type="text"
                         defaultValue={selectedCatToEdit.bannerImage || ''}
                         placeholder="https://images.unsplash.com/..."
                         onChange={(e) => setEditCatBanner(e.target.value)}
-                        className="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500"
+                        className="w-full bg-white border border-[#E5DFD7] rounded-xl px-3 py-2 text-xs text-[#1A1A1A] focus:outline-none focus:border-[#8B2635]"
                       />
                     </div>
                   </div>
@@ -1421,11 +1421,11 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                           handleAddSubcategory();
                         }
                       }}
-                      className="flex-1 bg-neutral-950 border border-neutral-800 rounded-xl px-4 py-2.5 text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-amber-500"
+                      className="flex-1 bg-[#FAF9F7] border border-[#E5DFD7] rounded-xl px-4 py-2.5 text-sm text-[#1A1A1A] placeholder-[#6B6B6B] focus:outline-none focus:border-[#8B2635]"
                     />
                     <button
                       onClick={handleAddSubcategory}
-                      className="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-neutral-950 font-black text-sm flex items-center gap-1.5 transition-all"
+                      className="px-5 py-2.5 rounded-xl bg-[#8B2635] hover:bg-[#721D2A] text-white font-black text-sm flex items-center gap-1.5 transition-all"
                     >
                       <Plus className="w-4 h-4" />
                       <span>إضافة فرعي</span>
@@ -1434,17 +1434,17 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
 
                   {/* Existing Subcategories Grid */}
                   <div className="space-y-2">
-                    <h4 className="text-xs font-bold text-neutral-400">الأقسام الفرعية الحالية ({selectedCatToEdit.subcategories.length}):</h4>
+                    <h4 className="text-xs font-bold text-[#6B6B6B]">الأقسام الفرعية الحالية ({selectedCatToEdit.subcategories.length}):</h4>
                     <div className="flex flex-wrap gap-2.5">
                       {selectedCatToEdit.subcategories.map((sub, idx) => (
                         <div
                           key={idx}
-                          className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-neutral-950 border border-neutral-800 text-white text-xs font-bold shadow-sm"
+                          className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#FAF9F7] border border-[#E5DFD7] text-[#1A1A1A] text-xs font-bold shadow-sm"
                         >
                           <span>{sub}</span>
                           <button
                             onClick={() => handleRemoveSubcategory(sub)}
-                            className="text-neutral-500 hover:text-rose-400 transition-colors cursor-pointer"
+                            className="text-[#6B6B6B] hover:text-rose-600 transition-colors cursor-pointer"
                             title="حذف هذا القسم الفرعي"
                           >
                             <X className="w-3.5 h-3.5" />
@@ -1455,10 +1455,10 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                   </div>
                 </>
               ) : (
-                <div className="text-center py-16 text-neutral-500 space-y-2">
-                  <FolderPlus className="w-12 h-12 mx-auto text-neutral-600 mb-2" />
-                  <h4 className="font-bold text-white text-base">اختر قسمًا رئيسيًا من القائمة لتعديله</h4>
-                  <p className="text-xs text-neutral-400">
+                <div className="text-center py-16 text-[#6B6B6B] space-y-2">
+                  <FolderPlus className="w-12 h-12 mx-auto text-[#B5ADA3] mb-2" />
+                  <h4 className="font-bold text-[#1A1A1A] text-base">اختر قسمًا رئيسيًا من القائمة لتعديله</h4>
+                  <p className="text-xs text-[#6B6B6B]">
                     يمكنك تعديل اسم القسم، صورته، ووصفه، والأقسام الفرعية وتحديثها في كامل المتجر.
                   </p>
                 </div>
@@ -1473,19 +1473,19 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
         {adminTab === 'brands' && (
           <div className="space-y-6">
             {/* Header & Quick Action Bar */}
-            <div className="p-6 rounded-3xl bg-gradient-to-r from-neutral-900 via-neutral-900 to-amber-950/40 border border-amber-500/30 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div className="p-6 rounded-3xl bg-gradient-to-r from-white via-white to-[#F4F1EA] border border-[#D4AF37]/40 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
               <div className="flex items-center gap-3.5">
-                <div className="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 shrink-0">
+                <div className="w-12 h-12 rounded-2xl bg-[#D4AF37]/15 border border-[#D4AF37]/40 flex items-center justify-center text-[#8B6F15] shrink-0">
                   <Sparkles className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="text-base sm:text-lg font-black text-white flex items-center gap-2">
+                  <h3 className="text-base sm:text-lg font-black text-[#1A1A1A] flex items-center gap-2">
                     <span>إدارة البراندات المستقلة</span>
-                    <span className="px-2 py-0.5 rounded-full bg-amber-500 text-neutral-950 text-[10px] font-black">
+                    <span className="px-2 py-0.5 rounded-full bg-[#D4AF37]/20 text-[#8B6F15] text-[10px] font-black">
                       مستقل عن الأقسام
                     </span>
                   </h3>
-                  <p className="text-xs text-neutral-400 mt-0.5">
+                  <p className="text-xs text-[#6B6B6B] mt-0.5">
                     أضف، عدّل، فعّل أو عطّل البراندات وشعاراتها. تظهر للمستخدمين كصفحة تصفح مستقلة للماركات.
                   </p>
                 </div>
@@ -1496,7 +1496,7 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                   type="button"
                   id="admin-add-brand-btn"
                   onClick={handleOpenAddBrand}
-                  className="w-full md:w-auto px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-neutral-950 font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20 transition-all cursor-pointer"
+                  className="w-full md:w-auto px-5 py-2.5 rounded-xl bg-[#8B2635] hover:bg-[#721D2A] text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-sm transition-all cursor-pointer"
                 >
                   <Plus className="w-4 h-4" />
                   <span>إضافة براند جديد</span>
@@ -1506,62 +1506,62 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
 
             {/* Metrics Overview */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-              <div className="p-4 rounded-2xl bg-neutral-900 border border-neutral-800 space-y-1">
-                <span className="text-xs text-neutral-400 font-medium">إجمالي البراندات</span>
-                <div className="text-xl sm:text-2xl font-black text-white">{brands.length}</div>
+              <div className="p-4 rounded-2xl bg-white border border-[#E5DFD7] shadow-sm space-y-1">
+                <span className="text-xs text-[#6B6B6B] font-medium">إجمالي البراندات</span>
+                <div className="text-xl sm:text-2xl font-black text-[#1A1A1A]">{brands.length}</div>
               </div>
-              <div className="p-4 rounded-2xl bg-neutral-900 border border-neutral-800 space-y-1">
-                <span className="text-xs text-emerald-400 font-medium">البراندات النشطة</span>
-                <div className="text-xl sm:text-2xl font-black text-emerald-400">
+              <div className="p-4 rounded-2xl bg-white border border-[#E5DFD7] shadow-sm space-y-1">
+                <span className="text-xs text-emerald-700 font-medium">البراندات النشطة</span>
+                <div className="text-xl sm:text-2xl font-black text-emerald-700">
                   {brands.filter((b) => b.isActive).length}
                 </div>
               </div>
-              <div className="p-4 rounded-2xl bg-neutral-900 border border-neutral-800 space-y-1">
-                <span className="text-xs text-neutral-500 font-medium">البراندات المعطلة</span>
-                <div className="text-xl sm:text-2xl font-black text-neutral-500">
+              <div className="p-4 rounded-2xl bg-white border border-[#E5DFD7] shadow-sm space-y-1">
+                <span className="text-xs text-[#6B6B6B] font-medium">البراندات المعطلة</span>
+                <div className="text-xl sm:text-2xl font-black text-[#6B6B6B]">
                   {brands.filter((b) => !b.isActive).length}
                 </div>
               </div>
-              <div className="p-4 rounded-2xl bg-neutral-900 border border-neutral-800 space-y-1">
-                <span className="text-xs text-amber-400 font-medium">المنتجات المرتبطة</span>
-                <div className="text-xl sm:text-2xl font-black text-amber-400">
+              <div className="p-4 rounded-2xl bg-white border border-[#E5DFD7] shadow-sm space-y-1">
+                <span className="text-xs text-[#8B6F15] font-medium">المنتجات المرتبطة</span>
+                <div className="text-xl sm:text-2xl font-black text-[#8B6F15]">
                   {products.filter((p) => p.brandId || p.brandName).length}
                 </div>
               </div>
             </div>
 
             {/* Search & Filter Bar */}
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-neutral-900/80 border border-neutral-800 p-3 rounded-2xl">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-white border border-[#E5DFD7] p-3 rounded-2xl shadow-sm">
               <div className="relative w-full sm:max-w-xs">
-                <Search className="w-4 h-4 text-neutral-500 absolute right-3.5 top-1/2 -translate-y-1/2" />
+                <Search className="w-4 h-4 text-[#6B6B6B] absolute right-3.5 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
                   placeholder="بحث في أسماء البراندات..."
                   value={brandSearch}
                   onChange={(e) => setBrandSearch(e.target.value)}
-                  className="w-full bg-neutral-950 border border-neutral-800 rounded-xl pr-9 pl-4 py-2 text-xs text-white focus:outline-none focus:border-amber-500"
+                  className="w-full bg-[#FAF9F7] border border-[#E5DFD7] rounded-xl pr-9 pl-4 py-2 text-xs text-[#1A1A1A] focus:outline-none focus:border-[#8B2635]"
                 />
               </div>
 
-              <div className="text-xs text-neutral-400 font-medium">
+              <div className="text-xs text-[#6B6B6B] font-medium">
                 يتم مزامنة أي تعديل فورياً عبر قاعدة بيانات Cloud Firestore السحابية.
               </div>
             </div>
 
             {/* Brands Cards Grid */}
             {brands.length === 0 ? (
-              <div className="bg-neutral-900 border border-neutral-800 rounded-3xl p-12 text-center space-y-4">
-                <div className="w-16 h-16 rounded-2xl bg-neutral-800 border border-neutral-700 flex items-center justify-center mx-auto text-neutral-400">
-                  <Sparkles className="w-8 h-8 text-amber-400" />
+              <div className="bg-white border border-[#E5DFD7] rounded-3xl p-12 text-center space-y-4 shadow-sm">
+                <div className="w-16 h-16 rounded-2xl bg-[#F4F1EA] border border-[#E5DFD7] flex items-center justify-center mx-auto text-[#8B6F15]">
+                  <Sparkles className="w-8 h-8 text-[#D4AF37]" />
                 </div>
-                <h4 className="text-lg font-black text-white">لا توجد براندات مضافة حتى الآن</h4>
-                <p className="text-xs text-neutral-400 max-w-md mx-auto leading-relaxed">
+                <h4 className="text-lg font-black text-[#1A1A1A]">لا توجد براندات مضافة حتى الآن</h4>
+                <p className="text-xs text-[#6B6B6B] max-w-md mx-auto leading-relaxed">
                   ابدأ بإنشاء البراندات الفاخرة التي يفضلها عملاؤك (مثل: زارا، نايكي، شانيل، أديداس، غوتشي، لويس فيتون).
                 </p>
                 <button
                   type="button"
                   onClick={handleOpenAddBrand}
-                  className="px-6 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-neutral-950 font-black text-xs inline-flex items-center gap-2 shadow-lg shadow-amber-500/20"
+                  className="px-6 py-2.5 rounded-xl bg-[#8B2635] hover:bg-[#721D2A] text-white font-black text-xs inline-flex items-center gap-2 shadow-sm"
                 >
                   <Plus className="w-4 h-4" />
                   <span>إضافة أول براند</span>
@@ -1579,31 +1579,31 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                     return (
                       <div
                         key={brand.id}
-                        className={`rounded-3xl border overflow-hidden transition-all flex flex-col justify-between ${
+                        className={`rounded-3xl border overflow-hidden transition-all flex flex-col justify-between shadow-sm ${
                           brand.isActive
-                            ? 'bg-neutral-900 border-neutral-800 hover:border-neutral-700'
-                            : 'bg-neutral-900/60 border-neutral-850 opacity-75'
+                            ? 'bg-white border-[#E5DFD7] hover:border-[#D4AF37]'
+                            : 'bg-[#FAF9F7] border-[#E5DFD7] opacity-75'
                         }`}
                       >
                         {/* Cover Image or Gradient */}
-                        <div className="h-24 w-full relative bg-gradient-to-r from-neutral-800 to-neutral-950 overflow-hidden">
+                        <div className="h-24 w-full relative bg-gradient-to-r from-[#F4F1EA] to-[#EAE3D5] overflow-hidden">
                           {brand.coverImage && (
                             <img
                               src={brand.coverImage}
                               alt={brand.name}
-                              className="w-full h-full object-cover opacity-60"
+                              className="w-full h-full object-cover opacity-80"
                               referrerPolicy="no-referrer"
                             />
                           )}
-                          <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 via-transparent to-transparent" />
+                          <div className="absolute inset-0 bg-gradient-to-t from-white/80 via-transparent to-transparent" />
 
                           {/* Status Badge */}
                           <div className="absolute top-2.5 left-2.5">
                             <span
                               className={`px-2 py-0.5 rounded-full text-[10px] font-black border ${
                                 brand.isActive
-                                  ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-400'
-                                  : 'bg-neutral-800 border-neutral-700 text-neutral-400'
+                                  ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
+                                  : 'bg-[#F4F1EA] border-[#E5DFD7] text-[#6B6B6B]'
                               }`}
                             >
                               {brand.isActive ? 'نشط بالواجهة' : 'معطل'}
@@ -1614,7 +1614,7 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                         {/* Brand Body */}
                         <div className="p-4 pt-0 relative space-y-3 flex-1 flex flex-col justify-between">
                           <div className="flex items-end gap-3 -mt-8">
-                            <div className="w-16 h-16 rounded-2xl bg-neutral-950 border-2 border-neutral-800 p-2 overflow-hidden shadow-xl shrink-0 flex items-center justify-center">
+                            <div className="w-16 h-16 rounded-2xl bg-white border-2 border-[#E5DFD7] p-2 overflow-hidden shadow-md shrink-0 flex items-center justify-center">
                               <img
                                 src={brand.logo}
                                 alt={brand.name}
@@ -1623,29 +1623,29 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                               />
                             </div>
                             <div className="min-w-0 flex-1 pb-1">
-                              <h4 className="font-black text-sm text-white truncate">{brand.name}</h4>
-                              <p className="text-[11px] text-amber-400 font-bold">
+                              <h4 className="font-black text-sm text-[#1A1A1A] truncate">{brand.name}</h4>
+                              <p className="text-[11px] text-[#8B6F15] font-bold">
                                 {brandProductsCount} منتج مرتبط
                               </p>
                             </div>
                           </div>
 
                           {brand.description && (
-                            <p className="text-xs text-neutral-400 line-clamp-2 leading-relaxed">
+                            <p className="text-xs text-[#6B6B6B] line-clamp-2 leading-relaxed">
                               {brand.description}
                             </p>
                           )}
 
                           {/* Actions */}
-                          <div className="pt-3 border-t border-neutral-800/80 flex items-center justify-between gap-2">
+                          <div className="pt-3 border-t border-[#E5DFD7] flex items-center justify-between gap-2">
                             {/* Toggle Active Button */}
                             <button
                               type="button"
                               onClick={() => toggleBrandActive(brand.id)}
                               className={`px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                                 brand.isActive
-                                  ? 'bg-neutral-950 text-emerald-400 hover:bg-neutral-800 border border-emerald-500/30'
-                                  : 'bg-neutral-950 text-neutral-400 hover:bg-neutral-800 border border-neutral-700'
+                                  ? 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200'
+                                  : 'bg-[#F4F1EA] text-[#6B6B6B] hover:bg-[#E5DFD7] border border-[#E5DFD7]'
                               }`}
                             >
                               {brand.isActive ? 'تعطيل' : 'تفعيل'}
@@ -1655,7 +1655,7 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                               <button
                                 type="button"
                                 onClick={() => handleOpenEditBrand(brand)}
-                                className="p-2 rounded-xl bg-neutral-800 hover:bg-amber-500 hover:text-neutral-950 text-neutral-300 transition-all cursor-pointer"
+                                className="p-2 rounded-xl bg-[#F4F1EA] border border-[#E5DFD7] hover:bg-[#8B2635] hover:text-white hover:border-[#8B2635] text-[#1A1A1A] transition-all cursor-pointer"
                                 title="تعديل البراند"
                               >
                                 <Edit3 className="w-3.5 h-3.5" />
@@ -1664,7 +1664,7 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                               <button
                                 type="button"
                                 onClick={() => setDeleteConfirmBrand(brand)}
-                                className="p-2 rounded-xl bg-neutral-800 hover:bg-rose-600 hover:text-white text-neutral-300 transition-all cursor-pointer"
+                                className="p-2 rounded-xl bg-[#F4F1EA] border border-[#E5DFD7] hover:bg-rose-600 hover:text-white hover:border-rose-600 text-rose-700 transition-all cursor-pointer"
                                 title="حذف البراند"
                               >
                                 <Trash2 className="w-3.5 h-3.5" />
@@ -1686,22 +1686,22 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
         {adminTab === 'coupons' && (
           <div className="space-y-6">
             {/* Top Banner Control Card */}
-            <div className="p-6 rounded-3xl bg-gradient-to-r from-amber-950/40 via-neutral-900 to-purple-950/40 border border-amber-500/30 shadow-xl space-y-4">
+            <div className="p-6 rounded-3xl bg-gradient-to-r from-white via-white to-[#F4F1EA] border border-[#D4AF37]/40 shadow-sm space-y-4">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400">
+                  <div className="w-12 h-12 rounded-2xl bg-[#D4AF37]/15 border border-[#D4AF37]/40 flex items-center justify-center text-[#8B6F15]">
                     <Percent className="w-6 h-6" />
                   </div>
                   <div>
-                    <h3 className="text-base font-black text-white flex items-center gap-2">
+                    <h3 className="text-base font-black text-[#1A1A1A] flex items-center gap-2">
                       <span>إدارة البانر العلوي وكود الخصم المعروض للعملاء</span>
-                      <span className="px-2 py-0.5 rounded-full bg-amber-500 text-neutral-950 text-[10px] font-black">
+                      <span className="px-2 py-0.5 rounded-full bg-[#D4AF37]/20 text-[#8B6F15] text-[10px] font-black">
                         مباشر في أعلى المتجر
                       </span>
                     </h3>
-                    <p className="text-xs text-neutral-400 mt-0.5">
+                    <p className="text-xs text-[#6B6B6B] mt-0.5">
                       الكود النشط حالياً في الشريط العلوي:{' '}
-                      <span className="font-mono font-bold text-amber-300 bg-neutral-950 px-2 py-0.5 rounded border border-amber-500/30">
+                      <span className="font-mono font-bold text-[#8B2635] bg-[#FAF9F7] px-2 py-0.5 rounded border border-[#E5DFD7]">
                         {appSettings?.featuredCouponCode || 'DAJJAH10'}
                       </span>
                     </p>
@@ -1717,7 +1717,7 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                       setStatusMessage({ type: 'success', text: 'تم تحديث نص البانر العلوي بنجاح!' });
                       setTimeout(() => setStatusMessage(null), 3000);
                     }}
-                    className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-neutral-950 font-black text-xs flex items-center gap-1.5 transition-all cursor-pointer shadow-md"
+                    className="px-4 py-2 rounded-xl bg-[#8B2635] hover:bg-[#721D2A] text-white font-black text-xs flex items-center gap-1.5 transition-all cursor-pointer shadow-sm"
                   >
                     <Save className="w-4 h-4" />
                     <span>حفظ نص البانر</span>
@@ -1726,7 +1726,7 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-neutral-300 mb-1.5">
+                <label className="block text-xs font-bold text-[#1A1A1A] mb-1.5">
                   نص الشريط العلوي الترويجي
                 </label>
                 <input
@@ -1734,7 +1734,7 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                   value={promoBannerInput}
                   onChange={(e) => setPromoBannerInput(e.target.value)}
                   placeholder="أدخل النص الترويجي المعروض في أعلى الموقع..."
-                  className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-4 py-2.5 text-xs sm:text-sm text-white focus:outline-none focus:border-amber-500"
+                  className="w-full bg-[#FAF9F7] border border-[#E5DFD7] rounded-xl px-4 py-2.5 text-xs sm:text-sm text-[#1A1A1A] focus:outline-none focus:border-[#8B2635]"
                 />
               </div>
             </div>
@@ -1742,34 +1742,34 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
             {/* Create New Coupon & Coupons List Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Form to Add Coupon */}
-              <div className="p-6 rounded-3xl bg-neutral-900 border border-neutral-800 shadow-xl space-y-4">
-                <div className="flex items-center gap-2 text-amber-400">
+              <div className="p-6 rounded-3xl bg-white border border-[#E5DFD7] shadow-sm space-y-4">
+                <div className="flex items-center gap-2 text-[#8B2635]">
                   <Tag className="w-5 h-5" />
-                  <h3 className="text-base font-black text-white">إضافة كود خصم جديد</h3>
+                  <h3 className="text-base font-black text-[#1A1A1A]">إضافة كود خصم جديد</h3>
                 </div>
-                <p className="text-xs text-neutral-400">
+                <p className="text-xs text-[#6B6B6B]">
                   أنشئ كوبونات خصم بنسبة مئوية أو بمبلغ يمني ثابت.
                 </p>
 
                 <div className="space-y-3 pt-2">
                   <div>
-                    <label className="block text-xs font-bold text-neutral-300 mb-1">رمز الكود (مثال: YEMEN2026)</label>
+                    <label className="block text-xs font-bold text-[#1A1A1A] mb-1">رمز الكود (مثال: YEMEN2026)</label>
                     <input
                       type="text"
                       value={newCouponCode}
                       onChange={(e) => setNewCouponCode(e.target.value.toUpperCase())}
                       placeholder="DAJJAH20"
-                      className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-2 text-xs font-mono font-bold text-amber-300 uppercase focus:outline-none focus:border-amber-500"
+                      className="w-full bg-[#FAF9F7] border border-[#E5DFD7] rounded-xl px-3 py-2 text-xs font-mono font-bold text-[#8B2635] uppercase focus:outline-none focus:border-[#8B2635]"
                     />
                   </div>
 
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-xs font-bold text-neutral-300 mb-1">نوع الخصم</label>
+                      <label className="block text-xs font-bold text-[#1A1A1A] mb-1">نوع الخصم</label>
                       <select
                         value={newDiscountType}
                         onChange={(e) => setNewDiscountType(e.target.value as 'percentage' | 'fixed_yer')}
-                        className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500"
+                        className="w-full bg-[#FAF9F7] border border-[#E5DFD7] rounded-xl px-3 py-2 text-xs text-[#1A1A1A] focus:outline-none focus:border-[#8B2635]"
                       >
                         <option value="percentage">نسبة مئوية (%)</option>
                         <option value="fixed_yer">مبلغ ثابت (ر.ي)</option>
@@ -1777,7 +1777,7 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                     </div>
 
                     <div>
-                      <label className="block text-xs font-bold text-neutral-300 mb-1">
+                      <label className="block text-xs font-bold text-[#1A1A1A] mb-1">
                         قيمة الخصم ({newDiscountType === 'percentage' ? '%' : 'ر.ي'})
                       </label>
                       <input
@@ -1785,13 +1785,13 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                         min="1"
                         value={newDiscountValue}
                         onChange={(e) => setNewDiscountValue(Number(e.target.value))}
-                        className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-2 text-xs font-bold text-white focus:outline-none focus:border-amber-500"
+                        className="w-full bg-[#FAF9F7] border border-[#E5DFD7] rounded-xl px-3 py-2 text-xs font-bold text-[#1A1A1A] focus:outline-none focus:border-[#8B2635]"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-neutral-300 mb-1">الحد الأدنى لقيمة الطلب (ر.ي)</label>
+                    <label className="block text-xs font-bold text-[#1A1A1A] mb-1">الحد الأدنى لقيمة الطلب (ر.ي)</label>
                     <input
                       type="number"
                       min="0"
@@ -1799,18 +1799,18 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                       value={newMinOrder}
                       onChange={(e) => setNewMinOrder(Number(e.target.value))}
                       placeholder="0 = بدون حد أدنى"
-                      className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500"
+                      className="w-full bg-[#FAF9F7] border border-[#E5DFD7] rounded-xl px-3 py-2 text-xs text-[#1A1A1A] focus:outline-none focus:border-[#8B2635]"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-neutral-300 mb-1">وصف الكود والمناسبة</label>
+                    <label className="block text-xs font-bold text-[#1A1A1A] mb-1">وصف الكود والمناسبة</label>
                     <input
                       type="text"
                       value={newCouponDesc}
                       onChange={(e) => setNewCouponDesc(e.target.value)}
                       placeholder="مثال: خصم 20% بمناسبة عروض الأسبوع"
-                      className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500"
+                      className="w-full bg-[#FAF9F7] border border-[#E5DFD7] rounded-xl px-3 py-2 text-xs text-[#1A1A1A] focus:outline-none focus:border-[#8B2635]"
                     />
                   </div>
 
@@ -1836,7 +1836,7 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                       setStatusMessage({ type: 'success', text: `تم إضافة كود الخصم "${newCouponCode.trim()}" بنجاح!` });
                       setTimeout(() => setStatusMessage(null), 3000);
                     }}
-                    className="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-neutral-950 font-black text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md"
+                    className="w-full py-2.5 rounded-xl bg-[#8B2635] hover:bg-[#721D2A] text-white font-black text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-sm"
                   >
                     <Plus className="w-4 h-4" />
                     <span>إضافة وحفظ الكود</span>
@@ -1845,13 +1845,13 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
               </div>
 
               {/* Coupons List Table */}
-              <div className="lg:col-span-2 p-6 rounded-3xl bg-neutral-900 border border-neutral-800 shadow-xl space-y-4 overflow-x-auto">
+              <div className="lg:col-span-2 p-6 rounded-3xl bg-white border border-[#E5DFD7] shadow-sm space-y-4 overflow-x-auto">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Percent className="w-5 h-5 text-amber-400" />
-                    <h3 className="text-base font-black text-white">قائمة كوبونات الخصم النشطة ({coupons.length})</h3>
+                    <Percent className="w-5 h-5 text-[#8B6F15]" />
+                    <h3 className="text-base font-black text-[#1A1A1A]">قائمة كوبونات الخصم النشطة ({coupons.length})</h3>
                   </div>
-                  <span className="text-xs text-neutral-400">انقر لعرض الكود في الشريط العلوي</span>
+                  <span className="text-xs text-[#6B6B6B]">انقر لعرض الكود في الشريط العلوي</span>
                 </div>
 
                 <div className="space-y-3">
@@ -1862,32 +1862,32 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                         key={cp.id || cp.code}
                         className={`p-4 rounded-2xl border transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 ${
                           isFeatured
-                            ? 'bg-amber-500/10 border-amber-500 shadow-lg'
-                            : 'bg-neutral-950 border-neutral-800'
+                            ? 'bg-[#D4AF37]/10 border-[#D4AF37] shadow-sm'
+                            : 'bg-[#FAF9F7] border-[#E5DFD7]'
                         }`}
                       >
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 font-mono font-black text-sm">
+                          <div className="w-10 h-10 rounded-xl bg-[#D4AF37]/15 border border-[#D4AF37]/40 flex items-center justify-center text-[#8B6F15] font-mono font-black text-sm">
                             %
                           </div>
                           <div>
-                            <div className="flex items-center gap-2">
-                              <span className="font-mono font-black text-sm text-amber-300">{cp.code}</span>
-                              <span className="px-2 py-0.5 rounded-full bg-neutral-800 text-[10px] font-bold text-neutral-300">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className="font-mono font-black text-sm text-[#8B2635]">{cp.code}</span>
+                              <span className="px-2 py-0.5 rounded-full bg-[#F4F1EA] border border-[#E5DFD7] text-[10px] font-bold text-[#1A1A1A]">
                                 {cp.discountType === 'percentage' ? `خصم ${cp.discountValue}%` : `خصم ${formatPrice(cp.discountValue)}`}
                               </span>
                               {isFeatured && (
-                                <span className="px-2 py-0.5 rounded-full bg-amber-500 text-neutral-950 text-[10px] font-black">
+                                <span className="px-2 py-0.5 rounded-full bg-[#D4AF37]/20 text-[#8B6F15] text-[10px] font-black">
                                   معروض في البانر العلوي ⭐
                                 </span>
                               )}
-                              <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${cp.isActive ? 'bg-emerald-500/20 text-emerald-300' : 'bg-rose-500/20 text-rose-300'}`}>
+                              <span className={`px-2 py-0.5 rounded text-[10px] font-bold border ${cp.isActive ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-rose-50 text-rose-700 border-rose-200'}`}>
                                 {cp.isActive ? 'مفعل' : 'معطل'}
                               </span>
                             </div>
-                            <p className="text-xs text-neutral-400 mt-1">{cp.description}</p>
+                            <p className="text-xs text-[#6B6B6B] mt-1">{cp.description}</p>
                             {cp.minOrderYER && cp.minOrderYER > 0 ? (
-                              <p className="text-[10px] text-neutral-500">الحد الأدنى: {formatPrice(cp.minOrderYER)}</p>
+                              <p className="text-[10px] text-[#6B6B6B]">الحد الأدنى: {formatPrice(cp.minOrderYER)}</p>
                             ) : null}
                           </div>
                         </div>
@@ -1902,8 +1902,8 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                             }}
                             className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer ${
                               isFeatured
-                                ? 'bg-amber-500 text-neutral-950'
-                                : 'bg-neutral-800 hover:bg-neutral-700 text-neutral-300'
+                                ? 'bg-[#8B2635] text-white'
+                                : 'bg-white border border-[#E5DFD7] hover:bg-[#F4F1EA] text-[#1A1A1A]'
                             }`}
                           >
                             {isFeatured ? 'الرمز النشط في البانر' : 'عرض في البانر العلوي'}
@@ -1912,7 +1912,7 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                           <button
                             type="button"
                             onClick={() => toggleCouponActive(cp.code)}
-                            className="p-2 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-300 hover:text-white transition-colors cursor-pointer"
+                            className="p-2 rounded-xl bg-white border border-[#E5DFD7] hover:bg-[#F4F1EA] text-[#1A1A1A] transition-colors cursor-pointer"
                             title={cp.isActive ? 'تعطيل الكود' : 'تفعيل الكود'}
                           >
                             <RefreshCw className="w-3.5 h-3.5" />
@@ -1925,7 +1925,7 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                               setStatusMessage({ type: 'success', text: `تم حذف كود الخصم ${cp.code}` });
                               setTimeout(() => setStatusMessage(null), 3000);
                             }}
-                            className="p-2 rounded-xl bg-neutral-800 hover:bg-rose-600 text-neutral-400 hover:text-white transition-colors cursor-pointer"
+                            className="p-2 rounded-xl bg-white border border-[#E5DFD7] hover:bg-rose-600 text-rose-700 hover:text-white transition-colors cursor-pointer"
                             title="حذف الكود"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
@@ -1945,20 +1945,20 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
            ========================================================================= */}
         {adminTab === 'rates' && (
           <div className="space-y-6">
-            <div className="p-6 rounded-3xl bg-neutral-900 border border-neutral-800 shadow-xl space-y-6">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-neutral-800 pb-4">
+            <div className="p-6 rounded-3xl bg-white border border-[#E5DFD7] shadow-sm space-y-6">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-[#E5DFD7] pb-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400">
+                  <div className="w-12 h-12 rounded-2xl bg-[#D4AF37]/15 border border-[#D4AF37]/40 flex items-center justify-center text-[#8B6F15]">
                     <Coins className="w-6 h-6" />
                   </div>
                   <div>
-                    <h3 className="text-base font-black text-white flex items-center gap-2">
+                    <h3 className="text-base font-black text-[#1A1A1A] flex items-center gap-2 flex-wrap">
                       <span>إدارة وتعديل أسعار صرف العملات اليمنية والدولية</span>
-                      <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-bold">
+                      <span className="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-bold">
                         تحديث فوري لجميع المنتجات
                       </span>
                     </h3>
-                    <p className="text-xs text-neutral-400 mt-0.5">
+                    <p className="text-xs text-[#6B6B6B] mt-0.5">
                       تنعكس هذه الأسعار مباشرة في حساب أسعار السلع والسلة وإجمالي الفواتير للعملاء.
                     </p>
                   </div>
@@ -1975,7 +1975,7 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                     setStatusMessage({ type: 'success', text: 'تم حفظ وتحديث أسعار الصرف لجميع المحافظات بنجاح!' });
                     setTimeout(() => setStatusMessage(null), 3000);
                   }}
-                  className="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-neutral-950 font-black text-xs sm:text-sm flex items-center gap-2 transition-all cursor-pointer shadow-lg shadow-amber-500/20"
+                  className="px-5 py-2.5 rounded-xl bg-[#8B2635] hover:bg-[#721D2A] text-white font-black text-xs sm:text-sm flex items-center gap-2 transition-all cursor-pointer shadow-sm"
                 >
                   <Save className="w-4 h-4" />
                   <span>حفظ أسعار الصرف الحية</span>
@@ -1984,90 +1984,90 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
 
               {/* Rate Inputs Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="p-4 rounded-2xl bg-neutral-950 border border-neutral-800 space-y-2">
-                  <span className="text-xs font-bold text-neutral-400">صنعاء ومحافظات الشمال (الريال القديم)</span>
-                  <div className="text-lg font-black text-amber-400">1.0 (العملة الأساسية)</div>
+                <div className="p-4 rounded-2xl bg-[#FAF9F7] border border-[#E5DFD7] space-y-2">
+                  <span className="text-xs font-bold text-[#6B6B6B]">صنعاء ومحافظات الشمال (الريال القديم)</span>
+                  <div className="text-lg font-black text-[#8B6F15]">1.0 (العملة الأساسية)</div>
                   <input
                     type="number"
                     step="0.1"
                     disabled
                     value={1.0}
-                    className="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-3 py-2 text-xs font-mono text-neutral-500 cursor-not-allowed"
+                    className="w-full bg-[#F4F1EA] border border-[#E5DFD7] rounded-xl px-3 py-2 text-xs font-mono text-[#6B6B6B] cursor-not-allowed"
                   />
-                  <p className="text-[10px] text-neutral-500">معامل التحويل الأساسي للمتجر = 1.0</p>
+                  <p className="text-[10px] text-[#6B6B6B]">معامل التحويل الأساسي للمتجر = 1.0</p>
                 </div>
 
-                <div className="p-4 rounded-2xl bg-neutral-950 border border-neutral-800 space-y-2">
-                  <span className="text-xs font-bold text-white">عدن ومحافظات الجنوب (الريال الجديد)</span>
-                  <div className="text-lg font-black text-amber-400">× {southRate}</div>
+                <div className="p-4 rounded-2xl bg-[#FAF9F7] border border-[#E5DFD7] space-y-2">
+                  <span className="text-xs font-bold text-[#1A1A1A]">عدن ومحافظات الجنوب (الريال الجديد)</span>
+                  <div className="text-lg font-black text-[#8B2635]">× {southRate}</div>
                   <input
                     type="number"
                     step="0.05"
                     value={southRate}
                     onChange={(e) => setSouthRate(Number(e.target.value))}
-                    className="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-3 py-2 text-xs font-mono font-bold text-white focus:outline-none focus:border-amber-500"
+                    className="w-full bg-white border border-[#E5DFD7] rounded-xl px-3 py-2 text-xs font-mono font-bold text-[#1A1A1A] focus:outline-none focus:border-[#8B2635]"
                   />
-                  <p className="text-[10px] text-neutral-500">1 ريال شمال = {southRate} ريال جنوب</p>
+                  <p className="text-[10px] text-[#6B6B6B]">1 ريال شمال = {southRate} ريال جنوب</p>
                 </div>
 
-                <div className="p-4 rounded-2xl bg-neutral-950 border border-neutral-800 space-y-2">
-                  <span className="text-xs font-bold text-white">الدولار الأمريكي (USD)</span>
-                  <div className="text-lg font-black text-emerald-400">$ {(1 / usdRate).toFixed(0)} ر.ي</div>
+                <div className="p-4 rounded-2xl bg-[#FAF9F7] border border-[#E5DFD7] space-y-2">
+                  <span className="text-xs font-bold text-[#1A1A1A]">الدولار الأمريكي (USD)</span>
+                  <div className="text-lg font-black text-emerald-700">$ {(1 / usdRate).toFixed(0)} ر.ي</div>
                   <input
                     type="number"
                     step="0.00001"
                     value={usdRate}
                     onChange={(e) => setUsdRate(Number(e.target.value))}
-                    className="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-3 py-2 text-xs font-mono font-bold text-white focus:outline-none focus:border-amber-500"
+                    className="w-full bg-white border border-[#E5DFD7] rounded-xl px-3 py-2 text-xs font-mono font-bold text-[#1A1A1A] focus:outline-none focus:border-[#8B2635]"
                   />
-                  <p className="text-[10px] text-neutral-500">$1 دولار = {(1 / usdRate).toFixed(1)} ر.ي شمال</p>
+                  <p className="text-[10px] text-[#6B6B6B]">$1 دولار = {(1 / usdRate).toFixed(1)} ر.ي شمال</p>
                 </div>
 
-                <div className="p-4 rounded-2xl bg-neutral-950 border border-neutral-800 space-y-2">
-                  <span className="text-xs font-bold text-white">الريال السعودي (SAR)</span>
-                  <div className="text-lg font-black text-sky-400">{(1 / sarRate).toFixed(0)} ر.ي</div>
+                <div className="p-4 rounded-2xl bg-[#FAF9F7] border border-[#E5DFD7] space-y-2">
+                  <span className="text-xs font-bold text-[#1A1A1A]">الريال السعودي (SAR)</span>
+                  <div className="text-lg font-black text-sky-700">{(1 / sarRate).toFixed(0)} ر.ي</div>
                   <input
                     type="number"
                     step="0.00001"
                     value={sarRate}
                     onChange={(e) => setSarRate(Number(e.target.value))}
-                    className="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-3 py-2 text-xs font-mono font-bold text-white focus:outline-none focus:border-amber-500"
+                    className="w-full bg-white border border-[#E5DFD7] rounded-xl px-3 py-2 text-xs font-mono font-bold text-[#1A1A1A] focus:outline-none focus:border-[#8B2635]"
                   />
-                  <p className="text-[10px] text-neutral-500">1 ريال سعودي = {(1 / sarRate).toFixed(1)} ر.ي شمال</p>
+                  <p className="text-[10px] text-[#6B6B6B]">1 ريال سعودي = {(1 / sarRate).toFixed(1)} ر.ي شمال</p>
                 </div>
               </div>
 
               {/* Instant Live Price Calculator Preview */}
-              <div className="p-5 rounded-2xl bg-neutral-950/80 border border-neutral-800 space-y-3">
-                <div className="flex items-center gap-2 text-amber-400">
+              <div className="p-5 rounded-2xl bg-[#FAF9F7] border border-[#E5DFD7] space-y-3">
+                <div className="flex items-center gap-2 text-[#8B6F15]">
                   <Calculator className="w-4 h-4" />
-                  <h4 className="text-xs sm:text-sm font-bold text-white">حاسبة معاينة الأسعار الفورية</h4>
+                  <h4 className="text-xs sm:text-sm font-bold text-[#1A1A1A]">حاسبة معاينة الأسعار الفورية</h4>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3 items-center">
                   <div className="md:col-span-1">
-                    <label className="block text-[10px] text-neutral-400 mb-1">مبلغ الاختبار (شمال):</label>
+                    <label className="block text-[10px] text-[#6B6B6B] mb-1">مبلغ الاختبار (شمال):</label>
                     <input
                       type="number"
                       value={calcAmount}
                       onChange={(e) => setCalcAmount(Number(e.target.value))}
-                      className="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-3 py-1.5 text-xs font-bold text-white"
+                      className="w-full bg-white border border-[#E5DFD7] rounded-xl px-3 py-1.5 text-xs font-bold text-[#1A1A1A]"
                     />
                   </div>
-                  <div className="p-2.5 rounded-xl bg-neutral-900 border border-neutral-800 text-center">
-                    <span className="block text-[10px] text-neutral-400">صنعاء</span>
-                    <span className="text-xs font-black text-amber-400">{calcAmount.toLocaleString()} ر.ي</span>
+                  <div className="p-2.5 rounded-xl bg-white border border-[#E5DFD7] text-center">
+                    <span className="block text-[10px] text-[#6B6B6B]">صنعاء</span>
+                    <span className="text-xs font-black text-[#8B6F15]">{calcAmount.toLocaleString()} ر.ي</span>
                   </div>
-                  <div className="p-2.5 rounded-xl bg-neutral-900 border border-neutral-800 text-center">
-                    <span className="block text-[10px] text-neutral-400">عدن</span>
-                    <span className="text-xs font-black text-amber-400">{(calcAmount * southRate).toLocaleString()} ر.ي</span>
+                  <div className="p-2.5 rounded-xl bg-white border border-[#E5DFD7] text-center">
+                    <span className="block text-[10px] text-[#6B6B6B]">عدن</span>
+                    <span className="text-xs font-black text-[#8B2635]">{(calcAmount * southRate).toLocaleString()} ر.ي</span>
                   </div>
-                  <div className="p-2.5 rounded-xl bg-neutral-900 border border-neutral-800 text-center">
-                    <span className="block text-[10px] text-neutral-400">دولار أمريكي</span>
-                    <span className="text-xs font-black text-emerald-400">${(calcAmount * usdRate).toFixed(2)}</span>
+                  <div className="p-2.5 rounded-xl bg-white border border-[#E5DFD7] text-center">
+                    <span className="block text-[10px] text-[#6B6B6B]">دولار أمريكي</span>
+                    <span className="text-xs font-black text-emerald-700">${(calcAmount * usdRate).toFixed(2)}</span>
                   </div>
-                  <div className="p-2.5 rounded-xl bg-neutral-900 border border-neutral-800 text-center">
-                    <span className="block text-[10px] text-neutral-400">ريال سعودي</span>
-                    <span className="text-xs font-black text-sky-400">{(calcAmount * sarRate).toFixed(2)} ر.س</span>
+                  <div className="p-2.5 rounded-xl bg-white border border-[#E5DFD7] text-center">
+                    <span className="block text-[10px] text-[#6B6B6B]">ريال سعودي</span>
+                    <span className="text-xs font-black text-sky-700">{(calcAmount * sarRate).toFixed(2)} ر.س</span>
                   </div>
                 </div>
               </div>
@@ -2080,15 +2080,15 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
            ========================================================================= */}
         {adminTab === 'contact' && (
           <div className="space-y-6">
-            <div className="p-6 rounded-3xl bg-neutral-900 border border-neutral-800 shadow-xl space-y-6">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-neutral-800 pb-4">
+            <div className="p-6 rounded-3xl bg-white border border-[#E5DFD7] shadow-sm space-y-6">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-[#E5DFD7] pb-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400">
+                  <div className="w-12 h-12 rounded-2xl bg-[#D4AF37]/15 border border-[#D4AF37]/40 flex items-center justify-center text-[#8B6F15]">
                     <PhoneCall className="w-6 h-6" />
                   </div>
                   <div>
-                    <h3 className="text-base font-black text-white">إدارة معلومات الاتصال وخدمة العملاء</h3>
-                    <p className="text-xs text-neutral-400 mt-0.5">
+                    <h3 className="text-base font-black text-[#1A1A1A]">إدارة معلومات الاتصال وخدمة العملاء</h3>
+                    <p className="text-xs text-[#6B6B6B] mt-0.5">
                       تظهر هذه البيانات في تذييل الموقع، صفحات الحساب، ورسائل الدعم والتواصل.
                     </p>
                   </div>
@@ -2106,7 +2106,7 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                     setStatusMessage({ type: 'success', text: 'تم حفظ وتحديث معلومات الاتصال بنجاح!' });
                     setTimeout(() => setStatusMessage(null), 3000);
                   }}
-                  className="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-neutral-950 font-black text-xs sm:text-sm flex items-center gap-2 transition-all cursor-pointer shadow-lg shadow-amber-500/20"
+                  className="px-5 py-2.5 rounded-xl bg-[#8B2635] hover:bg-[#721D2A] text-white font-black text-xs sm:text-sm flex items-center gap-2 transition-all cursor-pointer shadow-sm"
                 >
                   <Save className="w-4 h-4" />
                   <span>حفظ معلومات الاتصال</span>
@@ -2115,67 +2115,67 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-xs font-bold text-neutral-300 mb-1.5 flex items-center gap-1.5">
-                    <Phone className="w-3.5 h-3.5 text-amber-400" />
+                  <label className="block text-xs font-bold text-[#1A1A1A] mb-1.5 flex items-center gap-1.5">
+                    <Phone className="w-3.5 h-3.5 text-[#8B6F15]" />
                     <span>رقم الهاتف المباشر</span>
                   </label>
                   <input
                     type="text"
                     value={contactPhone}
                     onChange={(e) => setContactPhone(e.target.value)}
-                    className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-4 py-2.5 text-xs sm:text-sm text-white focus:outline-none focus:border-amber-500"
+                    className="w-full bg-[#FAF9F7] border border-[#E5DFD7] rounded-xl px-4 py-2.5 text-xs sm:text-sm text-[#1A1A1A] focus:outline-none focus:border-[#8B2635]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-neutral-300 mb-1.5 flex items-center gap-1.5">
-                    <PhoneCall className="w-3.5 h-3.5 text-emerald-400" />
+                  <label className="block text-xs font-bold text-[#1A1A1A] mb-1.5 flex items-center gap-1.5">
+                    <PhoneCall className="w-3.5 h-3.5 text-emerald-700" />
                     <span>رقم الواتساب المعتمد (WhatsApp)</span>
                   </label>
                   <input
                     type="text"
                     value={contactWhatsapp}
                     onChange={(e) => setContactWhatsapp(e.target.value)}
-                    className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-4 py-2.5 text-xs sm:text-sm text-white focus:outline-none focus:border-amber-500"
+                    className="w-full bg-[#FAF9F7] border border-[#E5DFD7] rounded-xl px-4 py-2.5 text-xs sm:text-sm text-[#1A1A1A] focus:outline-none focus:border-[#8B2635]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-neutral-300 mb-1.5 flex items-center gap-1.5">
-                    <Mail className="w-3.5 h-3.5 text-sky-400" />
+                  <label className="block text-xs font-bold text-[#1A1A1A] mb-1.5 flex items-center gap-1.5">
+                    <Mail className="w-3.5 h-3.5 text-sky-700" />
                     <span>البريد الإلكتروني للدعم</span>
                   </label>
                   <input
                     type="email"
                     value={contactEmail}
                     onChange={(e) => setContactEmail(e.target.value)}
-                    className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-4 py-2.5 text-xs sm:text-sm text-white focus:outline-none focus:border-amber-500"
+                    className="w-full bg-[#FAF9F7] border border-[#E5DFD7] rounded-xl px-4 py-2.5 text-xs sm:text-sm text-[#1A1A1A] focus:outline-none focus:border-[#8B2635]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-neutral-300 mb-1.5 flex items-center gap-1.5">
-                    <Clock className="w-3.5 h-3.5 text-amber-400" />
+                  <label className="block text-xs font-bold text-[#1A1A1A] mb-1.5 flex items-center gap-1.5">
+                    <Clock className="w-3.5 h-3.5 text-[#8B6F15]" />
                     <span>ساعات الدعم والعمل</span>
                   </label>
                   <input
                     type="text"
                     value={contactHours}
                     onChange={(e) => setContactHours(e.target.value)}
-                    className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-4 py-2.5 text-xs sm:text-sm text-white focus:outline-none focus:border-amber-500"
+                    className="w-full bg-[#FAF9F7] border border-[#E5DFD7] rounded-xl px-4 py-2.5 text-xs sm:text-sm text-[#1A1A1A] focus:outline-none focus:border-[#8B2635]"
                   />
                 </div>
 
                 <div className="sm:col-span-2">
-                  <label className="block text-xs font-bold text-neutral-300 mb-1.5 flex items-center gap-1.5">
-                    <MapPin className="w-3.5 h-3.5 text-rose-400" />
+                  <label className="block text-xs font-bold text-[#1A1A1A] mb-1.5 flex items-center gap-1.5">
+                    <MapPin className="w-3.5 h-3.5 text-rose-700" />
                     <span>العنوان الجغرافي والمستودعات</span>
                   </label>
                   <input
                     type="text"
                     value={contactAddress}
                     onChange={(e) => setContactAddress(e.target.value)}
-                    className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-4 py-2.5 text-xs sm:text-sm text-white focus:outline-none focus:border-amber-500"
+                    className="w-full bg-[#FAF9F7] border border-[#E5DFD7] rounded-xl px-4 py-2.5 text-xs sm:text-sm text-[#1A1A1A] focus:outline-none focus:border-[#8B2635]"
                   />
                 </div>
               </div>
@@ -2189,21 +2189,21 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
         {adminTab === 'guide' && (
           <div className="space-y-6">
             {/* Guide Header */}
-            <div className="p-6 rounded-3xl bg-neutral-900 border border-neutral-800 shadow-xl space-y-4">
+            <div className="p-6 rounded-3xl bg-white border border-[#E5DFD7] shadow-sm space-y-4">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400">
+                <div className="w-12 h-12 rounded-2xl bg-[#D4AF37]/15 border border-[#D4AF37]/40 flex items-center justify-center text-[#8B6F15]">
                   <BookOpen className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="text-base font-black text-white">دليل الاستخدام والترحيب الشامل — ضَجّة مول</h3>
-                  <p className="text-xs text-neutral-400 mt-0.5">
+                  <h3 className="text-base font-black text-[#1A1A1A]">دليل الاستخدام والترحيب الشامل — ضَجّة مول</h3>
+                  <p className="text-xs text-[#6B6B6B] mt-0.5">
                     مرجع كامل للمستخدمين والمالك لشرح كيفية الاستفادة القصوى من كافة ميزات المنصة.
                   </p>
                 </div>
               </div>
 
               {/* Subtabs for Guide */}
-              <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pt-2 border-t border-neutral-800">
+              <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pt-2 border-t border-[#E5DFD7]">
                 {[
                   { id: 'overview', label: '🌟 نظرة عامة' },
                   { id: 'customer', label: '🛍️ خطوات الشراء والتوصيل' },
@@ -2216,8 +2216,8 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                     onClick={() => setGuideTab(gt.id as any)}
                     className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
                       guideTab === gt.id
-                        ? 'bg-amber-500 text-neutral-950 font-black'
-                        : 'bg-neutral-950 text-neutral-400 hover:text-white border border-neutral-800'
+                        ? 'bg-[#8B2635] text-white font-black'
+                        : 'bg-[#FAF9F7] text-[#6B6B6B] hover:text-[#1A1A1A] border border-[#E5DFD7]'
                     }`}
                   >
                     {gt.label}
@@ -2229,22 +2229,22 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
             {/* Guide Content Cards */}
             {guideTab === 'overview' && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="p-6 rounded-3xl bg-neutral-900 border border-neutral-800 space-y-3">
-                  <div className="flex items-center gap-2 text-amber-400 font-bold">
+                <div className="p-6 rounded-3xl bg-white border border-[#E5DFD7] shadow-sm space-y-3">
+                  <div className="flex items-center gap-2 text-[#8B6F15] font-bold">
                     <Sparkles className="w-5 h-5" />
                     <span>مفهوم ضَجّة مول</span>
                   </div>
-                  <p className="text-xs text-neutral-300 leading-relaxed">
+                  <p className="text-xs text-[#6B6B6B] leading-relaxed">
                     منصة التسوق الإلكتروني الأولى في اليمن المصممة بأعلى معايير السرعة والكفاءة، تدعم التبديل السلس بين عملتي الشمال والجنوب مع تسعير حقيقي ودقيق.
                   </p>
                 </div>
 
-                <div className="p-6 rounded-3xl bg-neutral-900 border border-neutral-800 space-y-3">
-                  <div className="flex items-center gap-2 text-amber-400 font-bold">
+                <div className="p-6 rounded-3xl bg-white border border-[#E5DFD7] shadow-sm space-y-3">
+                  <div className="flex items-center gap-2 text-[#8B6F15] font-bold">
                     <Truck className="w-5 h-5" />
                     <span>المعاينة قبل الدفع</span>
                   </div>
-                  <p className="text-xs text-neutral-300 leading-relaxed">
+                  <p className="text-xs text-[#6B6B6B] leading-relaxed">
                     حق المعاينة الكاملة عند استلام الطلب من مندوب التوصيل قبل دفع أي ريال، لضمان رضا وثقة العميل 100%.
                   </p>
                 </div>
@@ -2252,59 +2252,59 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
             )}
 
             {guideTab === 'customer' && (
-              <div className="p-6 rounded-3xl bg-neutral-900 border border-neutral-800 space-y-4">
-                <h4 className="font-bold text-sm text-amber-400">خطوات الشراء والتتبع في 3 خطوات بسيطة:</h4>
+              <div className="p-6 rounded-3xl bg-white border border-[#E5DFD7] shadow-sm space-y-4">
+                <h4 className="font-bold text-sm text-[#8B2635]">خطوات الشراء والتتبع في 3 خطوات بسيطة:</h4>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="p-4 rounded-2xl bg-neutral-950 border border-neutral-800 space-y-2">
-                    <div className="w-7 h-7 rounded-full bg-amber-500 text-neutral-950 flex items-center justify-center font-black text-xs">1</div>
-                    <h5 className="font-bold text-white text-xs">اختر المنتج والمقاس واللون</h5>
-                    <p className="text-[11px] text-neutral-400">تصفح الأقسام أو ابحث بالذكاء الاصطناعي واختر مواصفاتك المناسبة.</p>
+                  <div className="p-4 rounded-2xl bg-[#FAF9F7] border border-[#E5DFD7] space-y-2">
+                    <div className="w-7 h-7 rounded-full bg-[#8B2635] text-white flex items-center justify-center font-black text-xs">1</div>
+                    <h5 className="font-bold text-[#1A1A1A] text-xs">اختر المنتج والمقاس واللون</h5>
+                    <p className="text-[11px] text-[#6B6B6B]">تصفح الأقسام أو ابحث بالذكاء الاصطناعي واختر مواصفاتك المناسبة.</p>
                   </div>
-                  <div className="p-4 rounded-2xl bg-neutral-950 border border-neutral-800 space-y-2">
-                    <div className="w-7 h-7 rounded-full bg-amber-500 text-neutral-950 flex items-center justify-center font-black text-xs">2</div>
-                    <h5 className="font-bold text-white text-xs">أدخل العنوان وكود الخصم</h5>
-                    <p className="text-[11px] text-neutral-400">حدد مدينتك ورقم هاتفك واستخدم كود الخصم الفعال لتوفير المال.</p>
+                  <div className="p-4 rounded-2xl bg-[#FAF9F7] border border-[#E5DFD7] space-y-2">
+                    <div className="w-7 h-7 rounded-full bg-[#8B2635] text-white flex items-center justify-center font-black text-xs">2</div>
+                    <h5 className="font-bold text-[#1A1A1A] text-xs">أدخل العنوان وكود الخصم</h5>
+                    <p className="text-[11px] text-[#6B6B6B]">حدد مدينتك ورقم هاتفك واستخدم كود الخصم الفعال لتوفير المال.</p>
                   </div>
-                  <div className="p-4 rounded-2xl bg-neutral-950 border border-neutral-800 space-y-2">
-                    <div className="w-7 h-7 rounded-full bg-amber-500 text-neutral-950 flex items-center justify-center font-black text-xs">3</div>
-                    <h5 className="font-bold text-white text-xs">استلم وعاين مجانًا</h5>
-                    <p className="text-[11px] text-neutral-400">تابع حركة مندوب التوصيل في شاشة التتبع واستلم طلبك بضمانة تامة.</p>
+                  <div className="p-4 rounded-2xl bg-[#FAF9F7] border border-[#E5DFD7] space-y-2">
+                    <div className="w-7 h-7 rounded-full bg-[#8B2635] text-white flex items-center justify-center font-black text-xs">3</div>
+                    <h5 className="font-bold text-[#1A1A1A] text-xs">استلم وعاين مجانًا</h5>
+                    <p className="text-[11px] text-[#6B6B6B]">تابع حركة مندوب التوصيل في شاشة التتبع واستلم طلبك بضمانة تامة.</p>
                   </div>
                 </div>
               </div>
             )}
 
             {guideTab === 'ai' && (
-              <div className="p-6 rounded-3xl bg-neutral-900 border border-neutral-800 space-y-3">
-                <div className="flex items-center gap-2 text-amber-400 font-bold">
+              <div className="p-6 rounded-3xl bg-white border border-[#E5DFD7] shadow-sm space-y-3">
+                <div className="flex items-center gap-2 text-[#8B6F15] font-bold">
                   <Sparkles className="w-5 h-5" />
                   <span>مساعد التسوق الذكي المدعوم بـ Google Gemini</span>
                 </div>
-                <p className="text-xs text-neutral-300 leading-relaxed">
+                <p className="text-xs text-[#6B6B6B] leading-relaxed">
                   يستطيع المساعد الذكي في ضَجّة مول التعرف على طلب العميل بدقة (مثل: "أريد فستان بناتي للعيد مقاس 4 سنين بسعر أقل من 15 ألف") وعرض صور المنتج وروابطه المباشرة داخل المحادثة وإضافتها للسلة بنقرة واحدة.
                 </p>
               </div>
             )}
 
             {guideTab === 'wallets' && (
-              <div className="p-6 rounded-3xl bg-neutral-900 border border-neutral-800 space-y-3">
-                <div className="flex items-center gap-2 text-amber-400 font-bold">
+              <div className="p-6 rounded-3xl bg-white border border-[#E5DFD7] shadow-sm space-y-3">
+                <div className="flex items-center gap-2 text-[#8B6F15] font-bold">
                   <CreditCard className="w-5 h-5" />
                   <span>المحافظ الرقمية والتحويل المالي المعتمد</span>
                 </div>
-                <p className="text-xs text-neutral-300 leading-relaxed">
+                <p className="text-xs text-[#6B6B6B] leading-relaxed">
                   ندعم بنك الكريمي (حساب مميز)، محفظة جيب، ون كاش، النجم للحوالات، محفظة فلوسك، بالإضافة للدفع نقدًا عند المعاينة والاستلام.
                 </p>
               </div>
             )}
 
             {guideTab === 'admin' && (
-              <div className="p-6 rounded-3xl bg-neutral-900 border border-neutral-800 space-y-3">
-                <div className="flex items-center gap-2 text-amber-400 font-bold">
+              <div className="p-6 rounded-3xl bg-white border border-[#E5DFD7] shadow-sm space-y-3">
+                <div className="flex items-center gap-2 text-[#8B6F15] font-bold">
                   <ShieldCheck className="w-5 h-5" />
                   <span>صلاحيات المالك المستقلة</span>
                 </div>
-                <p className="text-xs text-neutral-300 leading-relaxed">
+                <p className="text-xs text-[#6B6B6B] leading-relaxed">
                   يمكنك من هذه اللوحة إضافة المنتجات وتعديل صورها ومخزونها، تغيير أسعار الصرف، إضافة أكواد الخصم، وتعديل بيانات التواصل وإرسال الإشعارات بدون الحاجة إلى Google AI Studio.
                 </p>
               </div>
@@ -2318,15 +2318,15 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
         {adminTab === 'orders' && (
           <div className="space-y-6">
             {/* Orders Filter & Search */}
-            <div className="p-4 rounded-2xl bg-neutral-900 border border-neutral-800 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="p-4 rounded-2xl bg-white border border-[#E5DFD7] shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
               <div className="relative w-full md:w-80">
-                <Search className="w-4 h-4 text-neutral-500 absolute right-3 top-1/2 -translate-y-1/2" />
+                <Search className="w-4 h-4 text-[#6B6B6B] absolute right-3 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
                   placeholder="ابحث برقم الطلب أو اسم العميل..."
                   value={orderSearch}
                   onChange={(e) => setOrderSearch(e.target.value)}
-                  className="w-full bg-neutral-950 border border-neutral-800 rounded-xl pr-9 pl-3 py-2 text-xs sm:text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-amber-500"
+                  className="w-full bg-[#FAF9F7] border border-[#E5DFD7] rounded-xl pr-9 pl-3 py-2 text-xs sm:text-sm text-[#1A1A1A] placeholder-[#6B6B6B] focus:outline-none focus:border-[#8B2635]"
                 />
               </div>
 
@@ -2344,8 +2344,8 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                     onClick={() => setOrderStatusFilter(st.id)}
                     className={`px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-all ${
                       orderStatusFilter === st.id
-                        ? 'bg-amber-500 text-neutral-950 font-black'
-                        : 'bg-neutral-950 text-neutral-400 hover:text-white border border-neutral-800'
+                        ? 'bg-[#8B2635] text-white font-black'
+                        : 'bg-[#FAF9F7] text-[#6B6B6B] hover:text-[#1A1A1A] border border-[#E5DFD7]'
                     }`}
                   >
                     {st.label}
@@ -2355,11 +2355,11 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
             </div>
 
             {/* Orders Table */}
-            <div className="bg-neutral-900 border border-neutral-800 rounded-3xl overflow-hidden shadow-xl">
+            <div className="bg-white border border-[#E5DFD7] rounded-3xl overflow-hidden shadow-sm">
               <div className="overflow-x-auto">
                 <table className="w-full text-right border-collapse">
                   <thead>
-                    <tr className="bg-neutral-950/80 border-b border-neutral-800 text-[11px] font-black text-neutral-400 uppercase tracking-wider">
+                    <tr className="bg-[#F4F1EA] border-b border-[#E5DFD7] text-[11px] font-black text-[#6B6B6B] uppercase tracking-wider">
                       <th className="p-4">رقم الطلب والتاريخ</th>
                       <th className="p-4">العميل والمدينة</th>
                       <th className="p-4">المنتجات</th>
@@ -2369,7 +2369,7 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                       <th className="p-4 text-center">إجراءات الحالة</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-neutral-800/60 text-xs text-neutral-300">
+                  <tbody className="divide-y divide-[#E5DFD7]/60 text-xs text-[#1A1A1A]">
                     {orders
                       .filter((o) => {
                         const matchesSearch =
@@ -2381,11 +2381,11 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                       })
                       .map((ord) => {
                         const statusColors: Record<string, string> = {
-                          received: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
-                          processing: 'bg-amber-500/20 text-amber-400 border-amber-500/30',
-                          out_for_delivery: 'bg-purple-500/20 text-purple-400 border-purple-500/30',
-                          delivered: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
-                          cancelled: 'bg-rose-500/20 text-rose-400 border-rose-500/30',
+                          received: 'bg-blue-50 text-blue-700 border-blue-200',
+                          processing: 'bg-amber-50 text-amber-800 border-amber-200',
+                          out_for_delivery: 'bg-purple-50 text-purple-700 border-purple-200',
+                          delivered: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+                          cancelled: 'bg-rose-50 text-rose-700 border-rose-200',
                         };
 
                         const statusLabels: Record<string, string> = {
@@ -2397,43 +2397,43 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                         };
 
                         return (
-                          <tr key={ord.id} className="hover:bg-neutral-800/30 transition-colors">
+                          <tr key={ord.id} className="hover:bg-[#FAF9F7] transition-colors">
                             <td className="p-4">
-                              <div className="font-bold text-white text-xs">{ord.orderNumber || ord.id}</div>
-                              <div className="text-[10px] text-neutral-500">
+                              <div className="font-bold text-[#1A1A1A] text-xs">{ord.orderNumber || ord.id}</div>
+                              <div className="text-[10px] text-[#6B6B6B]">
                                 {new Date(ord.createdAt).toLocaleDateString('ar-YE')}
                               </div>
                             </td>
                             <td className="p-4">
-                              <div className="font-bold text-white">{ord.shippingAddress?.fullName || 'عميل ضَجّة'}</div>
-                              <div className="text-[10px] text-neutral-400 flex items-center gap-1">
-                                <MapPin className="w-3 h-3 text-amber-400" />
+                              <div className="font-bold text-[#1A1A1A]">{ord.shippingAddress?.fullName || 'عميل ضَجّة'}</div>
+                              <div className="text-[10px] text-[#6B6B6B] flex items-center gap-1">
+                                <MapPin className="w-3 h-3 text-[#8B6F15]" />
                                 <span>{ord.shippingAddress?.city || 'صنعاء'} - {ord.shippingAddress?.streetAddress || ''}</span>
                               </div>
                             </td>
                             <td className="p-4">
-                              <div className="text-xs text-neutral-300 font-bold">
+                              <div className="text-xs text-[#1A1A1A] font-bold">
                                 {ord.items.length} قطع
                               </div>
-                              <div className="text-[10px] text-neutral-500 truncate max-w-[160px]">
+                              <div className="text-[10px] text-[#6B6B6B] truncate max-w-[160px]">
                                 {ord.items.map((i) => i.name).join('، ')}
                               </div>
                             </td>
                             <td className="p-4">
-                              <div className="font-black text-amber-400 text-sm">
+                              <div className="font-black text-[#8B2635] text-sm">
                                 {formatPrice(ord.totalYER)}
                               </div>
-                              <div className="text-[10px] text-neutral-500">
+                              <div className="text-[10px] text-[#6B6B6B]">
                                 رسوم توصيل: {formatPrice(ord.shippingFeeYER || 0)}
                               </div>
                             </td>
                             <td className="p-4">
-                              <span className="px-2 py-1 rounded-md bg-neutral-950 border border-neutral-800 text-[10px] font-bold text-neutral-300">
+                              <span className="px-2 py-1 rounded-md bg-[#F4F1EA] border border-[#E5DFD7] text-[10px] font-bold text-[#1A1A1A]">
                                 {ord.paymentMethod === 'cash_on_delivery' ? 'دفع عند الاستلام' : 'محفظة إلكترونية'}
                               </span>
                             </td>
                             <td className="p-4">
-                              <span className={`px-2.5 py-1 rounded-full text-[10px] font-black border ${statusColors[ord.status] || 'bg-neutral-800 text-neutral-400'}`}>
+                              <span className={`px-2.5 py-1 rounded-full text-[10px] font-black border ${statusColors[ord.status] || 'bg-[#F4F1EA] text-[#6B6B6B] border-[#E5DFD7]'}`}>
                                 {statusLabels[ord.status] || ord.status}
                               </span>
                             </td>
@@ -2442,7 +2442,7 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                                 <select
                                   value={ord.status}
                                   onChange={(e) => updateOrderStatus(ord.id, e.target.value as OrderStatus)}
-                                  className="bg-neutral-950 border border-neutral-800 text-neutral-200 rounded-lg px-2 py-1 text-[11px] font-bold focus:outline-none focus:border-amber-500 cursor-pointer"
+                                  className="bg-[#FAF9F7] border border-[#E5DFD7] text-[#1A1A1A] rounded-lg px-2 py-1 text-[11px] font-bold focus:outline-none focus:border-[#8B2635] cursor-pointer"
                                 >
                                   <option value="received">جديد (استلام)</option>
                                   <option value="processing">تجهيز وتغليف</option>
@@ -2452,7 +2452,7 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                                 </select>
                                 <button
                                   onClick={() => setSelectedOrderDetails(ord)}
-                                  className="p-1.5 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-neutral-300 hover:text-white transition-all"
+                                  className="p-1.5 rounded-lg bg-[#F4F1EA] border border-[#E5DFD7] hover:bg-[#8B2635] hover:text-white text-[#1A1A1A] transition-all"
                                   title="عرض الفاتورة وتفاصيل الشحن"
                                 >
                                   <Eye className="w-3.5 h-3.5" />
@@ -2474,13 +2474,13 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
            ========================================================================= */}
         {adminTab === 'customers' && (
           <div className="space-y-6">
-            <div className="bg-neutral-900 border border-neutral-800 rounded-3xl overflow-hidden shadow-xl p-6">
-              <div className="flex items-center justify-between border-b border-neutral-800 pb-4 mb-4">
+            <div className="bg-white border border-[#E5DFD7] rounded-3xl overflow-hidden shadow-sm p-6">
+              <div className="flex items-center justify-between border-b border-[#E5DFD7] pb-4 mb-4">
                 <div>
-                  <h3 className="text-base font-black text-white">قائمة العملاء والمستخدمين</h3>
-                  <p className="text-xs text-neutral-400">سجل المستخدمين المسجلين في المنصة عبر Firebase</p>
+                  <h3 className="text-base font-black text-[#1A1A1A]">قائمة العملاء والمستخدمين</h3>
+                  <p className="text-xs text-[#6B6B6B]">سجل المستخدمين المسجلين في المنصة عبر Firebase</p>
                 </div>
-                <div className="px-3 py-1 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-bold">
+                <div className="px-3 py-1 rounded-xl bg-[#D4AF37]/15 border border-[#D4AF37]/40 text-[#8B6F15] text-xs font-bold">
                   إجمالي العملاء: {users.length}
                 </div>
               </div>
@@ -2488,7 +2488,7 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
               <div className="overflow-x-auto">
                 <table className="w-full text-right border-collapse">
                   <thead>
-                    <tr className="bg-neutral-950/80 border-b border-neutral-800 text-[11px] font-black text-neutral-400 uppercase">
+                    <tr className="bg-[#F4F1EA] border-b border-[#E5DFD7] text-[11px] font-black text-[#6B6B6B] uppercase">
                       <th className="p-3">الاسم</th>
                       <th className="p-3">رقم الهاتف / البريد</th>
                       <th className="p-3">المدينة</th>
@@ -2496,20 +2496,20 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                       <th className="p-3">الرصيد / النقاط</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-neutral-800/60 text-xs text-neutral-300">
+                  <tbody className="divide-y divide-[#E5DFD7]/60 text-xs text-[#1A1A1A]">
                     {users.map((u) => (
-                      <tr key={u.id} className="hover:bg-neutral-800/20">
-                        <td className="p-3 font-bold text-white">{u.fullName || u.displayName || 'عميل'}</td>
-                        <td className="p-3 font-mono text-neutral-400">{u.phone || u.email || '—'}</td>
+                      <tr key={u.id} className="hover:bg-[#FAF9F7]">
+                        <td className="p-3 font-bold text-[#1A1A1A]">{u.fullName || u.displayName || 'عميل'}</td>
+                        <td className="p-3 font-mono text-[#6B6B6B]">{u.phone || u.email || '—'}</td>
                         <td className="p-3">{u.city || 'صنعاء'}</td>
                         <td className="p-3">
                           <span className={`px-2 py-0.5 rounded text-[10px] font-black ${
-                            u.role === 'admin' ? 'bg-amber-500 text-neutral-950' : 'bg-neutral-800 text-neutral-300'
+                            u.role === 'admin' ? 'bg-[#8B2635] text-white' : 'bg-[#F4F1EA] border border-[#E5DFD7] text-[#1A1A1A]'
                           }`}>
                             {u.role === 'admin' ? 'مالك المنصة' : 'عميل معتمد'}
                           </span>
                         </td>
-                        <td className="p-3 font-bold text-amber-400">{u.loyaltyPoints || 120} نقطة</td>
+                        <td className="p-3 font-bold text-[#8B6F15]">{u.loyaltyPoints || 120} نقطة</td>
                       </tr>
                     ))}
                   </tbody>
@@ -2525,15 +2525,15 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
         {adminTab === 'settings' && (
           <div className="space-y-6">
             {/* 1. Home Promo Buttons Live Manager (الفلاش سيل والشحن المجاني) */}
-            <div className="p-6 rounded-3xl bg-neutral-900 border border-neutral-800 space-y-6 shadow-xl">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-neutral-800 pb-4">
+            <div className="p-6 rounded-3xl bg-white border border-[#E5DFD7] space-y-6 shadow-sm">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#E5DFD7] pb-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-2xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-400">
+                  <div className="w-10 h-10 rounded-2xl bg-[#D4AF37]/15 border border-[#D4AF37]/40 flex items-center justify-center text-[#8B6F15]">
                     <Sliders className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="text-base font-black text-white">إدارة زري العروض والشحن في الصفحة الرئيسية</h3>
-                    <p className="text-xs text-neutral-400">تحكم كامل بالنصوص، الروابط، الأيقونات، وحالة التفعيل/التعطيل مع الحفظ المباشر في Firestore</p>
+                    <h3 className="text-base font-black text-[#1A1A1A]">إدارة زري العروض والشحن في الصفحة الرئيسية</h3>
+                    <p className="text-xs text-[#6B6B6B]">تحكم كامل بالنصوص، الروابط، الأيقونات، وحالة التفعيل/التعطيل مع الحفظ المباشر في Firestore</p>
                   </div>
                 </div>
 
@@ -2541,7 +2541,7 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                   type="button"
                   onClick={handleSavePromoButtons}
                   disabled={isSavingPromoButtons}
-                  className="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-neutral-950 font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20 cursor-pointer transition-all active:scale-95"
+                  className="px-5 py-2 rounded-xl bg-[#8B2635] hover:bg-[#721D2A] text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-sm cursor-pointer transition-all active:scale-95"
                 >
                   {isSavingPromoButtons ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                   <span>حفظ إعدادات الأزرار</span>
@@ -2549,8 +2549,8 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
               </div>
 
               {promoButtonsSaveSuccess && (
-                <div className="p-3 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold flex items-center gap-2 animate-fadeIn">
-                  <CheckCircle className="w-4 h-4 text-emerald-400" />
+                <div className="p-3 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold flex items-center gap-2 animate-fadeIn">
+                  <CheckCircle className="w-4 h-4 text-emerald-600" />
                   <span>تم حفظ وتحديث إعدادات الأزرار في Firestore بنجاح! ستظهر فوراً للمستخدمين.</span>
                 </div>
               )}
@@ -2561,17 +2561,17 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                     key={btn.id}
                     className={`p-5 rounded-2xl border transition-all ${
                       btn.enabled
-                        ? 'bg-neutral-950/90 border-neutral-700/80 shadow-md'
-                        : 'bg-neutral-950/40 border-neutral-850 opacity-75'
+                        ? 'bg-[#FAF9F7] border-[#E5DFD7] shadow-sm'
+                        : 'bg-[#FAF9F7]/60 border-[#E5DFD7] opacity-75'
                     }`}
                   >
                     {/* Header with Enable Switch */}
-                    <div className="flex items-center justify-between border-b border-neutral-800 pb-3 mb-4">
+                    <div className="flex items-center justify-between border-b border-[#E5DFD7] pb-3 mb-4">
                       <div className="flex items-center gap-2">
-                        <span className="w-6 h-6 rounded-full bg-neutral-800 text-amber-400 text-xs font-black flex items-center justify-center">
+                        <span className="w-6 h-6 rounded-full bg-[#F4F1EA] border border-[#E5DFD7] text-[#8B6F15] text-xs font-black flex items-center justify-center">
                           {index + 1}
                         </span>
-                        <h4 className="text-sm font-black text-white">
+                        <h4 className="text-sm font-black text-[#1A1A1A]">
                           {index === 0 ? 'الزر الأول: الفلاش سيل / التخفيضات' : 'الزر الثاني: الشحن المجاني'}
                         </h4>
                       </div>
@@ -2587,8 +2587,8 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                           }}
                           className="sr-only peer"
                         />
-                        <div className="w-11 h-6 bg-neutral-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-neutral-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
-                        <span className="mr-2 text-xs font-bold text-neutral-300">
+                        <div className="w-11 h-6 bg-[#E5DFD7] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-[#E5DFD7] after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#8B2635]"></div>
+                        <span className="mr-2 text-xs font-bold text-[#1A1A1A]">
                           {btn.enabled ? 'مفعل ويظهر' : 'معطل ومخفي'}
                         </span>
                       </label>
@@ -2598,7 +2598,7 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                       {/* Arabic / English Titles */}
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
-                          <label className="block text-neutral-400 font-bold mb-1">العنوان الرئيسي (عربي)</label>
+                          <label className="block text-[#6B6B6B] font-bold mb-1">العنوان الرئيسي (عربي)</label>
                           <input
                             type="text"
                             value={btn.titleAr}
@@ -2607,11 +2607,11 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                               updated[index].titleAr = e.target.value;
                               setPromoButtonsState(updated);
                             }}
-                            className="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-500 font-bold"
+                            className="w-full bg-white border border-[#E5DFD7] rounded-xl px-3 py-2 text-[#1A1A1A] focus:outline-none focus:border-[#8B2635] font-bold"
                           />
                         </div>
                         <div>
-                          <label className="block text-neutral-400 font-bold mb-1">العنوان الرئيسي (English)</label>
+                          <label className="block text-[#6B6B6B] font-bold mb-1">العنوان الرئيسي (English)</label>
                           <input
                             type="text"
                             value={btn.titleEn || ''}
@@ -2620,7 +2620,7 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                               updated[index].titleEn = e.target.value;
                               setPromoButtonsState(updated);
                             }}
-                            className="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-500 font-bold"
+                            className="w-full bg-white border border-[#E5DFD7] rounded-xl px-3 py-2 text-[#1A1A1A] focus:outline-none focus:border-[#8B2635] font-bold"
                           />
                         </div>
                       </div>
@@ -2628,7 +2628,7 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                       {/* Arabic / English Subtitles */}
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
-                          <label className="block text-neutral-400 font-bold mb-1">النص الفرعي (عربي)</label>
+                          <label className="block text-[#6B6B6B] font-bold mb-1">النص الفرعي (عربي)</label>
                           <input
                             type="text"
                             value={btn.subtitleAr}
@@ -2637,11 +2637,11 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                               updated[index].subtitleAr = e.target.value;
                               setPromoButtonsState(updated);
                             }}
-                            className="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-3 py-2 text-neutral-300 focus:outline-none focus:border-amber-500"
+                            className="w-full bg-white border border-[#E5DFD7] rounded-xl px-3 py-2 text-[#1A1A1A] focus:outline-none focus:border-[#8B2635]"
                           />
                         </div>
                         <div>
-                          <label className="block text-neutral-400 font-bold mb-1">النص الفرعي (English)</label>
+                          <label className="block text-[#6B6B6B] font-bold mb-1">النص الفرعي (English)</label>
                           <input
                             type="text"
                             value={btn.subtitleEn || ''}
@@ -2650,7 +2650,7 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                               updated[index].subtitleEn = e.target.value;
                               setPromoButtonsState(updated);
                             }}
-                            className="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-3 py-2 text-neutral-300 focus:outline-none focus:border-amber-500"
+                            className="w-full bg-white border border-[#E5DFD7] rounded-xl px-3 py-2 text-[#1A1A1A] focus:outline-none focus:border-[#8B2635]"
                           />
                         </div>
                       </div>
@@ -2658,7 +2658,7 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                       {/* Link Type & Target */}
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
-                          <label className="block text-neutral-400 font-bold mb-1">نوع الرابط أو الوجهة</label>
+                          <label className="block text-[#6B6B6B] font-bold mb-1">نوع الرابط أو الوجهة</label>
                           <select
                             value={btn.linkType}
                             onChange={(e) => {
@@ -2666,7 +2666,7 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                               updated[index].linkType = e.target.value as any;
                               setPromoButtonsState(updated);
                             }}
-                            className="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-500 cursor-pointer"
+                            className="w-full bg-white border border-[#E5DFD7] rounded-xl px-3 py-2 text-[#1A1A1A] focus:outline-none focus:border-[#8B2635] cursor-pointer"
                           >
                             <option value="category">قسم معين (Category)</option>
                             <option value="cart">حقيبة التسوق (Cart)</option>
@@ -2676,7 +2676,7 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                         </div>
 
                         <div>
-                          <label className="block text-neutral-400 font-bold mb-1">
+                          <label className="block text-[#6B6B6B] font-bold mb-1">
                             {btn.linkType === 'category' ? 'اختر القسم' : 'الرابط أو المعرف'}
                           </label>
                           {btn.linkType === 'category' ? (
@@ -2687,7 +2687,7 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                                 updated[index].linkTarget = e.target.value;
                                 setPromoButtonsState(updated);
                               }}
-                              className="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-500 cursor-pointer"
+                              className="w-full bg-white border border-[#E5DFD7] rounded-xl px-3 py-2 text-[#1A1A1A] focus:outline-none focus:border-[#8B2635] cursor-pointer"
                             >
                               <option value="women">نساء</option>
                               <option value="boys">ولادي</option>
@@ -2706,7 +2706,7 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                                 setPromoButtonsState(updated);
                               }}
                               placeholder={btn.linkType === 'external' ? 'https://...' : 'cart أو categories'}
-                              className="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-500 font-mono text-xs"
+                              className="w-full bg-white border border-[#E5DFD7] rounded-xl px-3 py-2 text-[#1A1A1A] focus:outline-none focus:border-[#8B2635] font-mono text-xs"
                             />
                           )}
                         </div>
@@ -2715,7 +2715,7 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                       {/* Icon Selection */}
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
                         <div>
-                          <label className="block text-neutral-400 font-bold mb-1">الأيقونة</label>
+                          <label className="block text-[#6B6B6B] font-bold mb-1">الأيقونة</label>
                           <select
                             value={btn.icon}
                             onChange={(e) => {
@@ -2723,7 +2723,7 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                               updated[index].icon = e.target.value as any;
                               setPromoButtonsState(updated);
                             }}
-                            className="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-500 cursor-pointer"
+                            className="w-full bg-white border border-[#E5DFD7] rounded-xl px-3 py-2 text-[#1A1A1A] focus:outline-none focus:border-[#8B2635] cursor-pointer"
                           >
                             <option value="flame">🔥 لهب (Flame)</option>
                             <option value="truck">🚚 شاحنة (Truck)</option>
@@ -2736,7 +2736,7 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                         </div>
 
                         <div>
-                          <label className="block text-neutral-400 font-bold mb-1">الحجم</label>
+                          <label className="block text-[#6B6B6B] font-bold mb-1">الحجم</label>
                           <select
                             value={btn.size}
                             onChange={(e) => {
@@ -2744,7 +2744,7 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                               updated[index].size = e.target.value as any;
                               setPromoButtonsState(updated);
                             }}
-                            className="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-500 cursor-pointer"
+                            className="w-full bg-white border border-[#E5DFD7] rounded-xl px-3 py-2 text-[#1A1A1A] focus:outline-none focus:border-[#8B2635] cursor-pointer"
                           >
                             <option value="sm">صغير ومدمج (Compact - موصى به)</option>
                             <option value="md">متوسط (Medium)</option>
@@ -2753,7 +2753,7 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                         </div>
 
                         <div>
-                          <label className="block text-neutral-400 font-bold mb-1">لون التمييز</label>
+                          <label className="block text-[#6B6B6B] font-bold mb-1">لون التمييز</label>
                           <select
                             value={btn.color}
                             onChange={(e) => {
@@ -2761,7 +2761,7 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                               updated[index].color = e.target.value as any;
                               setPromoButtonsState(updated);
                             }}
-                            className="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-500 cursor-pointer"
+                            className="w-full bg-white border border-[#E5DFD7] rounded-xl px-3 py-2 text-[#1A1A1A] focus:outline-none focus:border-[#8B2635] cursor-pointer"
                           >
                             <option value="purple">بنفسجي ملكي (Royal Purple)</option>
                             <option value="emerald">زمردي مبهج (Emerald Green)</option>
@@ -2779,35 +2779,35 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
             {/* 2. Broadcast Notifications & Logistics */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Broadcast Push Notifications */}
-              <div className="p-6 rounded-3xl bg-neutral-900 border border-neutral-800 space-y-4 shadow-xl">
-                <div className="flex items-center gap-2 text-amber-400">
+              <div className="p-6 rounded-3xl bg-white border border-[#E5DFD7] space-y-4 shadow-sm">
+                <div className="flex items-center gap-2 text-[#8B2635]">
                   <Send className="w-5 h-5" />
-                  <h3 className="text-base font-black text-white">إرسال إشعار ترويجي فوري للعملاء</h3>
+                  <h3 className="text-base font-black text-[#1A1A1A]">إرسال إشعار ترويجي فوري للعملاء</h3>
                 </div>
-                <p className="text-xs text-neutral-400">
+                <p className="text-xs text-[#6B6B6B]">
                   يصل هذا الإشعار مباشرة إلى جميع مستخدمي التطبيق في شريط الإشعارات وقسم التنبيهات.
                 </p>
 
                 <div className="space-y-3 pt-2">
                   <div>
-                    <label className="block text-xs font-bold text-neutral-300 mb-1">عنوان الإشعار</label>
+                    <label className="block text-xs font-bold text-[#1A1A1A] mb-1">عنوان الإشعار</label>
                     <input
                       type="text"
                       placeholder="مثال: خصم 30% على تشكيلة الصيف الجديدة! 🔥"
                       value={broadcastTitle}
                       onChange={(e) => setBroadcastTitle(e.target.value)}
-                      className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500"
+                      className="w-full bg-[#FAF9F7] border border-[#E5DFD7] rounded-xl px-3 py-2 text-xs text-[#1A1A1A] focus:outline-none focus:border-[#8B2635]"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-neutral-300 mb-1">نص الرسالة</label>
+                    <label className="block text-xs font-bold text-[#1A1A1A] mb-1">نص الرسالة</label>
                     <textarea
                       rows={3}
                       placeholder="اكتب تفاصيل العرض أو التنبيه..."
                       value={broadcastBody}
                       onChange={(e) => setBroadcastBody(e.target.value)}
-                      className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500"
+                      className="w-full bg-[#FAF9F7] border border-[#E5DFD7] rounded-xl px-3 py-2 text-xs text-[#1A1A1A] focus:outline-none focus:border-[#8B2635]"
                     />
                   </div>
 
@@ -2820,14 +2820,14 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                       setBroadcastBody('');
                       setTimeout(() => setBroadcastSuccess(false), 3000);
                     }}
-                    className="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-neutral-950 font-black text-xs flex items-center justify-center gap-2 transition-all cursor-pointer"
+                    className="w-full py-2.5 rounded-xl bg-[#8B2635] hover:bg-[#721D2A] text-white font-black text-xs flex items-center justify-center gap-2 transition-all cursor-pointer"
                   >
                     <Send className="w-4 h-4" />
                     <span>بث الإشعار الآن</span>
                   </button>
 
                   {broadcastSuccess && (
-                    <div className="p-3 rounded-xl bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-xs font-bold flex items-center gap-2">
+                    <div className="p-3 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold flex items-center gap-2">
                       <CheckCircle className="w-4 h-4" />
                       <span>تم بث الإشعار لجميع العملاء بنجاح!</span>
                     </div>
@@ -2836,12 +2836,12 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
               </div>
 
               {/* Delivery Fees & Payment Methods Information */}
-              <div className="p-6 rounded-3xl bg-neutral-900 border border-neutral-800 space-y-4 shadow-xl">
-                <div className="flex items-center gap-2 text-amber-400">
+              <div className="p-6 rounded-3xl bg-white border border-[#E5DFD7] space-y-4 shadow-sm">
+                <div className="flex items-center gap-2 text-[#8B6F15]">
                   <Truck className="w-5 h-5" />
-                  <h3 className="text-base font-black text-white">رسوم التوصيل والمحافظ المعتمدة</h3>
+                  <h3 className="text-base font-black text-[#1A1A1A]">رسوم التوصيل والمحافظ المعتمدة</h3>
                 </div>
-                <p className="text-xs text-neutral-400">
+                <p className="text-xs text-[#6B6B6B]">
                   إعدادات التوصيل الفوري وتغطية المحافظات اليمنية وبوابات الدفع الإلكتروني
                 </p>
 
@@ -2853,18 +2853,18 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                     { city: 'محافظة إب والحديدة', fee: '2,500 ر.ي' },
                     { city: 'حضرموت ومأرب', fee: '3,500 ر.ي' },
                   ].map((item, idx) => (
-                    <div key={idx} className="p-2.5 rounded-xl bg-neutral-950 border border-neutral-800 flex items-center justify-between text-xs">
-                      <span className="font-bold text-white">{item.city}</span>
-                      <span className="text-neutral-400 text-[11px]">{item.fee}</span>
+                    <div key={idx} className="p-2.5 rounded-xl bg-[#FAF9F7] border border-[#E5DFD7] flex items-center justify-between text-xs">
+                      <span className="font-bold text-[#1A1A1A]">{item.city}</span>
+                      <span className="text-[#6B6B6B] text-[11px]">{item.fee}</span>
                     </div>
                   ))}
                 </div>
 
-                <div className="pt-3 border-t border-neutral-800">
-                  <h4 className="text-xs font-bold text-neutral-300 mb-2">المحافظ الإلكترونية النشطة:</h4>
+                <div className="pt-3 border-t border-[#E5DFD7]">
+                  <h4 className="text-xs font-bold text-[#1A1A1A] mb-2">المحافظ الإلكترونية النشطة:</h4>
                   <div className="flex flex-wrap gap-2">
                     {['الكريمي جوال', 'النجم للحوالات', 'محفظة فلوسك', 'جيب (Jeeb)', 'ون كاش (OneCash)', 'الدفع عند الاستلام'].map((w) => (
-                      <span key={w} className="px-2.5 py-1 rounded-lg bg-neutral-950 border border-neutral-800 text-[10px] font-bold text-neutral-300">
+                      <span key={w} className="px-2.5 py-1 rounded-lg bg-[#FAF9F7] border border-[#E5DFD7] text-[10px] font-bold text-[#1A1A1A]">
                         {w}
                       </span>
                     ))}
@@ -3005,51 +3005,51 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
           ORDER DETAILS MODAL
          ========================================================================= */}
       {selectedOrderDetails && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md overflow-y-auto">
-          <div className="bg-neutral-900 border border-neutral-800 rounded-3xl max-w-lg w-full p-6 space-y-4 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-neutral-800 pb-3">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#1A1A1A]/50 backdrop-blur-md overflow-y-auto">
+          <div className="bg-white border border-[#E5DFD7] rounded-3xl max-w-lg w-full p-6 space-y-4 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-[#E5DFD7] pb-3">
               <div>
-                <h3 className="font-black text-white text-base">فاتورة الطلب {selectedOrderDetails.orderNumber || selectedOrderDetails.id}</h3>
-                <p className="text-xs text-neutral-400">{new Date(selectedOrderDetails.createdAt).toLocaleString('ar-YE')}</p>
+                <h3 className="font-black text-[#1A1A1A] text-base">فاتورة الطلب {selectedOrderDetails.orderNumber || selectedOrderDetails.id}</h3>
+                <p className="text-xs text-[#6B6B6B]">{new Date(selectedOrderDetails.createdAt).toLocaleString('ar-YE')}</p>
               </div>
               <button
                 onClick={() => setSelectedOrderDetails(null)}
-                className="p-1.5 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-400 hover:text-white"
+                className="p-1.5 rounded-xl bg-[#F4F1EA] hover:bg-[#E5DFD7] text-[#6B6B6B] hover:text-[#1A1A1A]"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             <div className="space-y-3 text-xs">
-              <div className="p-3 rounded-2xl bg-neutral-950 border border-neutral-800 space-y-1">
-                <div className="font-bold text-white">معلومات العميل والشحن:</div>
-                <div className="text-neutral-400">الاسم: <span className="text-white font-bold">{selectedOrderDetails.shippingAddress?.fullName}</span></div>
-                <div className="text-neutral-400">الهاتف: <span className="text-white font-mono">{selectedOrderDetails.shippingAddress?.phone}</span></div>
-                <div className="text-neutral-400">العنوان: <span className="text-white">{selectedOrderDetails.shippingAddress?.city} - {selectedOrderDetails.shippingAddress?.streetAddress}</span></div>
+              <div className="p-3 rounded-2xl bg-[#FAF9F7] border border-[#E5DFD7] space-y-1">
+                <div className="font-bold text-[#1A1A1A]">معلومات العميل والشحن:</div>
+                <div className="text-[#6B6B6B]">الاسم: <span className="text-[#1A1A1A] font-bold">{selectedOrderDetails.shippingAddress?.fullName}</span></div>
+                <div className="text-[#6B6B6B]">الهاتف: <span className="text-[#1A1A1A] font-mono">{selectedOrderDetails.shippingAddress?.phone}</span></div>
+                <div className="text-[#6B6B6B]">العنوان: <span className="text-[#1A1A1A]">{selectedOrderDetails.shippingAddress?.city} - {selectedOrderDetails.shippingAddress?.streetAddress}</span></div>
               </div>
 
               <div className="space-y-2">
-                <div className="font-bold text-white">المنتجات المطلوبة:</div>
+                <div className="font-bold text-[#1A1A1A]">المنتجات المطلوبة:</div>
                 {selectedOrderDetails.items.map((item, idx) => (
-                  <div key={idx} className="flex items-center justify-between p-2 rounded-xl bg-neutral-950 border border-neutral-800">
+                  <div key={idx} className="flex items-center justify-between p-2 rounded-xl bg-[#FAF9F7] border border-[#E5DFD7]">
                     <div>
-                      <div className="font-bold text-white">{item.name}</div>
-                      <div className="text-[10px] text-neutral-500">الكمية: {item.quantity} {item.selectedSize ? `| المقاس: ${item.selectedSize}` : ''} {item.selectedColor ? `| اللون: ${item.selectedColor}` : ''}</div>
+                      <div className="font-bold text-[#1A1A1A]">{item.name}</div>
+                      <div className="text-[10px] text-[#6B6B6B]">الكمية: {item.quantity} {item.selectedSize ? `| المقاس: ${item.selectedSize}` : ''} {item.selectedColor ? `| اللون: ${item.selectedColor}` : ''}</div>
                     </div>
-                    <div className="font-bold text-amber-400">{formatPrice(item.priceYER * item.quantity)}</div>
+                    <div className="font-bold text-[#8B2635]">{formatPrice(item.priceYER * item.quantity)}</div>
                   </div>
                 ))}
               </div>
 
-              <div className="p-3 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-between font-black text-sm text-white">
+              <div className="p-3 rounded-2xl bg-[#D4AF37]/15 border border-[#D4AF37]/40 flex items-center justify-between font-black text-sm text-[#1A1A1A]">
                 <span>المبلغ الإجمالي النهائي:</span>
-                <span className="text-amber-400">{formatPrice(selectedOrderDetails.totalYER)}</span>
+                <span className="text-[#8B2635]">{formatPrice(selectedOrderDetails.totalYER)}</span>
               </div>
             </div>
 
             <button
               onClick={() => setSelectedOrderDetails(null)}
-              className="w-full py-2.5 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-white font-bold text-xs"
+              className="w-full py-2.5 rounded-xl bg-[#F4F1EA] hover:bg-[#E5DFD7] border border-[#E5DFD7] text-[#1A1A1A] font-bold text-xs"
             >
               إغلاق
             </button>
@@ -3061,20 +3061,20 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
           ADD / EDIT PRODUCT MODAL FORM
          ========================================================================= */}
       {isFormModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md overflow-y-auto">
-          <div className="bg-neutral-900 border border-neutral-800 rounded-3xl max-w-3xl w-full p-6 sm:p-8 space-y-6 shadow-2xl my-8 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between border-b border-neutral-800 pb-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#1A1A1A]/50 backdrop-blur-md overflow-y-auto">
+          <div className="bg-white border border-[#E5DFD7] rounded-3xl max-w-3xl w-full p-6 sm:p-8 space-y-6 shadow-2xl my-8 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-[#E5DFD7] pb-4">
               <div>
-                <h3 className="text-lg sm:text-xl font-black text-white">
+                <h3 className="text-lg sm:text-xl font-black text-[#1A1A1A]">
                   {editingProductId ? 'تعديل بيانات المنتج' : 'إضافة منتج جديد'}
                 </h3>
-                <p className="text-xs text-neutral-400 mt-0.5">
+                <p className="text-xs text-[#6B6B6B] mt-0.5">
                   يتم حفظ المنتج مباشرة في Cloud Firestore بدون الحاجة لتعديل الكود
                 </p>
               </div>
               <button
                 onClick={() => setIsFormModalOpen(false)}
-                className="p-2 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-400 hover:text-white"
+                className="p-2 rounded-xl bg-[#F4F1EA] hover:bg-[#E5DFD7] text-[#6B6B6B] hover:text-[#1A1A1A]"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -3084,8 +3084,8 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
               {/* Product Basic Names */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-neutral-300 mb-1.5">
-                    اسم المنتج بالعربية <span className="text-rose-500">*</span>
+                  <label className="block text-xs font-bold text-[#1A1A1A] mb-1.5">
+                    اسم المنتج بالعربية <span className="text-rose-600">*</span>
                   </label>
                   <input
                     type="text"
@@ -3093,11 +3093,11 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                     placeholder="مثال: فستان سهرة ملكي مطرز باليد"
                     value={arabicName}
                     onChange={(e) => setArabicName(e.target.value)}
-                    className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-amber-500"
+                    className="w-full bg-[#FAF9F7] border border-[#E5DFD7] rounded-xl px-3.5 py-2.5 text-sm text-[#1A1A1A] focus:outline-none focus:border-[#8B2635]"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-neutral-300 mb-1.5">
+                  <label className="block text-xs font-bold text-[#1A1A1A] mb-1.5">
                     الاسم بالإنجليزية (اختياري)
                   </label>
                   <input
@@ -3105,14 +3105,14 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                     placeholder="مثال: Royal Embroidered Evening Gown"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-amber-500"
+                    className="w-full bg-[#FAF9F7] border border-[#E5DFD7] rounded-xl px-3.5 py-2.5 text-sm text-[#1A1A1A] focus:outline-none focus:border-[#8B2635]"
                   />
                 </div>
               </div>
 
               {/* Description */}
               <div>
-                <label className="block text-xs font-bold text-neutral-300 mb-1.5">
+                <label className="block text-xs font-bold text-[#1A1A1A] mb-1.5">
                   وصف المنتج ومميزاته
                 </label>
                 <textarea
@@ -3120,15 +3120,15 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                   placeholder="اكتب وصفًا جذابًا يوضح خامة المنتج وتفاصيل تصميمه..."
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-amber-500"
+                  className="w-full bg-[#FAF9F7] border border-[#E5DFD7] rounded-xl px-3.5 py-2.5 text-sm text-[#1A1A1A] focus:outline-none focus:border-[#8B2635]"
                 />
               </div>
 
               {/* Category & Subcategory Selection */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-neutral-300 mb-1.5">
-                    القسم الرئيسي <span className="text-rose-500">*</span>
+                  <label className="block text-xs font-bold text-[#1A1A1A] mb-1.5">
+                    القسم الرئيسي <span className="text-rose-600">*</span>
                   </label>
                   <select
                     value={category}
@@ -3138,7 +3138,7 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                       const subList = categories.find((c) => c.id === newCat)?.subcategories || [];
                       if (subList.length > 0) setSubcategory(subList[0]);
                     }}
-                    className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-amber-500"
+                    className="w-full bg-[#FAF9F7] border border-[#E5DFD7] rounded-xl px-3.5 py-2.5 text-sm text-[#1A1A1A] focus:outline-none focus:border-[#8B2635]"
                   >
                     {categories.map((c) => (
                       <option key={c.id} value={c.id}>
@@ -3149,14 +3149,14 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-neutral-300 mb-1.5">
-                    القسم الفرعي <span className="text-rose-500">*</span>
+                  <label className="block text-xs font-bold text-[#1A1A1A] mb-1.5">
+                    القسم الفرعي <span className="text-rose-600">*</span>
                   </label>
                   <div className="space-y-2">
                     <select
                       value={subcategory}
                       onChange={(e) => setSubcategory(e.target.value)}
-                      className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-amber-500"
+                      className="w-full bg-[#FAF9F7] border border-[#E5DFD7] rounded-xl px-3.5 py-2.5 text-sm text-[#1A1A1A] focus:outline-none focus:border-[#8B2635]"
                     >
                       {categories
                         .find((c) => c.id === category)
@@ -3172,25 +3172,25 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                       placeholder="أو اكتب قسمًا فرعيًا مخصصًا جديدًا..."
                       value={customSubcategory}
                       onChange={(e) => setCustomSubcategory(e.target.value)}
-                      className="w-full bg-neutral-950/80 border border-neutral-800 rounded-xl px-3.5 py-2 text-xs text-neutral-300 focus:outline-none focus:border-amber-500"
+                      className="w-full bg-[#FAF9F7] border border-[#E5DFD7] rounded-xl px-3.5 py-2 text-xs text-[#1A1A1A] focus:outline-none focus:border-[#8B2635]"
                     />
                   </div>
                 </div>
               </div>
 
               {/* Standalone Brand Selector (Independent of Categories) */}
-              <div className="p-4 rounded-2xl bg-neutral-950/60 border border-neutral-800 space-y-1.5">
-                <label className="block text-xs font-bold text-neutral-300 flex items-center justify-between">
+              <div className="p-4 rounded-2xl bg-[#FAF9F7] border border-[#E5DFD7] space-y-1.5">
+                <label className="block text-xs font-bold text-[#1A1A1A] flex items-center justify-between">
                   <span className="flex items-center gap-1.5">
-                    <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                    <Sparkles className="w-3.5 h-3.5 text-[#8B6F15]" />
                     <span>البراند / الماركة (مستقل تماماً عن الأقسام)</span>
                   </span>
-                  <span className="text-[11px] text-amber-400/90 font-medium">اختياري</span>
+                  <span className="text-[11px] text-[#8B6F15] font-medium">اختياري</span>
                 </label>
                 <select
                   value={productBrandId}
                   onChange={(e) => setProductBrandId(e.target.value)}
-                  className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-amber-500"
+                  className="w-full bg-white border border-[#E5DFD7] rounded-xl px-3.5 py-2.5 text-sm text-[#1A1A1A] focus:outline-none focus:border-[#8B2635]"
                 >
                   <option value="">بدون براند (منتج عام غير تابع لبراند محدد)</option>
                   {brands.map((b) => (
@@ -3199,16 +3199,16 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                     </option>
                   ))}
                 </select>
-                <p className="text-[11px] text-neutral-400">
+                <p className="text-[11px] text-[#6B6B6B]">
                   يمكن ربط أي منتج بأي براند مع الحفاظ على استقلالية البراندات عن الأقسام الرئيسية.
                 </p>
               </div>
 
               {/* Price, Discount, Stock */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 rounded-2xl bg-neutral-950/60 border border-neutral-800">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 rounded-2xl bg-[#FAF9F7] border border-[#E5DFD7]">
                 <div>
-                  <label className="block text-xs font-bold text-neutral-300 mb-1.5">
-                    سعر البيع (ريال يمني شمال) <span className="text-rose-500">*</span>
+                  <label className="block text-xs font-bold text-[#1A1A1A] mb-1.5">
+                    سعر البيع (ريال يمني شمال) <span className="text-rose-600">*</span>
                   </label>
                   <input
                     type="number"
@@ -3216,15 +3216,15 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                     min={1}
                     value={priceYER}
                     onChange={(e) => setPriceYER(Number(e.target.value))}
-                    className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3.5 py-2.5 text-sm font-bold text-amber-400 focus:outline-none focus:border-amber-500"
+                    className="w-full bg-white border border-[#E5DFD7] rounded-xl px-3.5 py-2.5 text-sm font-bold text-[#8B2635] focus:outline-none focus:border-[#8B2635]"
                   />
-                  <span className="text-[10px] text-neutral-400 mt-1 block">
+                  <span className="text-[10px] text-[#6B6B6B] mt-1 block">
                     يتم تحويله تلقائيًا لليمني الجنوبي والدولار والريال السعودي
                   </span>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-neutral-300 mb-1.5">
+                  <label className="block text-xs font-bold text-[#1A1A1A] mb-1.5">
                     السعر قبل الخصم (اختياري)
                   </label>
                   <input
@@ -3232,18 +3232,18 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                     min={priceYER}
                     value={originalPriceYER}
                     onChange={(e) => setOriginalPriceYER(Number(e.target.value))}
-                    className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3.5 py-2.5 text-sm text-neutral-300 focus:outline-none focus:border-amber-500"
+                    className="w-full bg-white border border-[#E5DFD7] rounded-xl px-3.5 py-2.5 text-sm text-[#1A1A1A] focus:outline-none focus:border-[#8B2635]"
                   />
                   {originalPriceYER > priceYER && (
-                    <span className="text-[10px] text-emerald-400 font-bold mt-1 block">
+                    <span className="text-[10px] text-emerald-700 font-bold mt-1 block">
                       خصم {Math.round(((originalPriceYER - priceYER) / originalPriceYER) * 100)}%
                     </span>
                   )}
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-neutral-300 mb-1.5">
-                    الكمية / المخزون <span className="text-rose-500">*</span>
+                  <label className="block text-xs font-bold text-[#1A1A1A] mb-1.5">
+                    الكمية / المخزون <span className="text-rose-600">*</span>
                   </label>
                   <input
                     type="number"
@@ -3251,9 +3251,9 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                     min={0}
                     value={stock}
                     onChange={(e) => setStock(Number(e.target.value))}
-                    className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3.5 py-2.5 text-sm font-bold text-white focus:outline-none focus:border-amber-500"
+                    className="w-full bg-white border border-[#E5DFD7] rounded-xl px-3.5 py-2.5 text-sm font-bold text-[#1A1A1A] focus:outline-none focus:border-[#8B2635]"
                   />
-                  <span className="text-[10px] text-neutral-400 mt-1 block">
+                  <span className="text-[10px] text-[#6B6B6B] mt-1 block">
                     {stock > 0 ? 'متوفر بالمستودع' : 'نفد من المخزون'}
                   </span>
                 </div>
@@ -3261,8 +3261,8 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
 
               {/* Product Images (Upload + URL) */}
               <div className="space-y-3">
-                <label className="block text-xs font-bold text-neutral-300">
-                  صور المنتج (رفع من الجهاز أو إدخال روابط) <span className="text-rose-500">*</span>
+                <label className="block text-xs font-bold text-[#1A1A1A]">
+                  صور المنتج (رفع من الجهاز أو إدخال روابط) <span className="text-rose-600">*</span>
                 </label>
 
                 {/* Upload Button + URL Input */}
@@ -3279,12 +3279,12 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
                     disabled={isUploadingImage}
-                    className="px-4 py-2.5 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-white font-bold text-xs flex items-center justify-center gap-2 border border-neutral-700 transition-all cursor-pointer flex-shrink-0"
+                    className="px-4 py-2.5 rounded-xl bg-[#F4F1EA] hover:bg-[#E5DFD7] text-[#1A1A1A] font-bold text-xs flex items-center justify-center gap-2 border border-[#E5DFD7] transition-all cursor-pointer flex-shrink-0"
                   >
                     {isUploadingImage ? (
-                      <RefreshCw className="w-4 h-4 animate-spin text-amber-400" />
+                      <RefreshCw className="w-4 h-4 animate-spin text-[#8B6F15]" />
                     ) : (
-                      <Upload className="w-4 h-4 text-amber-400" />
+                      <Upload className="w-4 h-4 text-[#8B6F15]" />
                     )}
                     <span>{isUploadingImage ? 'جاري التحسين والرفع...' : 'رفع صور من جهازك'}</span>
                   </button>
@@ -3295,12 +3295,12 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                       placeholder="أو الصق رابط صورة مباشرة..."
                       value={newImageUrl}
                       onChange={(e) => setNewImageUrl(e.target.value)}
-                      className="flex-1 bg-neutral-950 border border-neutral-800 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-amber-500"
+                      className="flex-1 bg-[#FAF9F7] border border-[#E5DFD7] rounded-xl px-3.5 py-2 text-xs text-[#1A1A1A] focus:outline-none focus:border-[#8B2635]"
                     />
                     <button
                       type="button"
                       onClick={handleAddImageUrl}
-                      className="px-4 py-2 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-white font-bold text-xs"
+                      className="px-4 py-2 rounded-xl bg-[#F4F1EA] hover:bg-[#E5DFD7] border border-[#E5DFD7] text-[#1A1A1A] font-bold text-xs"
                     >
                       إضافة
                     </button>
@@ -3312,7 +3312,7 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                   {images.map((imgUrl, idx) => (
                     <div
                       key={idx}
-                      className="relative w-20 h-24 rounded-xl overflow-hidden bg-neutral-950 border border-neutral-700 group"
+                      className="relative w-20 h-24 rounded-xl overflow-hidden bg-[#FAF9F7] border border-[#E5DFD7] group"
                     >
                       <img
                         src={imgUrl}
@@ -3321,14 +3321,14 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                         referrerPolicy="no-referrer"
                       />
                       {idx === 0 && (
-                        <span className="absolute bottom-1 right-1 px-1.5 py-0.5 rounded bg-amber-500 text-neutral-950 text-[9px] font-black">
+                        <span className="absolute bottom-1 right-1 px-1.5 py-0.5 rounded bg-[#8B2635] text-white text-[9px] font-black">
                           الرئيسية
                         </span>
                       )}
                       <button
                         type="button"
                         onClick={() => handleRemoveImage(idx)}
-                        className="absolute top-1 left-1 p-1 rounded-full bg-rose-600/80 text-white hover:bg-rose-600 opacity-0 group-hover:opacity-100 transition-opacity"
+                        className="absolute top-1 left-1 p-1 rounded-full bg-rose-600/90 text-white hover:bg-rose-600 opacity-0 group-hover:opacity-100 transition-opacity"
                         title="حذف الصورة"
                       >
                         <X className="w-3 h-3" />
@@ -3340,7 +3340,7 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
 
               {/* Sizes Selection */}
               <div className="space-y-2">
-                <label className="block text-xs font-bold text-neutral-300">
+                <label className="block text-xs font-bold text-[#1A1A1A]">
                   المقاسات المتوفرة
                 </label>
                 <div className="flex flex-wrap gap-2">
@@ -3351,8 +3351,8 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                       onClick={() => handleToggleSize(sz)}
                       className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
                         selectedSizes.includes(sz)
-                          ? 'bg-amber-500 text-neutral-950 font-black'
-                          : 'bg-neutral-950 text-neutral-400 border border-neutral-800 hover:border-neutral-700'
+                          ? 'bg-[#8B2635] text-white font-black'
+                          : 'bg-[#FAF9F7] text-[#6B6B6B] border border-[#E5DFD7] hover:border-[#D4AF37]'
                       }`}
                     >
                       {sz}
@@ -3365,12 +3365,12 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                     placeholder="مقاس مخصص..."
                     value={customSizeInput}
                     onChange={(e) => setCustomSizeInput(e.target.value)}
-                    className="flex-1 bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-1.5 text-xs text-white"
+                    className="flex-1 bg-[#FAF9F7] border border-[#E5DFD7] rounded-xl px-3 py-1.5 text-xs text-[#1A1A1A]"
                   />
                   <button
                     type="button"
                     onClick={handleAddCustomSize}
-                    className="px-3 py-1.5 rounded-xl bg-neutral-800 text-xs font-bold text-white hover:bg-neutral-700"
+                    className="px-3 py-1.5 rounded-xl bg-[#F4F1EA] border border-[#E5DFD7] text-xs font-bold text-[#1A1A1A] hover:bg-[#E5DFD7]"
                   >
                     إضافة
                   </button>
@@ -3379,7 +3379,7 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
 
               {/* Colors Selection */}
               <div className="space-y-2">
-                <label className="block text-xs font-bold text-neutral-300">
+                <label className="block text-xs font-bold text-[#1A1A1A]">
                   الألوان المتوفرة
                 </label>
                 <div className="flex flex-wrap gap-2">
@@ -3388,10 +3388,10 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                       key={col.name}
                       type="button"
                       onClick={() => handleAddColor(col)}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-neutral-950 border border-neutral-800 hover:border-neutral-700 text-xs text-white"
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#FAF9F7] border border-[#E5DFD7] hover:border-[#D4AF37] text-xs text-[#1A1A1A]"
                     >
                       <span
-                        className="w-3.5 h-3.5 rounded-full border border-neutral-700"
+                        className="w-3.5 h-3.5 rounded-full border border-[#E5DFD7]"
                         style={{ backgroundColor: col.hex }}
                       />
                       <span>{col.name}</span>
@@ -3404,17 +3404,17 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                   {selectedColors.map((col, idx) => (
                     <div
                       key={idx}
-                      className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-neutral-800 border border-neutral-700 text-xs text-white"
+                      className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#F4F1EA] border border-[#E5DFD7] text-xs text-[#1A1A1A]"
                     >
                       <span
-                        className="w-3.5 h-3.5 rounded-full border border-neutral-600"
+                        className="w-3.5 h-3.5 rounded-full border border-[#E5DFD7]"
                         style={{ backgroundColor: col.hex }}
                       />
                       <span className="font-bold">{col.name}</span>
                       <button
                         type="button"
                         onClick={() => handleRemoveColor(idx)}
-                        className="text-neutral-400 hover:text-rose-400"
+                        className="text-[#6B6B6B] hover:text-rose-600"
                       >
                         <X className="w-3 h-3" />
                       </button>
@@ -3424,65 +3424,65 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
               </div>
 
               {/* Showcase & Marketing Feature Flags */}
-              <div className="p-4 rounded-2xl bg-neutral-950 border border-neutral-800 space-y-3">
-                <h4 className="text-xs font-black text-white">خيارات العرض والترويج في الواجهة:</h4>
+              <div className="p-4 rounded-2xl bg-[#FAF9F7] border border-[#E5DFD7] space-y-3">
+                <h4 className="text-xs font-black text-[#1A1A1A]">خيارات العرض والترويج في الواجهة:</h4>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  <label className="flex items-center gap-2.5 p-3 rounded-xl bg-neutral-900 border border-neutral-800 cursor-pointer hover:border-amber-500/40">
+                  <label className="flex items-center gap-2.5 p-3 rounded-xl bg-white border border-[#E5DFD7] cursor-pointer hover:border-[#D4AF37]">
                     <input
                       type="checkbox"
                       checked={isBestSeller}
                       onChange={(e) => setIsBestSeller(e.target.checked)}
-                      className="w-4 h-4 rounded text-amber-500 focus:ring-0"
+                      className="w-4 h-4 rounded text-[#8B2635] focus:ring-0"
                     />
                     <div>
-                      <div className="text-xs font-bold text-white flex items-center gap-1">
-                        <Flame className="w-3.5 h-3.5 text-amber-400" />
+                      <div className="text-xs font-bold text-[#1A1A1A] flex items-center gap-1">
+                        <Flame className="w-3.5 h-3.5 text-[#8B6F15]" />
                         <span>الأكثر مبيعاً</span>
                       </div>
-                      <span className="text-[10px] text-neutral-400">يظهر في تبويب الأكثر طلباً</span>
+                      <span className="text-[10px] text-[#6B6B6B]">يظهر في تبويب الأكثر طلباً</span>
                     </div>
                   </label>
 
-                  <label className="flex items-center gap-2.5 p-3 rounded-xl bg-neutral-900 border border-neutral-800 cursor-pointer hover:border-blue-500/40">
+                  <label className="flex items-center gap-2.5 p-3 rounded-xl bg-white border border-[#E5DFD7] cursor-pointer hover:border-blue-300">
                     <input
                       type="checkbox"
                       checked={isNewArrival}
                       onChange={(e) => setIsNewArrival(e.target.checked)}
-                      className="w-4 h-4 rounded text-blue-500 focus:ring-0"
+                      className="w-4 h-4 rounded text-blue-600 focus:ring-0"
                     />
                     <div>
-                      <div className="text-xs font-bold text-white flex items-center gap-1">
-                        <Sparkles className="w-3.5 h-3.5 text-blue-400" />
+                      <div className="text-xs font-bold text-[#1A1A1A] flex items-center gap-1">
+                        <Sparkles className="w-3.5 h-3.5 text-blue-600" />
                         <span>وصل حديثاً</span>
                       </div>
-                      <span className="text-[10px] text-neutral-400">يظهر في قسم أحدث الإطلالات</span>
+                      <span className="text-[10px] text-[#6B6B6B]">يظهر في قسم أحدث الإطلالات</span>
                     </div>
                   </label>
 
-                  <label className="flex items-center gap-2.5 p-3 rounded-xl bg-neutral-900 border border-neutral-800 cursor-pointer hover:border-rose-500/40">
+                  <label className="flex items-center gap-2.5 p-3 rounded-xl bg-white border border-[#E5DFD7] cursor-pointer hover:border-rose-300">
                     <input
                       type="checkbox"
                       checked={isFlashDeal}
                       onChange={(e) => setIsFlashDeal(e.target.checked)}
-                      className="w-4 h-4 rounded text-rose-500 focus:ring-0"
+                      className="w-4 h-4 rounded text-rose-600 focus:ring-0"
                     />
                     <div>
-                      <div className="text-xs font-bold text-white flex items-center gap-1">
-                        <Tag className="w-3.5 h-3.5 text-rose-400" />
+                      <div className="text-xs font-bold text-[#1A1A1A] flex items-center gap-1">
+                        <Tag className="w-3.5 h-3.5 text-rose-600" />
                         <span>عروض وتخفيضات</span>
                       </div>
-                      <span className="text-[10px] text-neutral-400">يظهر في عروض ضَجّة مول</span>
+                      <span className="text-[10px] text-[#6B6B6B]">يظهر في عروض ضَجّة مول</span>
                     </div>
                   </label>
                 </div>
               </div>
 
               {/* Submit Buttons */}
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-neutral-800">
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#E5DFD7]">
                 <button
                   type="button"
                   onClick={() => setIsFormModalOpen(false)}
-                  className="px-5 py-2.5 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-300 font-bold text-xs sm:text-sm"
+                  className="px-5 py-2.5 rounded-xl bg-[#F4F1EA] hover:bg-[#E5DFD7] text-[#1A1A1A] font-bold text-xs sm:text-sm"
                 >
                   إلغاء
                 </button>
@@ -3490,7 +3490,7 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-6 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-neutral-950 font-black text-xs sm:text-sm flex items-center gap-2 shadow-lg shadow-amber-500/20"
+                  className="px-6 py-2.5 rounded-xl bg-[#8B2635] hover:bg-[#721D2A] text-white font-black text-xs sm:text-sm flex items-center gap-2 shadow-sm"
                 >
                   {isSubmitting ? (
                     <RefreshCw className="w-4 h-4 animate-spin" />
@@ -3509,15 +3509,15 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
           DELETE CONFIRMATION MODAL
          ========================================================================= */}
       {deleteConfirmProduct && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
-          <div className="bg-neutral-900 border border-neutral-800 rounded-3xl p-6 sm:p-8 max-w-md w-full text-center space-y-4 shadow-2xl">
-            <div className="w-16 h-16 rounded-2xl bg-rose-500/20 border border-rose-500/30 flex items-center justify-center mx-auto text-rose-400">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#1A1A1A]/50 backdrop-blur-md">
+          <div className="bg-white border border-[#E5DFD7] rounded-3xl p-6 sm:p-8 max-w-md w-full text-center space-y-4 shadow-2xl">
+            <div className="w-16 h-16 rounded-2xl bg-rose-50 border border-rose-200 flex items-center justify-center mx-auto text-rose-600">
               <Trash2 className="w-8 h-8" />
             </div>
-            <h3 className="text-xl font-black text-white">تأكيد حذف المنتج</h3>
-            <p className="text-sm text-neutral-400">
+            <h3 className="text-xl font-black text-[#1A1A1A]">تأكيد حذف المنتج</h3>
+            <p className="text-sm text-[#6B6B6B]">
               هل أنت متأكد من رغبتك في حذف المنتج:{' '}
-              <span className="font-bold text-white">
+              <span className="font-bold text-[#1A1A1A]">
                 {deleteConfirmProduct.arabicName || deleteConfirmProduct.name}
               </span>
               ؟ سيتم حذفه نهائيًا من قاعدة بيانات Firestore.
@@ -3525,13 +3525,13 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
             <div className="flex items-center gap-3 pt-2">
               <button
                 onClick={() => setDeleteConfirmProduct(null)}
-                className="flex-1 py-3 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-300 font-bold text-sm"
+                className="flex-1 py-3 rounded-xl bg-[#F4F1EA] hover:bg-[#E5DFD7] text-[#1A1A1A] font-bold text-sm"
               >
                 تراجع
               </button>
               <button
                 onClick={handleDeleteProduct}
-                className="flex-1 py-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-black text-sm shadow-lg shadow-rose-600/30"
+                className="flex-1 py-3 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-black text-sm shadow-sm"
               >
                 نعم، احذف المنتج
               </button>
@@ -3544,18 +3544,18 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
           ADD / EDIT BRAND MODAL
          ========================================================================= */}
       {isBrandModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md overflow-y-auto">
-          <div className="bg-neutral-900 border border-neutral-800 rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-6 shadow-2xl my-8">
-            <div className="flex items-center justify-between border-b border-neutral-800 pb-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#1A1A1A]/50 backdrop-blur-md overflow-y-auto">
+          <div className="bg-white border border-[#E5DFD7] rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-6 shadow-2xl my-8">
+            <div className="flex items-center justify-between border-b border-[#E5DFD7] pb-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400">
+                <div className="w-10 h-10 rounded-xl bg-[#D4AF37]/15 border border-[#D4AF37]/40 flex items-center justify-center text-[#8B6F15]">
                   <Sparkles className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-base sm:text-lg font-black text-white">
+                  <h3 className="text-base sm:text-lg font-black text-[#1A1A1A]">
                     {editingBrandId ? 'تعديل بيانات البراند' : 'إضافة براند جديد للمتجر'}
                   </h3>
-                  <p className="text-xs text-neutral-400">
+                  <p className="text-xs text-[#6B6B6B]">
                     نظام براند مستقل تماماً لإبراز العلامات التجارية الشهيرة
                   </p>
                 </div>
@@ -3564,7 +3564,7 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
               <button
                 type="button"
                 onClick={() => setIsBrandModalOpen(false)}
-                className="p-2 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-300 hover:text-white"
+                className="p-2 rounded-xl bg-[#F4F1EA] hover:bg-[#E5DFD7] text-[#6B6B6B] hover:text-[#1A1A1A]"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -3574,8 +3574,8 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
               <div
                 className={`p-3 rounded-xl text-xs font-bold flex items-center gap-2 ${
                   brandStatusMessage.type === 'success'
-                    ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
-                    : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
+                    ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                    : 'bg-rose-50 text-rose-700 border border-rose-200'
                 }`}
               >
                 {brandStatusMessage.type === 'success' ? (
@@ -3590,8 +3590,8 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
             <form onSubmit={handleSaveBrand} className="space-y-4">
               {/* Brand Name */}
               <div>
-                <label className="block text-xs font-bold text-neutral-300 mb-1.5">
-                  اسم البراند / الماركة <span className="text-rose-500">*</span>
+                <label className="block text-xs font-bold text-[#1A1A1A] mb-1.5">
+                  اسم البراند / الماركة <span className="text-rose-600">*</span>
                 </label>
                 <input
                   type="text"
@@ -3599,14 +3599,14 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                   placeholder="مثال: ZARA, Nike, Chanel, Gucci..."
                   value={brandNameInput}
                   onChange={(e) => setBrandNameInput(e.target.value)}
-                  className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-amber-500 font-bold"
+                  className="w-full bg-[#FAF9F7] border border-[#E5DFD7] rounded-xl px-4 py-2.5 text-sm text-[#1A1A1A] focus:outline-none focus:border-[#8B2635] font-bold"
                 />
               </div>
 
               {/* Brand Logo Upload & URL */}
               <div className="space-y-2">
-                <label className="block text-xs font-bold text-neutral-300">
-                  شعار البراند (Logo) <span className="text-rose-500">*</span>
+                <label className="block text-xs font-bold text-[#1A1A1A]">
+                  شعار البراند (Logo) <span className="text-rose-600">*</span>
                 </label>
                 <div className="flex flex-col sm:flex-row gap-2">
                   <input
@@ -3620,12 +3620,12 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                     type="button"
                     onClick={() => brandLogoInputRef.current?.click()}
                     disabled={isUploadingBrandLogo}
-                    className="px-4 py-2.5 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-200 text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer border border-neutral-700"
+                    className="px-4 py-2.5 rounded-xl bg-[#F4F1EA] hover:bg-[#E5DFD7] text-[#1A1A1A] text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer border border-[#E5DFD7]"
                   >
                     {isUploadingBrandLogo ? (
-                      <RefreshCw className="w-4 h-4 animate-spin text-amber-400" />
+                      <RefreshCw className="w-4 h-4 animate-spin text-[#8B6F15]" />
                     ) : (
-                      <Upload className="w-4 h-4 text-amber-400" />
+                      <Upload className="w-4 h-4 text-[#8B6F15]" />
                     )}
                     <span>{isUploadingBrandLogo ? 'جاري الرفع...' : 'رفع من الجهاز'}</span>
                   </button>
@@ -3635,14 +3635,14 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                     placeholder="أو ضع رابط صورة الشعار مباشرة..."
                     value={brandLogoInput}
                     onChange={(e) => setBrandLogoInput(e.target.value)}
-                    className="flex-1 bg-neutral-950 border border-neutral-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-amber-500 font-mono"
+                    className="flex-1 bg-[#FAF9F7] border border-[#E5DFD7] rounded-xl px-3.5 py-2.5 text-xs text-[#1A1A1A] focus:outline-none focus:border-[#8B2635] font-mono"
                   />
                 </div>
 
                 {/* Logo Preview */}
                 {brandLogoInput && (
-                  <div className="flex items-center gap-3 p-3 rounded-2xl bg-neutral-950 border border-neutral-800 mt-2">
-                    <div className="w-14 h-14 rounded-xl bg-neutral-900 border border-neutral-700 p-2 flex items-center justify-center shrink-0">
+                  <div className="flex items-center gap-3 p-3 rounded-2xl bg-[#FAF9F7] border border-[#E5DFD7] mt-2">
+                    <div className="w-14 h-14 rounded-xl bg-white border border-[#E5DFD7] p-2 flex items-center justify-center shrink-0">
                       <img
                         src={brandLogoInput}
                         alt="Logo preview"
@@ -3650,8 +3650,8 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                         referrerPolicy="no-referrer"
                       />
                     </div>
-                    <div className="text-xs text-neutral-400">
-                      <span className="font-bold text-white block">معاينة الشعار</span>
+                    <div className="text-xs text-[#6B6B6B]">
+                      <span className="font-bold text-[#1A1A1A] block">معاينة الشعار</span>
                       يظهر كأيقونة مربعة أنيقة في قائمة البراندات
                     </div>
                   </div>
@@ -3660,9 +3660,9 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
 
               {/* Brand Cover Banner (Optional) */}
               <div className="space-y-2">
-                <label className="block text-xs font-bold text-neutral-300 flex items-center justify-between">
+                <label className="block text-xs font-bold text-[#1A1A1A] flex items-center justify-between">
                   <span>صورة الغلاف / البانر للبراند</span>
-                  <span className="text-[11px] text-neutral-500 font-normal">اختياري</span>
+                  <span className="text-[11px] text-[#6B6B6B] font-normal">اختياري</span>
                 </label>
                 <div className="flex flex-col sm:flex-row gap-2">
                   <input
@@ -3676,12 +3676,12 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                     type="button"
                     onClick={() => brandCoverInputRef.current?.click()}
                     disabled={isUploadingBrandCover}
-                    className="px-4 py-2.5 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-200 text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer border border-neutral-700"
+                    className="px-4 py-2.5 rounded-xl bg-[#F4F1EA] hover:bg-[#E5DFD7] text-[#1A1A1A] text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer border border-[#E5DFD7]"
                   >
                     {isUploadingBrandCover ? (
-                      <RefreshCw className="w-4 h-4 animate-spin text-amber-400" />
+                      <RefreshCw className="w-4 h-4 animate-spin text-[#8B6F15]" />
                     ) : (
-                      <Upload className="w-4 h-4 text-amber-400" />
+                      <Upload className="w-4 h-4 text-[#8B6F15]" />
                     )}
                     <span>{isUploadingBrandCover ? 'جاري الرفع...' : 'رفع من الجهاز'}</span>
                   </button>
@@ -3691,12 +3691,12 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                     placeholder="أو رابط بانر عريض..."
                     value={brandCoverInput}
                     onChange={(e) => setBrandCoverInput(e.target.value)}
-                    className="flex-1 bg-neutral-950 border border-neutral-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-amber-500 font-mono"
+                    className="flex-1 bg-[#FAF9F7] border border-[#E5DFD7] rounded-xl px-3.5 py-2.5 text-xs text-[#1A1A1A] focus:outline-none focus:border-[#8B2635] font-mono"
                   />
                 </div>
 
                 {brandCoverInput && (
-                  <div className="relative h-20 w-full rounded-2xl overflow-hidden bg-neutral-950 border border-neutral-800 mt-2">
+                  <div className="relative h-20 w-full rounded-2xl overflow-hidden bg-[#FAF9F7] border border-[#E5DFD7] mt-2">
                     <img
                       src={brandCoverInput}
                       alt="Cover preview"
@@ -3709,24 +3709,24 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
 
               {/* Description */}
               <div>
-                <label className="block text-xs font-bold text-neutral-300 mb-1.5 flex items-center justify-between">
+                <label className="block text-xs font-bold text-[#1A1A1A] mb-1.5 flex items-center justify-between">
                   <span>نبذة تعريفية عن البراند</span>
-                  <span className="text-[11px] text-neutral-500 font-normal">اختياري</span>
+                  <span className="text-[11px] text-[#6B6B6B] font-normal">اختياري</span>
                 </label>
                 <textarea
                   rows={2}
                   placeholder="وصف مختصر لمجموعات وتصاميم البراند..."
                   value={brandDescInput}
                   onChange={(e) => setBrandDescInput(e.target.value)}
-                  className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-500"
+                  className="w-full bg-[#FAF9F7] border border-[#E5DFD7] rounded-xl px-4 py-2.5 text-xs text-[#1A1A1A] focus:outline-none focus:border-[#8B2635]"
                 />
               </div>
 
               {/* Active Toggle */}
-              <div className="p-3.5 rounded-2xl bg-neutral-950 border border-neutral-800 flex items-center justify-between">
+              <div className="p-3.5 rounded-2xl bg-[#FAF9F7] border border-[#E5DFD7] flex items-center justify-between">
                 <div>
-                  <div className="text-xs font-bold text-white">تفعيل البراند في واجهة المتجر</div>
-                  <div className="text-[11px] text-neutral-400">
+                  <div className="text-xs font-bold text-[#1A1A1A]">تفعيل البراند في واجهة المتجر</div>
+                  <div className="text-[11px] text-[#6B6B6B]">
                     عند التفعيل، سيظهر البراند في صفحة البراندات للعملاء
                   </div>
                 </div>
@@ -3734,22 +3734,22 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
                   type="checkbox"
                   checked={brandIsActiveInput}
                   onChange={(e) => setBrandIsActiveInput(e.target.checked)}
-                  className="w-5 h-5 rounded text-amber-500 focus:ring-0"
+                  className="w-5 h-5 rounded text-[#8B2635] focus:ring-0"
                 />
               </div>
 
               {/* Buttons */}
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-neutral-800">
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#E5DFD7]">
                 <button
                   type="button"
                   onClick={() => setIsBrandModalOpen(false)}
-                  className="px-5 py-2.5 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-300 font-bold text-xs sm:text-sm"
+                  className="px-5 py-2.5 rounded-xl bg-[#F4F1EA] hover:bg-[#E5DFD7] text-[#1A1A1A] font-bold text-xs sm:text-sm"
                 >
                   إلغاء
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-neutral-950 font-black text-xs sm:text-sm flex items-center gap-2 shadow-lg shadow-amber-500/20"
+                  className="px-6 py-2.5 rounded-xl bg-[#8B2635] hover:bg-[#721D2A] text-white font-black text-xs sm:text-sm flex items-center gap-2 shadow-sm"
                 >
                   <Save className="w-4 h-4" />
                   <span>{editingBrandId ? 'حفظ تعديلات البراند' : 'إضافة البراند فوراً'}</span>
@@ -3764,29 +3764,29 @@ export const AdminProductDashboard: React.FC<AdminProductDashboardProps> = ({ is
           DELETE CONFIRMATION MODAL FOR BRAND
          ========================================================================= */}
       {deleteConfirmBrand && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
-          <div className="bg-neutral-900 border border-neutral-800 rounded-3xl p-6 sm:p-8 max-w-md w-full text-center space-y-4 shadow-2xl">
-            <div className="w-16 h-16 rounded-2xl bg-rose-500/20 border border-rose-500/30 flex items-center justify-center mx-auto text-rose-400">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#1A1A1A]/50 backdrop-blur-md">
+          <div className="bg-white border border-[#E5DFD7] rounded-3xl p-6 sm:p-8 max-w-md w-full text-center space-y-4 shadow-2xl">
+            <div className="w-16 h-16 rounded-2xl bg-rose-50 border border-rose-200 flex items-center justify-center mx-auto text-rose-600">
               <Trash2 className="w-8 h-8" />
             </div>
-            <h3 className="text-xl font-black text-white">تأكيد حذف البراند</h3>
-            <p className="text-sm text-neutral-400">
+            <h3 className="text-xl font-black text-[#1A1A1A]">تأكيد حذف البراند</h3>
+            <p className="text-sm text-[#6B6B6B]">
               هل أنت متأكد من حذف براند:{' '}
-              <span className="font-bold text-white">{deleteConfirmBrand.name}</span>
+              <span className="font-bold text-[#1A1A1A]">{deleteConfirmBrand.name}</span>
               ؟ لن يتم حذف المنتجات المرتبطة به ولكن سيتم إلغاء ربط البراند منها.
             </p>
             <div className="flex items-center gap-3 pt-2">
               <button
                 type="button"
                 onClick={() => setDeleteConfirmBrand(null)}
-                className="flex-1 py-3 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-300 font-bold text-sm"
+                className="flex-1 py-3 rounded-xl bg-[#F4F1EA] hover:bg-[#E5DFD7] text-[#1A1A1A] font-bold text-sm"
               >
                 تراجع
               </button>
               <button
                 type="button"
                 onClick={handleDeleteBrand}
-                className="flex-1 py-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-black text-sm shadow-lg shadow-rose-600/30"
+                className="flex-1 py-3 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-black text-sm shadow-sm"
               >
                 نعم، احذف البراند
               </button>

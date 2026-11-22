@@ -23,7 +23,9 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 
 // server.ts
 var import_express = __toESM(require("express"), 1);
+var import_fs = __toESM(require("fs"), 1);
 var import_path = __toESM(require("path"), 1);
+var import_zlib = __toESM(require("zlib"), 1);
 var import_vite = require("vite");
 var import_genai = require("@google/genai");
 var import_dotenv = __toESM(require("dotenv"), 1);
@@ -44,10 +46,64 @@ function getGeminiClient() {
 }
 async function startServer() {
   const app = (0, import_express.default)();
-  const PORT = 3e3;
+  const PORT = Number(process.env.PORT) || 3e3;
+  app.use((req, res, next) => {
+    const acceptEncoding = String(req.headers["accept-encoding"] || "");
+    const supportsBr = acceptEncoding.includes("br");
+    const supportsGzip = acceptEncoding.includes("gzip");
+    if (!supportsBr && !supportsGzip) {
+      return next();
+    }
+    const origSend = res.send.bind(res);
+    const origJson = res.json.bind(res);
+    const shouldCompress = (contentType, byteLength) => {
+      if (byteLength < 1024) return false;
+      const ct = String(contentType || "").toLowerCase();
+      return !ct || ct.includes("json") || ct.includes("text/") || ct.includes("javascript") || ct.includes("svg") || ct.includes("xml");
+    };
+    const compressAndSend = (body) => {
+      if (res.headersSent || res.getHeader("Content-Encoding")) {
+        return origSend(body);
+      }
+      const buf = Buffer.isBuffer(body) ? body : Buffer.from(String(body), "utf8");
+      if (!shouldCompress(res.getHeader("Content-Type"), buf.length)) {
+        return origSend(body);
+      }
+      res.setHeader("Vary", "Accept-Encoding");
+      try {
+        if (supportsBr) {
+          const compressed2 = import_zlib.default.brotliCompressSync(buf, {
+            params: { [import_zlib.default.constants.BROTLI_PARAM_QUALITY]: 4 }
+          });
+          res.setHeader("Content-Encoding", "br");
+          res.setHeader("Content-Length", String(compressed2.length));
+          return origSend(compressed2);
+        }
+        const compressed = import_zlib.default.gzipSync(buf, { level: 6 });
+        res.setHeader("Content-Encoding", "gzip");
+        res.setHeader("Content-Length", String(compressed.length));
+        return origSend(compressed);
+      } catch {
+        return origSend(body);
+      }
+    };
+    res.json = ((data) => {
+      if (!res.getHeader("Content-Type")) {
+        res.setHeader("Content-Type", "application/json; charset=utf-8");
+      }
+      return compressAndSend(JSON.stringify(data));
+    });
+    res.send = ((body) => {
+      if (typeof body === "string" || Buffer.isBuffer(body)) {
+        return compressAndSend(body);
+      }
+      return origSend(body);
+    });
+    next();
+  });
   app.use(import_express.default.json({ limit: "15mb" }));
   app.use(import_express.default.urlencoded({ extended: true, limit: "15mb" }));
-  app.get("/api/health", (req, res) => {
+  app.get("/api/health", (_req, res) => {
     res.json({ status: "ok", app: "\u0636\u064E\u062C\u0651\u0629 \u0645\u0648\u0644 \u2014 Dajjah Mall" });
   });
   const catalogData = [
@@ -880,20 +936,101 @@ ${catalogStr}
   });
   if (process.env.NODE_ENV !== "production") {
     const vite = await (0, import_vite.createServer)({
-      server: { middlewareMode: true },
+      server: {
+        middlewareMode: true,
+        hmr: false
+      },
       appType: "spa"
     });
     app.use(vite.middlewares);
   } else {
     const distPath = import_path.default.join(process.cwd(), "dist");
-    app.use(import_express.default.static(distPath));
-    app.get("*", (req, res) => {
+    const compressedStaticCache = /* @__PURE__ */ new Map();
+    const MIME_TYPES = {
+      ".js": "application/javascript; charset=utf-8",
+      ".mjs": "application/javascript; charset=utf-8",
+      ".css": "text/css; charset=utf-8",
+      ".html": "text/html; charset=utf-8",
+      ".json": "application/json; charset=utf-8",
+      ".svg": "image/svg+xml; charset=utf-8"
+    };
+    app.use((req, res, next) => {
+      if (req.method !== "GET" && req.method !== "HEAD") return next();
+      const cleanUrl = (req.path === "/" ? "/index.html" : req.path).replace(/^\/+/, "");
+      const ext = import_path.default.extname(cleanUrl).toLowerCase();
+      const contentType = MIME_TYPES[ext];
+      if (!contentType) return next();
+      const fullPath = import_path.default.resolve(distPath, cleanUrl);
+      if (!fullPath.startsWith(distPath + import_path.default.sep) && fullPath !== import_path.default.join(distPath, "index.html")) {
+        return next();
+      }
+      if (!import_fs.default.existsSync(fullPath)) return next();
+      const acceptEncoding = String(req.headers["accept-encoding"] || "");
+      const useBr = acceptEncoding.includes("br");
+      const useGzip = !useBr && acceptEncoding.includes("gzip");
+      if (!useBr && !useGzip) return next();
+      let entry = compressedStaticCache.get(fullPath);
+      if (!entry) {
+        try {
+          const raw = import_fs.default.readFileSync(fullPath);
+          if (raw.length < 1024) return next();
+          entry = { contentType };
+          compressedStaticCache.set(fullPath, entry);
+        } catch {
+          return next();
+        }
+      }
+      if (useBr && !entry.br) {
+        entry.br = import_zlib.default.brotliCompressSync(import_fs.default.readFileSync(fullPath), {
+          params: { [import_zlib.default.constants.BROTLI_PARAM_QUALITY]: 4 }
+        });
+      } else if (useGzip && !entry.gz) {
+        entry.gz = import_zlib.default.gzipSync(import_fs.default.readFileSync(fullPath), { level: 6 });
+      }
+      const payload = useBr ? entry.br : entry.gz;
+      res.setHeader("Content-Type", entry.contentType);
+      res.setHeader("Content-Encoding", useBr ? "br" : "gzip");
+      res.setHeader("Vary", "Accept-Encoding");
+      res.setHeader(
+        "Cache-Control",
+        cleanUrl.startsWith("assets/") ? "public, max-age=31536000, immutable" : "no-cache, no-store, must-revalidate"
+      );
+      return res.end(payload);
+    });
+    app.use(
+      import_express.default.static(distPath, {
+        etag: true,
+        lastModified: true,
+        setHeaders: (res, filePath) => {
+          if (filePath.includes(`${import_path.default.sep}assets${import_path.default.sep}`)) {
+            res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+          } else if (filePath.endsWith("index.html")) {
+            res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+          } else {
+            res.setHeader("Cache-Control", "public, max-age=3600");
+          }
+        }
+      })
+    );
+    app.get("*", (_req, res) => {
+      res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
       res.sendFile(import_path.default.join(distPath, "index.html"));
     });
   }
-  app.listen(PORT, "0.0.0.0", () => {
+  const server = app.listen(PORT, "0.0.0.0", () => {
     console.log(`\u0636\u064E\u062C\u0651\u0629 \u0645\u0648\u0644 server running on http://localhost:${PORT}`);
   });
+  server.on("error", (err) => {
+    console.error("Server listen error:", err);
+  });
 }
-startServer();
+process.on("uncaughtException", (err) => {
+  console.error("Server uncaughtException:", err);
+});
+process.on("unhandledRejection", (reason) => {
+  console.warn("Server unhandledRejection notice:", reason);
+});
+startServer().catch((err) => {
+  console.error("Failed to start server:", err);
+});
 //# sourceMappingURL=server.cjs.map

@@ -77,13 +77,13 @@ export const EditorialCategories: React.FC<EditorialCategoriesProps> = React.mem
             >
               {/* Soft Squircle / Rounded Container */}
               <div
-                className={`relative w-12 h-12 xs:w-14 xs:h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-2xl overflow-hidden p-0.5 transition-all duration-200 ${
+                className={`relative w-12 h-12 xs:w-14 xs:h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-2xl overflow-hidden p-0.5 transition-all duration-200 shadow-xs ${
                   isSelected
-                    ? 'ring-2 ring-amber-400 bg-amber-500/20 shadow-md shadow-amber-500/20 scale-105'
-                    : 'bg-neutral-900 border border-neutral-800 hover:border-neutral-700 hover:scale-105'
+                    ? 'ring-2 ring-amber-500 bg-amber-50 shadow-md shadow-amber-500/15 scale-105'
+                    : 'bg-white border border-neutral-200/90 hover:border-amber-400/70 hover:scale-105'
                 }`}
               >
-                <div className="w-full h-full rounded-xl overflow-hidden bg-neutral-950">
+                <div className="w-full h-full rounded-xl overflow-hidden bg-[#F3F4F6]">
                   <CachedImage
                     src={item.image}
                     alt={item.name}
@@ -98,8 +98,8 @@ export const EditorialCategories: React.FC<EditorialCategoriesProps> = React.mem
               <span
                 className={`text-[11px] sm:text-xs md:text-sm font-bold tracking-tight text-center leading-tight transition-colors line-clamp-1 ${
                   isSelected
-                    ? 'text-amber-400'
-                    : 'text-neutral-200 group-hover:text-white'
+                    ? 'text-amber-700 font-black'
+                    : 'text-neutral-800 group-hover:text-amber-700'
                 }`}
               >
                 {item.name}

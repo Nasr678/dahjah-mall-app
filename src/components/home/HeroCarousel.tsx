@@ -121,7 +121,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = memo(({
 
   return (
     <div 
-      className="relative w-full rounded-2xl sm:rounded-3xl overflow-hidden bg-neutral-950 border border-neutral-850 shadow-md group select-none touch-pan-y"
+      className="relative w-full rounded-2xl sm:rounded-3xl overflow-hidden bg-white border border-neutral-200/90 shadow-[0_10px_30px_rgba(15,23,42,0.08)] group select-none touch-pan-y"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       onTouchStart={handleTouchStart}
@@ -129,10 +129,10 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = memo(({
       onTouchEnd={handleTouchEnd}
       id="main-hero-carousel"
     >
-      {/* Compact responsive height: ~135px on small mobile, up to 190px on desktop */}
+      {/* Responsive Editorial Hero Banner */}
       <div 
         onClick={handleBannerClick}
-        className="relative w-full h-[135px] xs:h-[145px] sm:h-[165px] md:h-[185px] overflow-hidden cursor-pointer"
+        className="relative w-full h-[155px] xs:h-[170px] sm:h-[205px] md:h-[235px] overflow-hidden cursor-pointer"
       >
         <motion.div
           key={currentBanner.id || currentSlide}
@@ -141,7 +141,6 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = memo(({
           transition={{ duration: 0.3, ease: 'easeOut' }}
           className="absolute inset-0 will-change-transform"
         >
-          {/* Background Image */}
           <CachedImage
             src={bannerImgSrc}
             alt={currentBanner.title}
@@ -151,51 +150,46 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = memo(({
             className="w-full h-full object-cover object-center"
           />
 
-          {/* High-End Editorial Gradient Overlays */}
-          <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/95 via-neutral-950/40 to-neutral-950/20" />
-          <div className="absolute inset-0 bg-gradient-to-l from-neutral-950/85 via-neutral-950/20 to-transparent" />
+          {/* High-Contrast Editorial Gradient Scrim */}
+          <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/85 via-neutral-950/35 to-neutral-950/15" />
+          <div className="absolute inset-0 bg-gradient-to-l from-neutral-950/80 via-neutral-950/30 to-transparent" />
 
           {/* Slide Content Box */}
-          <div className="absolute inset-0 flex items-center justify-between p-3 sm:p-5 z-10">
-            {/* Right Side in RTL: Title, Subtitle, Badge */}
-            <div className="flex flex-col items-end text-right max-w-[70%] sm:max-w-[60%] space-y-1">
-              {/* Badge or Discount Tag */}
+          <div className="absolute inset-0 flex items-center justify-between p-4 sm:p-7 z-10">
+            <div className="flex flex-col items-end text-right max-w-[75%] sm:max-w-[60%] space-y-1.5">
               <div className="flex items-center gap-1.5 flex-wrap justify-end">
                 {currentBanner.discountPercentage ? (
-                  <span className="px-2 py-0.5 rounded-full bg-amber-400 text-neutral-950 text-[10px] font-black shadow-sm flex items-center gap-1">
+                  <span className="px-2.5 py-0.5 rounded-full bg-amber-400 text-neutral-950 text-[10px] sm:text-xs font-black shadow-sm flex items-center gap-1 whitespace-nowrap">
                     <Tag className="w-3 h-3 stroke-[2.5]" />
                     <span>خصم {currentBanner.discountPercentage}%</span>
                   </span>
                 ) : null}
 
                 {currentBanner.badge ? (
-                  <span className="px-2 py-0.5 rounded-md bg-purple-600/90 text-white text-[10px] font-bold shadow-sm">
+                  <span className="px-2.5 py-0.5 rounded-md bg-white/90 text-neutral-900 text-[10px] font-bold shadow-sm whitespace-nowrap">
                     {currentBanner.badge}
                   </span>
                 ) : (
-                  <span className="px-2 py-0.5 rounded-md bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[9px] font-bold">
+                  <span className="px-2.5 py-0.5 rounded-md bg-amber-400/20 text-amber-200 border border-amber-300/40 backdrop-blur-xs text-[10px] font-bold whitespace-nowrap">
                     ضَجّة في وجه الغلاء
                   </span>
                 )}
               </div>
 
-              {/* Main Heading */}
-              <h2 className="text-sm sm:text-base md:text-lg font-black text-white leading-tight drop-shadow-md line-clamp-1">
+              <h2 className="text-base sm:text-xl md:text-2xl font-black text-white leading-tight drop-shadow-md line-clamp-1">
                 {currentBanner.title}
               </h2>
 
-              {/* Subtitle / Description */}
               {(currentBanner.subtitle || currentBanner.description) && (
-                <p className="text-[10px] sm:text-xs text-neutral-300 font-medium line-clamp-1">
+                <p className="text-[11px] sm:text-xs md:text-sm text-neutral-100/90 font-medium line-clamp-1">
                   {currentBanner.subtitle || currentBanner.description}
                 </p>
               )}
 
-              {/* CTA button */}
-              <div className="pt-0.5">
-                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-amber-400 text-neutral-950 text-[10px] sm:text-[11px] font-black shadow-md hover:bg-amber-300 transition-colors">
+              <div className="pt-1">
+                <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-amber-400 text-neutral-950 text-[11px] sm:text-xs font-black shadow-md hover:bg-amber-300 transition-colors whitespace-nowrap">
                   <span>{currentBanner.ctaText || 'تسوق الآن'}</span>
-                  <ArrowLeft className="w-3 h-3" />
+                  <ArrowLeft className="w-3.5 h-3.5" />
                 </span>
               </div>
             </div>
@@ -211,27 +205,27 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = memo(({
               e.stopPropagation();
               setCurrentSlide((prev) => (prev - 1 + activeBanners.length) % activeBanners.length);
             }}
-            className="absolute top-1/2 -translate-y-1/2 right-2 p-1.5 rounded-full bg-neutral-900/90 border border-neutral-700/80 text-white hover:bg-amber-400 hover:text-neutral-950 opacity-0 group-hover:opacity-100 transition-colors hidden sm:block cursor-pointer shadow-lg z-20"
+            className="absolute top-1/2 -translate-y-1/2 right-3 p-2 rounded-full bg-white/95 border border-neutral-200 text-neutral-900 hover:bg-amber-400 hover:border-amber-400 opacity-0 group-hover:opacity-100 transition-all hidden sm:flex items-center justify-center cursor-pointer shadow-lg z-20"
             aria-label="السابق"
           >
-            <ArrowRight className="w-3.5 h-3.5" />
+            <ArrowRight className="w-4 h-4" />
           </button>
           <button
             onClick={(e) => {
               e.stopPropagation();
               setCurrentSlide((prev) => (prev + 1) % activeBanners.length);
             }}
-            className="absolute top-1/2 -translate-y-1/2 left-2 p-1.5 rounded-full bg-neutral-900/90 border border-neutral-700/80 text-white hover:bg-amber-400 hover:text-neutral-950 opacity-0 group-hover:opacity-100 transition-colors hidden sm:block cursor-pointer shadow-lg z-20"
+            className="absolute top-1/2 -translate-y-1/2 left-3 p-2 rounded-full bg-white/95 border border-neutral-200 text-neutral-900 hover:bg-amber-400 hover:border-amber-400 opacity-0 group-hover:opacity-100 transition-all hidden sm:flex items-center justify-center cursor-pointer shadow-lg z-20"
             aria-label="التالي"
           >
-            <ArrowLeft className="w-3.5 h-3.5" />
+            <ArrowLeft className="w-4 h-4" />
           </button>
         </>
       )}
 
       {/* Indicator Dots */}
       {activeBanners.length > 1 && (
-        <div className="absolute bottom-1.5 left-3 sm:bottom-2 sm:left-4 flex items-center gap-1 z-20">
+        <div className="absolute bottom-2.5 left-3 sm:bottom-3 sm:left-4 flex items-center gap-1.5 z-20 bg-neutral-950/35 backdrop-blur-xs px-2 py-1 rounded-full">
           {activeBanners.map((_, idx) => (
             <button
               key={idx}
@@ -239,8 +233,8 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = memo(({
                 e.stopPropagation();
                 setCurrentSlide(idx);
               }}
-              className={`h-1 rounded-full transition-all duration-300 cursor-pointer ${
-                currentSlide === idx ? 'w-3.5 bg-amber-400' : 'w-1 bg-neutral-600 hover:bg-neutral-400'
+              className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
+                currentSlide === idx ? 'w-4 bg-amber-400' : 'w-1.5 bg-white/60 hover:bg-white'
               }`}
               aria-label={`Slide ${idx + 1}`}
             />

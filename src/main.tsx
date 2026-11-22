@@ -3,7 +3,9 @@ import React, { Component, StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
 import './index.css';
-import 'leaflet/dist/leaflet.css';
+import { initRumMonitoring } from './utils/perfMonitor';
+
+const bootStartMs = typeof performance !== 'undefined' ? performance.now() : Date.now();
 
 const overlayId = 'dajjah-debug-overlay';
 const isProduction = Boolean(import.meta.env?.PROD);
@@ -70,7 +72,7 @@ function renderStartupFallback(label: string, payload: unknown) {
     .replace(/>/g, '&gt;');
 
   const fallbackHtml = `
-    <div dir="rtl" style="min-height:100vh;background:radial-gradient(circle at top,#1d1a16 0%,#0a0a0b 45%,#07060a 100%);color:#fef3c7;display:flex;align-items:center;justify-content:center;padding:24px;font-family:Tajawal,Arial,sans-serif;">
+    <div dir="rtl" style="min-height:100vh;background:radial-gradient(circle at top,#1d1a16 0%,#0a0a0b 45%,#07060a 100%);color:#fef3c7;display:flex;align-items:center;justify-content:center;padding:24px;font-family:Cairo,Tahoma,Arial,sans-serif;">
       <div style="width:min(92vw, 520px);background:rgba(19,17,18,0.96);border:1px solid rgba(245,158,11,0.45);border-radius:24px;padding:24px 20px 20px;box-shadow:0 18px 45px rgba(0,0,0,0.45);text-align:center;">
         <div style="display:flex;align-items:center;justify-content:center;margin-bottom:18px;">
           <div style="width:72px;height:72px;border-radius:22px;background:linear-gradient(135deg,#fbbf24,#d97706);display:flex;align-items:center;justify-content:center;color:#111827;font-size:32px;font-weight:900;box-shadow:0 12px 28px rgba(245,158,11,0.35);">ض</div>
@@ -134,7 +136,26 @@ class StartupErrorBoundary extends Component<StartupErrorBoundaryProps, StartupE
 
   render() {
     if (this.state.hasError) {
-      return null;
+      return (
+        <div dir="rtl" className="min-h-screen bg-[#07060A] text-amber-300 flex items-center justify-center p-4 font-sans select-none">
+          <div className="max-w-md w-full bg-neutral-900/95 border border-amber-500/30 rounded-3xl p-6 sm:p-8 text-center space-y-4 shadow-2xl backdrop-blur-xl">
+            <div className="w-16 h-16 rounded-2xl bg-amber-500/15 border border-amber-500/40 text-amber-400 flex items-center justify-center mx-auto text-3xl font-black shadow-lg shadow-amber-500/10">
+              ض
+            </div>
+            <h2 className="text-xl sm:text-2xl font-black text-white">ضَجّة مول</h2>
+            <p className="text-xs sm:text-sm text-neutral-300 leading-relaxed">
+              حدث تأخر مؤقت في الاتصال أو تجهيز واجهة المتجر. اضغط على الزر أدناه لإعادة تشغيل المتجر بسلاسة.
+            </p>
+            <button
+              type="button"
+              onClick={() => window.location.reload()}
+              className="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-500 text-neutral-950 font-black text-sm hover:from-amber-300 hover:to-amber-400 transition-all cursor-pointer shadow-lg shadow-amber-400/20 active:scale-98"
+            >
+              إعادة تحميل المتجر الآن
+            </button>
+          </div>
+        </div>
+      );
     }
     return this.props.children;
   }
@@ -163,6 +184,20 @@ function isBenignOrIgnoredError(payload: unknown): boolean {
     'resizeobserver',
     'networkerror',
     'err_connection_refused',
+    'audiocontext',
+    'closed before a pending resume',
+    'not allowed to start',
+    'gesture',
+    'user gesture',
+    'webgl',
+    'lost context',
+    'canvas',
+    'script error',
+    'resourcetiming',
+    'permission',
+    'geolocation',
+    'could not reach cloud firestore',
+    'offline mode',
   ];
   return ignoredTokens.some((token) => msg.includes(token));
 }
@@ -172,6 +207,7 @@ if (typeof window !== 'undefined') {
     const text = event?.error ?? event?.message ?? 'Unknown runtime error';
 
     if (isBenignOrIgnoredError(text)) {
+      event.preventDefault();
       console.warn('Suppressed benign runtime error:', text);
       return;
     }
@@ -200,6 +236,7 @@ if (typeof window !== 'undefined') {
     const reason = event?.reason ?? 'Unknown promise rejection';
 
     if (isBenignOrIgnoredError(reason)) {
+      event.preventDefault();
       console.warn('Suppressed benign promise rejection:', reason);
       return;
     }
@@ -215,6 +252,7 @@ if (typeof window !== 'undefined') {
     }
 
     if (isAppMounted) {
+      event.preventDefault();
       console.warn('Post-mount unhandled rejection (preserved UI):', reason);
       return;
     }
@@ -241,6 +279,7 @@ try {
   );
 
   isAppMounted = true;
+  initRumMonitoring(bootStartMs);
   window.setTimeout(() => removeStartupOverlay(), 400);
 } catch (error) {
   const text = getErrorText(error);

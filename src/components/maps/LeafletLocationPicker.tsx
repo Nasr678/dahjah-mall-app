@@ -163,7 +163,7 @@ export const LeafletLocationPicker: React.FC<LeafletLocationPickerProps> = ({
   };
 
   return (
-    <div className={`relative w-full rounded-2xl overflow-hidden border border-neutral-800 bg-neutral-950 shadow-inner flex flex-col ${className}`}>
+    <div className={`relative w-full rounded-2xl overflow-hidden border border-neutral-200 bg-white shadow-sm flex flex-col ${className}`}>
       {/* Search and Quick Cities Top Bar */}
       <div className="absolute top-2.5 inset-x-2.5 z-[1000] flex flex-col gap-1.5 pointer-events-auto">
         <div className="flex items-center gap-1.5">
@@ -174,7 +174,7 @@ export const LeafletLocationPicker: React.FC<LeafletLocationPickerProps> = ({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="ابحث عن مدينة، حي، أو شارع في اليمن..."
-              className="w-full pl-3 pr-9 py-2 rounded-xl bg-neutral-900/90 backdrop-blur-md border border-neutral-700/80 text-white text-xs placeholder:text-neutral-500 focus:border-amber-500 outline-none shadow-lg"
+              className="w-full pl-3 pr-9 py-2 rounded-xl bg-white/95 backdrop-blur-md border border-neutral-200 text-neutral-950 text-xs placeholder:text-neutral-400 focus:border-amber-500 outline-none shadow-md"
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {
                   const match = Object.keys(YEMEN_CITY_COORDINATES).find(
@@ -192,7 +192,7 @@ export const LeafletLocationPicker: React.FC<LeafletLocationPickerProps> = ({
             type="button"
             onClick={handleLocateMe}
             disabled={isLocating}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-neutral-950 font-bold text-xs shadow-lg transition-all active:scale-95 disabled:opacity-50 flex-shrink-0 cursor-pointer"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-amber-400 hover:bg-amber-500 text-neutral-950 font-black text-xs shadow-md transition-all active:scale-95 disabled:opacity-50 flex-shrink-0 cursor-pointer"
             title="موقعي الحالي عبر GPS"
           >
             <Compass className={`w-4 h-4 ${isLocating ? 'animate-spin' : ''}`} />
@@ -207,10 +207,10 @@ export const LeafletLocationPicker: React.FC<LeafletLocationPickerProps> = ({
               key={c}
               type="button"
               onClick={() => handleQuickCitySelect(c)}
-              className={`px-2.5 py-1 rounded-lg text-[11px] font-bold whitespace-nowrap transition-all shadow-md cursor-pointer ${
+              className={`px-2.5 py-1 rounded-lg text-[11px] font-bold whitespace-nowrap transition-all shadow-sm cursor-pointer ${
                 selectedCity === c
                   ? 'bg-amber-400 text-neutral-950 font-black'
-                  : 'bg-neutral-900/85 hover:bg-neutral-800 text-neutral-300 border border-neutral-700/60'
+                  : 'bg-white/95 hover:bg-white text-neutral-700 border border-neutral-200'
               }`}
             >
               {c}
@@ -233,7 +233,7 @@ export const LeafletLocationPicker: React.FC<LeafletLocationPickerProps> = ({
           <button
             type="button"
             onClick={() => setActiveTileLayer((prev) => (prev === 'osm' ? 'voyager' : 'osm'))}
-            className="p-2 rounded-xl bg-neutral-900/90 hover:bg-neutral-800 text-neutral-300 hover:text-amber-400 border border-neutral-700/80 backdrop-blur-md shadow-lg transition-all cursor-pointer"
+            className="p-2 rounded-xl bg-white/95 hover:bg-white text-neutral-700 hover:text-amber-700 border border-neutral-200 backdrop-blur-md shadow-md transition-all cursor-pointer"
             title="تبديل نمط الخريطة"
           >
             <Layers className="w-4 h-4" />
@@ -242,9 +242,9 @@ export const LeafletLocationPicker: React.FC<LeafletLocationPickerProps> = ({
 
         {/* Live Coordinates / Status Badge */}
         <div className="absolute right-3 bottom-3 z-[1000] pointer-events-none">
-          <div className="px-3 py-1.5 rounded-xl bg-neutral-950/90 backdrop-blur-md border border-neutral-800 text-[11px] text-neutral-300 flex items-center gap-1.5 shadow-lg">
-            <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
-            <span className="font-mono text-amber-300">
+          <div className="px-3 py-1.5 rounded-xl bg-white/95 backdrop-blur-md border border-neutral-200 text-[11px] text-neutral-700 flex items-center gap-1.5 shadow-md tabular-nums">
+            <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+            <span className="font-mono text-amber-800 font-bold">
               {lat.toFixed(4)}, {lng.toFixed(4)}
             </span>
           </div>
@@ -252,17 +252,17 @@ export const LeafletLocationPicker: React.FC<LeafletLocationPickerProps> = ({
 
         {/* Feedback notification toast */}
         {statusMessage && (
-          <div className="absolute top-24 left-1/2 -translate-x-1/2 z-[1000] px-3.5 py-1.5 rounded-xl bg-neutral-900/95 border border-amber-500/50 text-amber-300 text-xs font-bold shadow-2xl backdrop-blur-md flex items-center gap-2 animate-bounce">
-            <MapPin className="w-3.5 h-3.5 text-amber-400" />
+          <div className="absolute top-24 left-1/2 -translate-x-1/2 z-[1000] px-3.5 py-1.5 rounded-xl bg-white/95 border border-amber-300 text-amber-900 text-xs font-bold shadow-xl backdrop-blur-md flex items-center gap-2 animate-bounce">
+            <MapPin className="w-3.5 h-3.5 text-amber-600" />
             <span>{statusMessage}</span>
           </div>
         )}
       </div>
 
       {/* Footer Instructions */}
-      <div className="px-3.5 py-2 bg-neutral-950 border-t border-neutral-800 flex items-center justify-between text-xs text-neutral-400 z-10">
+      <div className="px-3.5 py-2 bg-[#F6F7F9] border-t border-neutral-200 flex items-center justify-between text-xs text-neutral-600 z-10">
         <div className="flex items-center gap-1.5">
-          <Navigation className="w-3.5 h-3.5 text-amber-400" />
+          <Navigation className="w-3.5 h-3.5 text-amber-600" />
           <span>انقر في أي مكان أو اسحب الدبوس لتحديد عنوان التوصيل بدقة</span>
         </div>
         <span className="font-mono text-neutral-500 text-[10px] hidden sm:inline">Leaflet & OpenStreetMap</span>

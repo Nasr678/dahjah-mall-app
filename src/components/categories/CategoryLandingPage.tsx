@@ -145,25 +145,25 @@ export const CategoryLandingPage: React.FC<CategoryLandingPageProps> = React.mem
       {/* ========================================================================= */}
       {/* 1. TOP HEADER (Matching Screens 3 & 4 in Reference Design) */}
       {/* ========================================================================= */}
-      <div className="flex items-center justify-between py-2 px-1 border-b border-neutral-800/80 sticky top-0 bg-neutral-950/95 backdrop-blur-md z-30">
+      <div className="flex items-center justify-between py-2.5 px-2 border-b border-neutral-200 sticky top-0 bg-white/95 backdrop-blur-md z-30 rounded-b-2xl shadow-xs">
         {/* Right side in RTL: Back Button */}
         <button
           type="button"
           id="btn-category-back"
           onClick={handleBack}
-          className="p-2 -mr-2 rounded-full hover:bg-neutral-800 text-neutral-300 hover:text-white transition-colors flex items-center gap-1.5 focus:outline-none"
+          className="p-2 rounded-full hover:bg-[#F6F7F9] text-neutral-700 hover:text-neutral-950 transition-colors flex items-center gap-1.5 focus:outline-none"
           title="رجوع"
         >
-          <ArrowRight className="w-5 h-5 text-neutral-200" />
+          <ArrowRight className="w-5 h-5 text-neutral-800" />
         </button>
 
         {/* Center: Title (Category Name or Selected Subcategory Name) */}
         <div className="text-center">
-          <h1 className="text-base sm:text-lg font-black text-white tracking-tight">
+          <h1 className="text-base sm:text-lg font-black text-neutral-950 tracking-tight">
             {selectedSubcategory || category.name}
           </h1>
           {selectedSubcategory && (
-            <p className="text-[11px] text-neutral-400 font-medium">
+            <p className="text-[11px] text-neutral-500 font-medium">
               قسم {category.name}
             </p>
           )}
@@ -175,7 +175,7 @@ export const CategoryLandingPage: React.FC<CategoryLandingPageProps> = React.mem
             <button
               type="button"
               onClick={onOpenSearch}
-              className="p-2 rounded-full hover:bg-neutral-800 text-neutral-300 hover:text-white transition-colors"
+              className="p-2 rounded-full hover:bg-[#F6F7F9] text-neutral-700 hover:text-neutral-950 transition-colors"
               title="بحث"
             >
               <Search className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -185,7 +185,7 @@ export const CategoryLandingPage: React.FC<CategoryLandingPageProps> = React.mem
             <button
               type="button"
               onClick={onOpenCart}
-              className="p-2 rounded-full hover:bg-neutral-800 text-neutral-300 hover:text-white transition-colors"
+              className="p-2 rounded-full hover:bg-[#F6F7F9] text-neutral-700 hover:text-neutral-950 transition-colors"
               title="السلة"
             >
               <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -198,7 +198,7 @@ export const CategoryLandingPage: React.FC<CategoryLandingPageProps> = React.mem
       {/* 2. CATEGORY EDITORIAL HERO BANNER (Shown when on Category Level) */}
       {/* ========================================================================= */}
       {!selectedSubcategory && (
-        <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden bg-neutral-900 border border-neutral-800 shadow-xl min-h-[160px] sm:min-h-[220px] flex flex-col justify-end p-5 sm:p-7">
+        <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden bg-white border border-neutral-200/80 shadow-md min-h-[160px] sm:min-h-[220px] flex flex-col justify-end p-5 sm:p-7">
           <CachedImage
             src={categoryMeta?.bannerImage || category.bannerImage || category.image}
             alt={category.name}
@@ -208,20 +208,20 @@ export const CategoryLandingPage: React.FC<CategoryLandingPageProps> = React.mem
             containerClassName="absolute inset-0 w-full h-full"
             className="w-full h-full object-cover object-center"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/60 to-transparent pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/85 via-neutral-950/45 to-transparent pointer-events-none" />
 
           <div className="relative z-10 space-y-1 sm:space-y-1.5 max-w-lg">
-            <span className="text-[11px] sm:text-xs font-bold text-amber-400">
+            <span className="text-[11px] sm:text-xs font-bold text-amber-300">
               قسم
             </span>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight">
               {category.name}
             </h2>
-            <p className="text-xs sm:text-sm text-neutral-300 font-medium">
+            <p className="text-xs sm:text-sm text-neutral-200 font-medium">
               {category.subtitle || 'تشكيلة واسعة وموديلات حصرية تناسب ذوقك'}
             </p>
             <div className="pt-1 flex items-center gap-2">
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-neutral-950/80 text-neutral-300 border border-neutral-700/60 backdrop-blur-sm">
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-white/95 text-neutral-900 border border-white/60 backdrop-blur-sm">
                 {categoryMeta?.sectionCountText || `${subcategoryList.length} قسم فرعي`}
               </span>
             </div>
@@ -234,14 +234,14 @@ export const CategoryLandingPage: React.FC<CategoryLandingPageProps> = React.mem
       {/* ========================================================================= */}
       <div className="space-y-2 pt-1">
         <div className="flex items-center justify-between px-1">
-          <span className="text-xs font-bold text-neutral-400">
+          <span className="text-xs font-bold text-neutral-600">
             {selectedSubcategory ? 'تصفح باقي الفئات الفرعية:' : 'الفئات الفرعية:'}
           </span>
           {selectedSubcategory && (
             <button
               type="button"
               onClick={() => setSelectedSubcategory(null)}
-              className="text-xs font-bold text-amber-400 hover:text-amber-300 transition-colors"
+              className="text-xs font-bold text-amber-700 hover:text-amber-800 transition-colors tabular-nums"
             >
               عرض الكل ({categoryProducts.length})
             </button>
@@ -271,11 +271,11 @@ export const CategoryLandingPage: React.FC<CategoryLandingPageProps> = React.mem
                 <div
                   className={`relative w-13 h-13 sm:w-16 sm:h-16 rounded-full overflow-hidden p-0.5 transition-all duration-200 ${
                     isSelected
-                      ? 'ring-2 ring-amber-400 bg-amber-500/20 shadow-md shadow-amber-500/20 scale-105'
-                      : 'bg-neutral-900 border border-neutral-800 hover:border-neutral-700 hover:scale-105'
+                      ? 'ring-2 ring-amber-500 bg-amber-100 shadow-md shadow-amber-500/20 scale-105'
+                      : 'bg-white border border-neutral-200 hover:border-amber-400 hover:scale-105 shadow-xs'
                   }`}
                 >
-                  <div className="w-full h-full rounded-full overflow-hidden bg-neutral-950">
+                  <div className="w-full h-full rounded-full overflow-hidden bg-[#F3F4F6]">
                     <CachedImage
                       src={subImage}
                       alt={subName}
@@ -291,8 +291,8 @@ export const CategoryLandingPage: React.FC<CategoryLandingPageProps> = React.mem
                 <span
                   className={`text-[11px] sm:text-xs font-bold tracking-tight text-center transition-colors whitespace-nowrap ${
                     isSelected
-                      ? 'text-amber-400'
-                      : 'text-neutral-300 group-hover:text-white'
+                      ? 'text-amber-800 font-black'
+                      : 'text-neutral-700 group-hover:text-neutral-950'
                   }`}
                 >
                   {subName}
@@ -306,9 +306,9 @@ export const CategoryLandingPage: React.FC<CategoryLandingPageProps> = React.mem
       {/* ========================================================================= */}
       {/* 4. PRODUCTS COUNT & FILTER / SORT BAR (Matches Screen 4 in Reference) */}
       {/* ========================================================================= */}
-      <div className="flex items-center justify-between pt-3 pb-1 border-t border-neutral-800/80 px-1">
+      <div className="flex items-center justify-between pt-3 pb-1 border-t border-neutral-200 px-1">
         {/* Product Count Badge */}
-        <span className="text-xs sm:text-sm font-bold text-neutral-300">
+        <span className="text-xs sm:text-sm font-bold text-neutral-700 tabular-nums">
           عدد {filteredProducts.length} منتج
         </span>
 
@@ -317,22 +317,22 @@ export const CategoryLandingPage: React.FC<CategoryLandingPageProps> = React.mem
           <button
             type="button"
             onClick={() => setIsSortModalOpen(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-neutral-900 border border-neutral-800 hover:border-neutral-700 text-neutral-300 hover:text-white text-xs font-bold transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-neutral-200 hover:border-amber-400 text-neutral-800 text-xs font-bold transition-colors shadow-xs"
           >
-            <ArrowDownUp className="w-3.5 h-3.5 text-amber-400" />
+            <ArrowDownUp className="w-3.5 h-3.5 text-amber-600" />
             <span>الترتيب</span>
           </button>
 
           <button
             type="button"
             onClick={() => setIsFilterModalOpen(true)}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-bold transition-colors ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-bold transition-colors shadow-xs ${
               discountOnly || inStockOnly
-                ? 'bg-amber-500/15 border-amber-400 text-amber-300'
-                : 'bg-neutral-900 border-neutral-800 hover:border-neutral-700 text-neutral-300 hover:text-white'
+                ? 'bg-amber-50 border-amber-400 text-amber-800'
+                : 'bg-white border-neutral-200 hover:border-amber-400 text-neutral-800'
             }`}
           >
-            <SlidersHorizontal className="w-3.5 h-3.5 text-amber-400" />
+            <SlidersHorizontal className="w-3.5 h-3.5 text-amber-600" />
             <span>التصفية</span>
           </button>
         </div>
@@ -365,7 +365,7 @@ export const CategoryLandingPage: React.FC<CategoryLandingPageProps> = React.mem
               <button
                 type="button"
                 onClick={() => setDisplayCount((prev) => prev + 16)}
-                className="px-6 py-3 rounded-2xl bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 text-amber-400 font-bold text-xs sm:text-sm transition-all shadow-lg active:scale-95"
+                className="px-6 py-3 rounded-2xl bg-white hover:bg-neutral-50 border border-neutral-200 text-amber-800 font-bold text-xs sm:text-sm transition-all shadow-sm active:scale-95 tabular-nums"
               >
                 عرض المزيد من المنتجات ({filteredProducts.length - displayCount} متبقي)
               </button>
@@ -373,12 +373,12 @@ export const CategoryLandingPage: React.FC<CategoryLandingPageProps> = React.mem
           )}
         </div>
       ) : (
-        <div className="p-8 sm:p-12 rounded-3xl bg-neutral-900/60 border border-neutral-800 text-center space-y-3 my-6">
-          <div className="w-12 h-12 rounded-2xl bg-neutral-800 mx-auto flex items-center justify-center text-neutral-400">
-            <Sparkles className="w-6 h-6 text-amber-400" />
+        <div className="p-8 sm:p-12 rounded-3xl bg-white border border-neutral-200/80 text-center space-y-3 my-6 shadow-xs">
+          <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 mx-auto flex items-center justify-center text-amber-700">
+            <Sparkles className="w-6 h-6" />
           </div>
-          <h3 className="text-base font-bold text-white">لا توجد منتجات مطابقة حالياً</h3>
-          <p className="text-xs text-neutral-400 max-w-sm mx-auto">
+          <h3 className="text-base font-bold text-neutral-950">لا توجد منتجات مطابقة حالياً</h3>
+          <p className="text-xs text-neutral-500 max-w-sm mx-auto">
             لم نجد منتجات تطابق الفلاتر المحددة في هذا القسم. جرب إلغاء بعض الفلاتر لاستعراض باقي المنتجات.
           </p>
           <button
@@ -388,7 +388,7 @@ export const CategoryLandingPage: React.FC<CategoryLandingPageProps> = React.mem
               setDiscountOnly(false);
               setInStockOnly(false);
             }}
-            className="px-4 py-2 rounded-xl bg-amber-500 text-neutral-950 font-bold text-xs hover:bg-amber-400 transition-colors"
+            className="px-4 py-2 rounded-xl bg-amber-400 text-neutral-950 font-black text-xs hover:bg-amber-500 transition-colors"
           >
             إعادة تعيين الفلاتر
           </button>
@@ -399,17 +399,17 @@ export const CategoryLandingPage: React.FC<CategoryLandingPageProps> = React.mem
       {/* SORT MODAL DRAWER */}
       {/* ========================================================================= */}
       {isSortModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 backdrop-blur-xs p-0 sm:p-4">
-          <div className="w-full max-w-md bg-neutral-900 border-t sm:border border-neutral-800 rounded-t-3xl sm:rounded-3xl p-5 space-y-4 shadow-2xl">
-            <div className="flex items-center justify-between pb-3 border-b border-neutral-800">
-              <h3 className="text-base font-bold text-white flex items-center gap-2">
-                <ArrowDownUp className="w-4 h-4 text-amber-400" />
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-neutral-950/50 backdrop-blur-xs p-0 sm:p-4">
+          <div className="w-full max-w-md bg-white border-t sm:border border-neutral-200 rounded-t-3xl sm:rounded-3xl p-5 space-y-4 shadow-2xl">
+            <div className="flex items-center justify-between pb-3 border-b border-neutral-200">
+              <h3 className="text-base font-bold text-neutral-950 flex items-center gap-2">
+                <ArrowDownUp className="w-4 h-4 text-amber-600" />
                 <span>ترتيب المنتجات</span>
               </h3>
               <button
                 type="button"
                 onClick={() => setIsSortModalOpen(false)}
-                className="p-1.5 rounded-full hover:bg-neutral-800 text-neutral-400"
+                className="p-1.5 rounded-full hover:bg-[#F6F7F9] text-neutral-500"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -432,12 +432,12 @@ export const CategoryLandingPage: React.FC<CategoryLandingPageProps> = React.mem
                   }}
                   className={`w-full flex items-center justify-between p-3 rounded-2xl text-xs font-bold transition-colors ${
                     sortBy === opt.id
-                      ? 'bg-amber-500/15 text-amber-400 border border-amber-500/30'
-                      : 'bg-neutral-950 text-neutral-300 hover:bg-neutral-800'
+                      ? 'bg-amber-50 text-amber-800 border border-amber-300'
+                      : 'bg-[#F6F7F9] text-neutral-700 hover:bg-neutral-100 border border-transparent'
                   }`}
                 >
                   <span>{opt.label}</span>
-                  {sortBy === opt.id && <Check className="w-4 h-4 text-amber-400" />}
+                  {sortBy === opt.id && <Check className="w-4 h-4 text-amber-700" />}
                 </button>
               ))}
             </div>
@@ -449,25 +449,25 @@ export const CategoryLandingPage: React.FC<CategoryLandingPageProps> = React.mem
       {/* FILTER MODAL DRAWER */}
       {/* ========================================================================= */}
       {isFilterModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 backdrop-blur-xs p-0 sm:p-4">
-          <div className="w-full max-w-md bg-neutral-900 border-t sm:border border-neutral-800 rounded-t-3xl sm:rounded-3xl p-5 space-y-4 shadow-2xl">
-            <div className="flex items-center justify-between pb-3 border-b border-neutral-800">
-              <h3 className="text-base font-bold text-white flex items-center gap-2">
-                <SlidersHorizontal className="w-4 h-4 text-amber-400" />
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-neutral-950/50 backdrop-blur-xs p-0 sm:p-4">
+          <div className="w-full max-w-md bg-white border-t sm:border border-neutral-200 rounded-t-3xl sm:rounded-3xl p-5 space-y-4 shadow-2xl">
+            <div className="flex items-center justify-between pb-3 border-b border-neutral-200">
+              <h3 className="text-base font-bold text-neutral-950 flex items-center gap-2">
+                <SlidersHorizontal className="w-4 h-4 text-amber-600" />
                 <span>تصفية النتائج</span>
               </h3>
               <button
                 type="button"
                 onClick={() => setIsFilterModalOpen(false)}
-                className="p-1.5 rounded-full hover:bg-neutral-800 text-neutral-400"
+                className="p-1.5 rounded-full hover:bg-[#F6F7F9] text-neutral-500"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             <div className="space-y-3 py-2">
-              <label className="flex items-center justify-between p-3 rounded-2xl bg-neutral-950 border border-neutral-800 cursor-pointer">
-                <span className="text-xs font-bold text-neutral-200">المنتجات المخفضة فقط</span>
+              <label className="flex items-center justify-between p-3 rounded-2xl bg-[#F6F7F9] border border-neutral-200 cursor-pointer">
+                <span className="text-xs font-bold text-neutral-800">المنتجات المخفضة فقط</span>
                 <input
                   type="checkbox"
                   checked={discountOnly}
@@ -476,8 +476,8 @@ export const CategoryLandingPage: React.FC<CategoryLandingPageProps> = React.mem
                 />
               </label>
 
-              <label className="flex items-center justify-between p-3 rounded-2xl bg-neutral-950 border border-neutral-800 cursor-pointer">
-                <span className="text-xs font-bold text-neutral-200">المتوفر في المخزن فقط</span>
+              <label className="flex items-center justify-between p-3 rounded-2xl bg-[#F6F7F9] border border-neutral-200 cursor-pointer">
+                <span className="text-xs font-bold text-neutral-800">المتوفر في المخزن فقط</span>
                 <input
                   type="checkbox"
                   checked={inStockOnly}
@@ -495,14 +495,14 @@ export const CategoryLandingPage: React.FC<CategoryLandingPageProps> = React.mem
                   setInStockOnly(false);
                   setIsFilterModalOpen(false);
                 }}
-                className="flex-1 py-2.5 rounded-xl bg-neutral-800 text-neutral-300 font-bold text-xs hover:bg-neutral-700"
+                className="flex-1 py-2.5 rounded-xl bg-[#F6F7F9] border border-neutral-200 text-neutral-700 font-bold text-xs hover:bg-neutral-200"
               >
                 إلغاء التصفية
               </button>
               <button
                 type="button"
                 onClick={() => setIsFilterModalOpen(false)}
-                className="flex-1 py-2.5 rounded-xl bg-amber-500 text-neutral-950 font-bold text-xs hover:bg-amber-400"
+                className="flex-1 py-2.5 rounded-xl bg-amber-400 text-neutral-950 font-black text-xs hover:bg-amber-500"
               >
                 تطبيق
               </button>

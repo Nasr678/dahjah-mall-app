@@ -279,13 +279,13 @@ export const MainCategoriesScreen: React.FC<MainCategoriesScreenProps> = ({
   const currentCategoryGroup = sidebarItems.find((d) => d.id === selectedSidebarId) || sidebarItems[0];
 
   return (
-    <div className="w-full min-h-screen flex flex-col bg-neutral-950 text-neutral-100 pb-20">
+    <div className="w-full min-h-screen flex flex-col bg-[#F6F7F9] text-neutral-900 pb-20">
       {/* 1. Top Search Header matching Reference Screen 2 */}
-      <div className="sticky top-0 z-40 bg-neutral-950 border-b border-neutral-850 px-3 py-2 flex items-center gap-2">
+      <div className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-neutral-200 px-3 py-2 flex items-center gap-2">
         <button
           type="button"
           onClick={onBackToHome}
-          className="p-1.5 rounded-xl bg-neutral-900 border border-neutral-800 text-neutral-300 hover:text-white shrink-0"
+          className="p-1.5 rounded-xl bg-[#F6F7F9] border border-neutral-200 text-neutral-700 hover:text-neutral-950 hover:bg-neutral-200 shrink-0 transition-colors"
           title="الرئيسية"
         >
           <ArrowRight className="w-4 h-4" />
@@ -295,18 +295,18 @@ export const MainCategoriesScreen: React.FC<MainCategoriesScreenProps> = ({
         <button
           type="button"
           onClick={onOpenSearch}
-          className="flex-1 flex items-center justify-between px-3.5 py-2 rounded-xl bg-neutral-900 border border-neutral-800 text-neutral-400 text-xs sm:text-sm shadow-inner group"
+          className="flex-1 flex items-center justify-between px-3.5 py-2 rounded-xl bg-[#F3F4F6] border border-neutral-200/80 text-neutral-500 text-xs sm:text-sm group"
         >
           <div className="flex items-center gap-2">
-            <Search className="w-4 h-4 text-amber-400 group-hover:scale-110 transition-transform" />
-            <span className="text-neutral-300 font-medium">بحث في أقسام ضَجّة مول...</span>
+            <Search className="w-4 h-4 text-amber-600 group-hover:scale-110 transition-transform" />
+            <span className="text-neutral-600 font-medium">بحث في أقسام ضَجّة مول...</span>
           </div>
-          <Camera className="w-4 h-4 text-neutral-400 hover:text-amber-400" />
+          <Camera className="w-4 h-4 text-neutral-500 hover:text-amber-700" />
         </button>
       </div>
 
       {/* 2. Top Horizontal Department Strip in Arabic matching Official Categories */}
-      <div className="sticky top-[53px] z-30 border-b border-neutral-850 bg-neutral-900 px-2 py-1.5 overflow-x-auto no-scrollbar flex items-center gap-2">
+      <div className="sticky top-[53px] z-30 border-b border-neutral-200 bg-white px-2 py-1.5 overflow-x-auto no-scrollbar flex items-center gap-2">
         {topTabs.map((tab) => {
           const isSelected = activeTopTab === tab.id;
           return (
@@ -323,8 +323,8 @@ export const MainCategoriesScreen: React.FC<MainCategoriesScreenProps> = ({
               }}
               className={`px-3 py-1 rounded-full text-xs font-black whitespace-nowrap transition-all cursor-pointer ${
                 isSelected
-                  ? 'bg-neutral-800 text-amber-400 border border-amber-400/40 shadow-sm'
-                  : 'text-neutral-400 hover:text-neutral-200'
+                  ? 'bg-amber-50 text-amber-800 border border-amber-300 shadow-xs'
+                  : 'text-neutral-600 hover:text-neutral-950'
               }`}
             >
               {tab.name}
@@ -336,7 +336,7 @@ export const MainCategoriesScreen: React.FC<MainCategoriesScreenProps> = ({
       {/* 3. Full Screen Mobile UI (Vertical Sidebar on Right + 3-Column Squircle Grid on Left) */}
       <div className="flex-1 flex overflow-hidden">
         {/* RIGHT SIDE in RTL: Vertical Category Sidebar */}
-        <div className="w-[100px] xs:w-[115px] sm:w-[135px] border-l border-neutral-850 bg-neutral-900/60 overflow-y-auto no-scrollbar divide-y divide-neutral-850/50 shrink-0">
+        <div className="w-[100px] xs:w-[115px] sm:w-[135px] border-l border-neutral-200 bg-[#F6F7F9] overflow-y-auto no-scrollbar divide-y divide-neutral-200/70 shrink-0">
           {sidebarItems.map((item) => {
             const isSelected = selectedSidebarId === item.id;
 
@@ -351,14 +351,14 @@ export const MainCategoriesScreen: React.FC<MainCategoriesScreenProps> = ({
                 }}
                 className={`w-full text-right px-2.5 sm:px-3 py-3.5 transition-all flex flex-col justify-center cursor-pointer ${
                   isSelected
-                    ? 'bg-neutral-950 text-amber-400 font-black border-r-4 border-amber-400 shadow-sm'
-                    : 'text-neutral-300 hover:text-white hover:bg-neutral-900/80 font-bold'
+                    ? 'bg-white text-amber-800 font-black border-r-4 border-amber-500 shadow-xs'
+                    : 'text-neutral-700 hover:text-neutral-950 hover:bg-white/60 font-bold'
                 }`}
               >
                 <span className="text-xs sm:text-sm tracking-tight line-clamp-1">
                   {item.name}
                 </span>
-                <span className="text-[9px] text-neutral-500 font-medium mt-0.5 line-clamp-1">
+                <span className="text-[9px] text-neutral-400 font-medium mt-0.5 line-clamp-1">
                   {item.englishName}
                 </span>
               </button>
@@ -367,16 +367,16 @@ export const MainCategoriesScreen: React.FC<MainCategoriesScreenProps> = ({
         </div>
 
         {/* LEFT SIDE in RTL: Main Subcategory Content Grid */}
-        <div className="flex-1 p-3 sm:p-4 overflow-y-auto no-scrollbar space-y-3.5 bg-neutral-950">
+        <div className="flex-1 p-3 sm:p-4 overflow-y-auto no-scrollbar space-y-3.5 bg-white">
           {/* Header Title for Current Category Group */}
-          <div className="flex items-center justify-between pb-1 border-b border-neutral-850/80">
-            <h2 className="text-xs sm:text-sm font-black text-white flex items-center gap-1.5">
+          <div className="flex items-center justify-between pb-2 border-b border-neutral-200/80">
+            <h2 className="text-xs sm:text-sm font-black text-neutral-950 flex items-center gap-1.5">
               <span>{currentCategoryGroup.name}</span>
             </h2>
             <button
               type="button"
               onClick={() => onSelectCategory(currentCategoryGroup.categoryId)}
-              className="text-[11px] font-bold text-amber-400 hover:text-amber-300 flex items-center gap-0.5"
+              className="text-[11px] font-bold text-amber-700 hover:text-amber-800 flex items-center gap-0.5"
             >
               <span>عرض كل القسم</span>
               <ChevronLeft className="w-3 h-3" />
@@ -393,7 +393,7 @@ export const MainCategoriesScreen: React.FC<MainCategoriesScreenProps> = ({
                 className="flex flex-col items-center gap-1.5 group focus:outline-none transition-transform active:scale-95 text-center cursor-pointer"
               >
                 {/* Rounded Circle / Squircle Thumbnail */}
-                <div className="relative w-full aspect-square rounded-full overflow-hidden bg-neutral-900 border border-neutral-800 group-hover:border-amber-400 shadow-sm p-0.5 transition-all">
+                <div className="relative w-full aspect-square rounded-full overflow-hidden bg-[#F3F4F6] border border-neutral-200 group-hover:border-amber-400 shadow-xs p-0.5 transition-all">
                   <CachedImage
                     src={sub.image}
                     alt={sub.name}
@@ -404,7 +404,7 @@ export const MainCategoriesScreen: React.FC<MainCategoriesScreenProps> = ({
                 </div>
 
                 {/* Subcategory Label in Arabic */}
-                <span className="text-[11px] sm:text-xs font-bold text-neutral-200 group-hover:text-amber-300 line-clamp-2 leading-tight px-0.5">
+                <span className="text-[11px] sm:text-xs font-bold text-neutral-800 group-hover:text-amber-700 line-clamp-2 leading-tight px-0.5">
                   {sub.name}
                 </span>
               </button>
@@ -416,11 +416,11 @@ export const MainCategoriesScreen: React.FC<MainCategoriesScreenProps> = ({
               onClick={() => onSelectCategory(currentCategoryGroup.categoryId)}
               className="flex flex-col items-center gap-1.5 group focus:outline-none transition-transform active:scale-95 text-center cursor-pointer"
             >
-              <div className="w-full aspect-square rounded-2xl bg-neutral-900 border border-neutral-800 hover:border-amber-400 flex flex-col items-center justify-center text-neutral-400 group-hover:text-amber-400 transition-colors p-1">
-                <Grid className="w-6 h-6 mb-1 text-amber-400" />
-                <span className="text-[10px] font-black text-amber-400">تصفح الكل</span>
+              <div className="w-full aspect-square rounded-2xl bg-[#F6F7F9] border border-neutral-200 hover:border-amber-400 flex flex-col items-center justify-center text-neutral-600 group-hover:text-amber-700 transition-colors p-1">
+                <Grid className="w-6 h-6 mb-1 text-amber-600" />
+                <span className="text-[10px] font-black text-amber-800">تصفح الكل</span>
               </div>
-              <span className="text-[11px] font-bold text-neutral-300 group-hover:text-white">
+              <span className="text-[11px] font-bold text-neutral-700 group-hover:text-neutral-950">
                 جميع المنتجات
               </span>
             </button>
@@ -428,7 +428,7 @@ export const MainCategoriesScreen: React.FC<MainCategoriesScreenProps> = ({
 
           {/* Dajjah Mall Watermark */}
           <div className="pt-4 pb-2 text-center">
-            <span className="text-[11px] font-black tracking-widest text-amber-400/60 uppercase">
+            <span className="text-[11px] font-black tracking-widest text-amber-700/70 uppercase">
               ✨ ضَجّة مول — DAJJAH MALL
             </span>
           </div>
@@ -436,14 +436,14 @@ export const MainCategoriesScreen: React.FC<MainCategoriesScreenProps> = ({
       </div>
 
       {/* 4. Bottom Sticky Register / Login Strip */}
-      <div className="sticky bottom-0 z-30 bg-neutral-900 border-t border-neutral-850 px-3 py-2 flex items-center justify-between shadow-2xl">
-        <span className="text-xs font-bold text-neutral-200 truncate">
+      <div className="sticky bottom-0 z-30 bg-white border-t border-neutral-200 px-3 py-2 flex items-center justify-between shadow-lg">
+        <span className="text-xs font-bold text-neutral-700 truncate">
           سجل الدخول واستمتع بالكثير من المزايا والعروض
         </span>
         <button
           type="button"
           onClick={onOpenAuth || onBackToHome}
-          className="flex items-center gap-1 px-3 py-1 rounded-xl bg-amber-500 hover:bg-amber-400 text-neutral-950 font-black text-xs shadow transition-all whitespace-nowrap"
+          className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-500 text-neutral-950 font-black text-xs shadow-xs transition-all whitespace-nowrap"
         >
           <LogIn className="w-3.5 h-3.5" />
           <span>تسجيل الدخول</span>

@@ -12,6 +12,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete, onSkip }
   const [phase, setPhase] = useState<number>(1);
   const [isMuted, setIsMuted] = useState<boolean>(false);
   const audioContextRef = useRef<AudioContext | null>(null);
+  const resumePromiseRef = useRef<Promise<void> | null>(null);
 
   // Synthesize Netflix-style luxury cinematic impact sound using Web Audio API (0kb download, zero lag, works offline)
   const playCinematicAudio = useCallback(() => {
@@ -23,7 +24,8 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete, onSkip }
       const ctx = new AudioCtx();
       audioContextRef.current = ctx;
       if (ctx.state === 'suspended') {
-        ctx.resume();
+        const p = ctx.resume().catch(() => {});
+        resumePromiseRef.current = p;
       }
 
       const now = ctx.currentTime;
@@ -68,26 +70,24 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete, onSkip }
   }, [isMuted]);
 
   useEffect(() => {
-    // Phase 1: Deep cinematic darkness (0ms)
-    // Phase 2: Anamorphic Light Bar Flare & Sub Boom (250ms)
-    // Phase 3: 3D Logo Emergence & Ribbon Burst (600ms)
-    // Phase 4: Specular Golden Scan & Tilt Depth (1100ms)
-    // Phase 5: Brand Name "ضَجّة مول" 3D Reveal (1600ms)
-    // Phase 6: Slogan "ضَجّة في وجه الغلاء" & Climax (2100ms)
-    // Phase 7: Smooth Exit to Main App (2800ms)
+    // Failsafe watchdog timer: guarantees app launch within 2400ms on all devices (especially Xiaomi/Android)
+    const failsafeTimer = setTimeout(() => {
+      onComplete();
+    }, 2400);
 
-    const timerSound = setTimeout(playCinematicAudio, 250);
-    const timer1 = setTimeout(() => setPhase(2), 250);
-    const timer2 = setTimeout(() => setPhase(3), 600);
-    const timer3 = setTimeout(() => setPhase(4), 1100);
-    const timer4 = setTimeout(() => setPhase(5), 1600);
-    const timer5 = setTimeout(() => setPhase(6), 2100);
+    const timerSound = setTimeout(playCinematicAudio, 150);
+    const timer1 = setTimeout(() => setPhase(2), 150);
+    const timer2 = setTimeout(() => setPhase(3), 400);
+    const timer3 = setTimeout(() => setPhase(4), 750);
+    const timer4 = setTimeout(() => setPhase(5), 1100);
+    const timer5 = setTimeout(() => setPhase(6), 1500);
     const timer6 = setTimeout(() => {
       setPhase(7);
-      setTimeout(onComplete, 400);
-    }, 2850);
+      setTimeout(onComplete, 250);
+    }, 1900);
 
     return () => {
+      clearTimeout(failsafeTimer);
       clearTimeout(timerSound);
       clearTimeout(timer1);
       clearTimeout(timer2);
@@ -95,10 +95,21 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete, onSkip }
       clearTimeout(timer4);
       clearTimeout(timer5);
       clearTimeout(timer6);
-      if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
-        try {
-          audioContextRef.current.close();
-        } catch {}
+      const ctx = audioContextRef.current;
+      audioContextRef.current = null;
+      if (ctx) {
+        const safeClose = () => {
+          if (ctx.state !== 'closed') {
+            try {
+              ctx.close().catch(() => {});
+            } catch {}
+          }
+        };
+        if (resumePromiseRef.current) {
+          resumePromiseRef.current.finally(safeClose);
+        } else {
+          safeClose();
+        }
       }
     };
   }, [onComplete, playCinematicAudio]);
@@ -111,7 +122,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete, onSkip }
 
   return (
     <motion.div
-      className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#050408] text-white overflow-hidden select-none cursor-pointer"
+      className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-gradient-to-b from-[#FAFBFD] via-[#F6F7F9] to-[#F2ECE0] text-neutral-950 overflow-hidden select-none cursor-pointer"
       initial={{ opacity: 1 }}
       exit={{ opacity: 0, scale: 1.03 }}
         transition={{ duration: 0.35, ease: 'easeInOut' }}
@@ -126,17 +137,17 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete, onSkip }
               e.stopPropagation();
               setIsMuted(!isMuted);
             }}
-            className="p-2 sm:px-3 sm:py-1.5 rounded-full bg-neutral-900/80 hover:bg-neutral-800 border border-neutral-700/60 text-xs font-semibold text-neutral-300 hover:text-amber-400 transition-colors flex items-center gap-1.5 backdrop-blur-md"
+            className="p-2 sm:px-3 sm:py-1.5 rounded-full bg-white/90 hover:bg-white border border-neutral-200 text-xs font-semibold text-neutral-700 hover:text-amber-700 transition-colors flex items-center gap-1.5 backdrop-blur-md shadow-sm"
             title={isMuted ? 'تفعيل الصوت' : 'كتم الصوت'}
           >
             {isMuted ? (
               <>
-                <VolumeX className="w-3.5 h-3.5 text-neutral-400" />
+                <VolumeX className="w-3.5 h-3.5 text-neutral-500" />
                 <span className="hidden sm:inline text-[11px]">مكتوم</span>
               </>
             ) : (
               <>
-                <Volume2 className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
+                <Volume2 className="w-3.5 h-3.5 text-amber-600 animate-pulse" />
                 <span className="hidden sm:inline text-[11px]">صوت سينمائي</span>
               </>
             )}
@@ -146,14 +157,14 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete, onSkip }
           <button
             type="button"
             onClick={handleSkip}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-neutral-900/90 hover:bg-neutral-800 border border-amber-500/30 text-xs font-black text-amber-300 hover:text-amber-200 shadow-lg shadow-black/40 backdrop-blur-md transition-all active:scale-95"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/95 hover:bg-amber-50 border border-amber-300 text-xs font-black text-amber-800 hover:text-amber-900 shadow-sm backdrop-blur-md transition-all active:scale-95"
           >
             <span>تخطي العرض</span>
             <ArrowLeft className="w-3.5 h-3.5" />
           </button>
         </div>
 
-        {/* Cinematic Netflix-style Red/Gold Light Streaks (Ribbon Effect) */}
+        {/* Luxury Warm Gold Light Streaks (Ribbon Effect) */}
         <motion.div
           className="absolute inset-0 pointer-events-none overflow-hidden"
           initial={{ opacity: 0 }}
@@ -162,40 +173,39 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete, onSkip }
         >
           {/* Center Light Pillar (Anamorphic Beam) */}
           <motion.div
-            className="absolute top-1/2 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-amber-400 to-transparent shadow-[0_0_24px_rgba(251,191,36,0.9)]"
+            className="absolute top-1/2 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-amber-500 to-transparent shadow-[0_0_24px_rgba(217,119,6,0.45)]"
             initial={{ scaleX: 0, opacity: 0 }}
             animate={{
               scaleX: phase >= 2 ? [0, 1.4, 0.4] : 0,
-              opacity: phase >= 2 ? [0, 1, 0.2] : 0,
+              opacity: phase >= 2 ? [0, 0.9, 0.15] : 0,
             }}
             transition={{ duration: 1.1, ease: 'easeOut' }}
           />
 
-          {/* Deep Ambient Cosmic Glowing Orbs */}
-          <div className="absolute -top-32 -right-32 w-96 h-96 rounded-full bg-gradient-to-br from-amber-500/25 via-rose-600/10 to-transparent blur-3xl transform-gpu" />
-          <div className="absolute -bottom-32 -left-32 w-96 h-96 rounded-full bg-gradient-to-tr from-purple-800/25 via-violet-950/15 to-transparent blur-3xl transform-gpu" />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(245,158,11,0.12)_0%,rgba(5,4,8,0.85)_65%,#050408_100%)]" />
+          {/* Warm Champagne & Soft Gold Ambient Orbs */}
+          <div className="absolute -top-32 -right-32 w-96 h-96 rounded-full bg-gradient-to-br from-amber-300/30 via-amber-200/15 to-transparent blur-3xl transform-gpu" />
+          <div className="absolute -bottom-32 -left-32 w-96 h-96 rounded-full bg-gradient-to-tr from-amber-400/20 via-amber-100/20 to-transparent blur-3xl transform-gpu" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(245,158,11,0.10)_0%,rgba(246,247,249,0.4)_65%,#F6F7F9_100%)]" />
         </motion.div>
 
-        {/* Dynamic Star Dust Embers */}
+        {/* Subtle Shimmer Dust Particles */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          {[...Array(20)].map((_, i) => (
+          {[...Array(16)].map((_, i) => (
             <motion.div
               key={i}
               className="absolute rounded-full"
               style={{
-                width: i % 3 === 0 ? '3px' : '2px',
-                height: i % 3 === 0 ? '3px' : '2px',
-                backgroundColor: i % 2 === 0 ? '#fbbf24' : '#f43f5e',
-                boxShadow: '0 0 6px currentColor',
-                top: `${(i * 17) % 94}%`,
-                left: `${(i * 23) % 96}%`,
+                width: i % 3 === 0 ? '4px' : '2.5px',
+                height: i % 3 === 0 ? '4px' : '2.5px',
+                backgroundColor: i % 2 === 0 ? '#d97706' : '#f59e0b',
+                top: `${(i * 19) % 92}%`,
+                left: `${(i * 23) % 94}%`,
               }}
               initial={{ opacity: 0, scale: 0 }}
               animate={{
-                opacity: phase >= 3 ? [0.2, 0.85, 0.2] : 0,
-                scale: phase >= 3 ? [0.6, 1.4, 0.6] : 0,
-                y: [0, -25, 0],
+                opacity: phase >= 3 ? [0.15, 0.65, 0.15] : 0,
+                scale: phase >= 3 ? [0.6, 1.3, 0.6] : 0,
+                y: [0, -20, 0],
               }}
               transition={{
                 duration: 2.5 + (i % 3),
@@ -207,29 +217,26 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete, onSkip }
           ))}
         </div>
 
-        {/* 3D Master Container with Cinematic Depth */}
+        {/* Master Container with GPU-accelerated smooth depth */}
         <motion.div
-          className="relative z-20 flex flex-col items-center justify-center p-6 text-center"
-          initial={{ scale: 0.65, opacity: 0, y: 40, rotateX: 25 }}
+          className="relative z-20 flex flex-col items-center justify-center p-6 text-center gpu-layer"
+          initial={{ scale: 0.75, opacity: 0, y: 30 }}
           animate={{
-            scale: phase >= 3 ? (phase >= 5 ? 1 : 0.95) : 0.65,
+            scale: phase >= 3 ? (phase >= 5 ? 1 : 0.95) : 0.75,
             opacity: phase >= 3 ? 1 : 0,
-            y: phase >= 3 ? 0 : 40,
-            rotateX: phase >= 4 ? [18, -4, 0] : 25,
-            rotateY: phase >= 4 ? [-10, 8, 0] : 0,
+            y: phase >= 3 ? 0 : 30,
           }}
           transition={{
-            duration: 1.2,
+            duration: 0.8,
             ease: [0.16, 1, 0.3, 1],
           }}
-          style={{ perspective: 1400, transformStyle: 'preserve-3d' }}
         >
-          {/* 3D Golden Halo Ring Behind Logo */}
+          {/* Warm Golden Halo Ring Behind Logo */}
           <motion.div
-            className="absolute w-72 h-72 rounded-full bg-gradient-to-r from-amber-400/25 via-rose-500/20 to-amber-300/30 blur-2xl pointer-events-none"
+            className="absolute w-72 h-72 rounded-full bg-gradient-to-r from-amber-300/35 via-amber-200/25 to-amber-400/30 blur-2xl pointer-events-none"
             initial={{ scale: 0.4, opacity: 0 }}
             animate={{
-              scale: phase >= 3 ? [1, 1.3, 1.15] : 0.4,
+              scale: phase >= 3 ? [1, 1.25, 1.1] : 0.4,
               opacity: phase >= 3 ? 0.85 : 0,
             }}
             transition={{ duration: 1.8, repeat: Infinity, repeatType: 'reverse' }}
@@ -243,20 +250,20 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete, onSkip }
               customSize={window.innerWidth < 640 ? 190 : 240}
             />
 
-            {/* Specular Light Sweep (Netflix Cinematic Lens Flare) */}
+            {/* Specular Light Sweep */}
             {phase >= 4 && (
               <motion.div
                 className="absolute inset-0 pointer-events-none overflow-hidden rounded-full"
                 initial={{ x: '-130%', opacity: 0 }}
-                animate={{ x: '150%', opacity: [0, 1, 0] }}
+                animate={{ x: '150%', opacity: [0, 0.85, 0] }}
                 transition={{ duration: 1.1, ease: 'easeInOut', delay: 0.1 }}
               >
-                <div className="w-24 h-full bg-gradient-to-r from-transparent via-white/70 to-transparent transform -skew-x-30 blur-[2px]" />
+                <div className="w-24 h-full bg-gradient-to-r from-transparent via-white/80 to-transparent transform -skew-x-30 blur-[2px]" />
               </motion.div>
             )}
           </div>
 
-          {/* Brand Name Typography Reveal (3D Gold Extrusion) */}
+          {/* Brand Name Typography Reveal */}
           <motion.div
             className="mt-6 flex flex-col items-center"
             initial={{ opacity: 0, y: 24, scale: 0.9 }}
@@ -268,11 +275,11 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete, onSkip }
             transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
           >
             <div className="flex items-center gap-2.5">
-              <Sparkles className="w-5 h-5 text-amber-400 animate-pulse" />
-              <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-100 drop-shadow-[0_4px_16px_rgba(245,158,11,0.5)]">
+              <Sparkles className="w-5 h-5 text-amber-600 animate-pulse" />
+              <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-neutral-950">
                 ضَجّة مول
               </h1>
-              <Sparkles className="w-5 h-5 text-amber-400 animate-pulse" />
+              <Sparkles className="w-5 h-5 text-amber-600 animate-pulse" />
             </div>
 
             {/* Slogan Reveal: "ضَجّة في وجه الغلاء" */}
@@ -284,21 +291,21 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete, onSkip }
                 filter: phase >= 6 ? 'blur(0px)' : 'blur(6px)',
               }}
               transition={{ duration: 0.6 }}
-              className="mt-3 flex items-center justify-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-amber-500/15 via-rose-950/40 to-amber-500/15 border border-amber-400/30 shadow-lg shadow-black/50"
+              className="mt-3 flex items-center justify-center gap-2 px-4 py-1.5 rounded-full bg-amber-50 border border-amber-300 shadow-sm"
             >
-              <Flame className="w-4 h-4 text-rose-500 animate-bounce" />
-              <p className="text-sm sm:text-base font-black text-amber-200 tracking-wide">
+              <Flame className="w-4 h-4 text-amber-600 animate-bounce" />
+              <p className="text-sm sm:text-base font-black text-amber-900 tracking-wide">
                 ضَجّة في وجه الغلاء
               </p>
-              <Flame className="w-4 h-4 text-rose-500 animate-bounce" />
+              <Flame className="w-4 h-4 text-amber-600 animate-bounce" />
             </motion.div>
 
             {/* Subtitle */}
             <motion.p
               initial={{ opacity: 0 }}
-              animate={{ opacity: phase >= 6 ? 0.75 : 0 }}
+              animate={{ opacity: phase >= 6 ? 0.85 : 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="mt-2.5 text-[11px] sm:text-xs text-neutral-400 font-semibold tracking-wider font-mono"
+              className="mt-2.5 text-[11px] sm:text-xs text-neutral-500 font-semibold tracking-wider font-mono"
             >
               DAHJAH MALL • YEMEN & WORLDWIDE
             </motion.p>
@@ -307,15 +314,15 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete, onSkip }
 
         {/* Bottom Loading Progress Bar */}
         <div className="absolute bottom-8 inset-x-0 flex flex-col items-center gap-2 pointer-events-none">
-          <div className="w-40 sm:w-48 h-1 bg-neutral-900 rounded-full overflow-hidden border border-neutral-800">
+          <div className="w-40 sm:w-48 h-1.5 bg-neutral-200 rounded-full overflow-hidden border border-neutral-300/60">
             <motion.div
-              className="h-full bg-gradient-to-r from-amber-500 via-rose-500 to-amber-300"
+              className="h-full bg-gradient-to-r from-amber-600 via-amber-400 to-amber-500"
               initial={{ width: '0%' }}
               animate={{ width: phase >= 6 ? '100%' : `${(phase / 6) * 100}%` }}
               transition={{ duration: 0.4 }}
             />
           </div>
-          <span className="text-[10px] text-neutral-400 font-medium">جاري تجهيز المتجر والعروض الحصرية...</span>
+          <span className="text-[10px] text-neutral-500 font-semibold">جاري تجهيز المتجر والعروض الحصرية...</span>
         </div>
       </motion.div>
   );

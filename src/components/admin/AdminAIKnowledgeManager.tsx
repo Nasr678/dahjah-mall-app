@@ -201,32 +201,32 @@ export const AdminAIKnowledgeManager: React.FC = () => {
   const getCategoryBadge = (cat: AIKnowledgeBaseItem['category']) => {
     switch (cat) {
       case 'store':
-        return <span className="px-2 py-0.5 rounded-md bg-blue-500/20 text-blue-400 text-[10px] font-bold">المتجر</span>;
+        return <span className="px-2 py-0.5 rounded-md bg-sky-50 text-sky-700 border border-sky-200 text-[10px] font-bold">المتجر</span>;
       case 'guarantees':
-        return <span className="px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-400 text-[10px] font-bold">الضمانات</span>;
+        return <span className="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-bold">الضمانات</span>;
       case 'returns':
-        return <span className="px-2 py-0.5 rounded-md bg-purple-500/20 text-purple-400 text-[10px] font-bold">الاسترجاع</span>;
+        return <span className="px-2 py-0.5 rounded-md bg-violet-50 text-violet-700 border border-violet-200 text-[10px] font-bold">الاسترجاع</span>;
       case 'payment':
-        return <span className="px-2 py-0.5 rounded-md bg-amber-500/20 text-amber-400 text-[10px] font-bold">الدفع</span>;
+        return <span className="px-2 py-0.5 rounded-md bg-amber-50 text-amber-800 border border-amber-200 text-[10px] font-bold">الدفع</span>;
       case 'shipping':
-        return <span className="px-2 py-0.5 rounded-md bg-sky-500/20 text-sky-400 text-[10px] font-bold">الشحن</span>;
+        return <span className="px-2 py-0.5 rounded-md bg-cyan-50 text-cyan-700 border border-cyan-200 text-[10px] font-bold">الشحن</span>;
       case 'faq':
-        return <span className="px-2 py-0.5 rounded-md bg-rose-500/20 text-rose-400 text-[10px] font-bold">الأسئلة الشائعة</span>;
+        return <span className="px-2 py-0.5 rounded-md bg-rose-50 text-rose-700 border border-rose-200 text-[10px] font-bold">الأسئلة الشائعة</span>;
       default:
-        return <span className="px-2 py-0.5 rounded-md bg-neutral-800 text-neutral-300 text-[10px] font-bold">عام</span>;
+        return <span className="px-2 py-0.5 rounded-md bg-neutral-100 text-neutral-700 border border-neutral-200 text-[10px] font-bold">عام</span>;
     }
   };
 
   return (
     <div className="space-y-6 text-right">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-3xl bg-neutral-900 border border-neutral-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-white border border-neutral-200 shadow-xs">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <Bot className="w-6 h-6 text-amber-400" />
-            <h2 className="text-lg font-black text-white">قاعدة معرفة وإعدادات ذكاء ضَجّة (AI Knowledge Base)</h2>
+            <Bot className="w-6 h-6 text-amber-600" />
+            <h2 className="text-lg font-black text-neutral-950">قاعدة معرفة وإعدادات ذكاء ضَجّة (AI Knowledge Base)</h2>
           </div>
-          <p className="text-xs text-neutral-400 max-w-2xl leading-relaxed">
+          <p className="text-xs text-neutral-500 max-w-2xl leading-relaxed">
             تحكم بالمعلومات والسياسات التي يعتمد عليها الذكاء الاصطناعي (Gemini) عند الإجابة على استفسارات العملاء بدون الحاجة لتعديل الكود.
           </p>
         </div>
@@ -234,7 +234,7 @@ export const AdminAIKnowledgeManager: React.FC = () => {
         <button
           type="button"
           onClick={handleOpenAdd}
-          className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-amber-500 hover:bg-amber-400 text-neutral-950 font-black text-xs transition-all shadow-lg shadow-amber-500/10 cursor-pointer flex-shrink-0"
+          className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-500 text-neutral-950 font-black text-xs transition-all shadow-xs cursor-pointer flex-shrink-0"
         >
           <Plus className="w-4 h-4" />
           <span>إضافة معلومة جديدة للـ AI</span>
@@ -244,7 +244,7 @@ export const AdminAIKnowledgeManager: React.FC = () => {
       {/* Feedback Alert */}
       {statusMessage && (
         <div className={`p-4 rounded-2xl flex items-center gap-3 text-xs font-bold ${
-          statusMessage.type === 'success' ? 'bg-emerald-500/20 border border-emerald-500/40 text-emerald-400' : 'bg-rose-500/20 border border-rose-500/40 text-rose-400'
+          statusMessage.type === 'success' ? 'bg-emerald-50 border border-emerald-200 text-emerald-700' : 'bg-rose-50 border border-rose-200 text-rose-700'
         }`}>
           {statusMessage.type === 'success' ? <CheckCircle2 className="w-5 h-5 flex-shrink-0" /> : <AlertCircle className="w-5 h-5 flex-shrink-0" />}
           <span>{statusMessage.text}</span>
@@ -267,10 +267,10 @@ export const AdminAIKnowledgeManager: React.FC = () => {
             key={tab.id}
             type="button"
             onClick={() => setActiveCategoryFilter(tab.id)}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
               activeCategoryFilter === tab.id
-                ? 'bg-amber-500 text-neutral-950 font-black'
-                : 'bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-white'
+                ? 'bg-amber-400 text-neutral-950 font-black shadow-xs'
+                : 'bg-white border border-neutral-200 text-neutral-600 hover:text-neutral-950'
             }`}
           >
             {tab.label}
@@ -283,24 +283,24 @@ export const AdminAIKnowledgeManager: React.FC = () => {
         {filteredKnowledge.map((item) => (
           <div
             key={item.id}
-            className={`p-4 rounded-2xl border transition-all ${
+            className={`p-4 rounded-2xl border transition-all shadow-xs ${
               item.isActive
-                ? 'bg-neutral-900/90 border-neutral-800 hover:border-amber-500/30'
-                : 'bg-neutral-950/60 border-neutral-850 opacity-60'
+                ? 'bg-white border-neutral-200 hover:border-amber-300'
+                : 'bg-neutral-50 border-neutral-200 opacity-65'
             }`}
           >
             <div className="flex items-start justify-between gap-3 mb-2">
               <div className="flex items-center gap-2">
                 {getCategoryBadge(item.category)}
-                <h3 className="text-sm font-black text-white">{item.title}</h3>
+                <h3 className="text-sm font-black text-neutral-950">{item.title}</h3>
               </div>
 
               <div className="flex items-center gap-1">
                 <button
                   type="button"
                   onClick={() => handleToggleActive(item.id)}
-                  className={`p-1 rounded-lg text-xs font-bold ${
-                    item.isActive ? 'text-emerald-400 hover:bg-emerald-500/20' : 'text-neutral-500 hover:bg-neutral-800'
+                  className={`px-2 py-1 rounded-lg text-xs font-bold cursor-pointer ${
+                    item.isActive ? 'text-emerald-700 bg-emerald-50 hover:bg-emerald-100' : 'text-neutral-500 bg-neutral-100 hover:bg-neutral-200'
                   }`}
                   title={item.isActive ? 'مفعل' : 'معطل'}
                 >
@@ -309,7 +309,7 @@ export const AdminAIKnowledgeManager: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => handleOpenEdit(item)}
-                  className="p-1.5 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-neutral-300 hover:text-white transition-colors"
+                  className="p-1.5 rounded-lg bg-[#F6F7F9] hover:bg-neutral-100 border border-neutral-200 text-neutral-600 hover:text-neutral-950 transition-colors cursor-pointer"
                   title="تعديل"
                 >
                   <Edit3 className="w-3.5 h-3.5" />
@@ -317,7 +317,7 @@ export const AdminAIKnowledgeManager: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => handleDeleteItem(item.id)}
-                  className="p-1.5 rounded-lg bg-neutral-800 hover:bg-rose-500/20 text-neutral-400 hover:text-rose-400 transition-colors"
+                  className="p-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-600 transition-colors cursor-pointer"
                   title="حذف"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
@@ -325,7 +325,7 @@ export const AdminAIKnowledgeManager: React.FC = () => {
               </div>
             </div>
 
-            <p className="text-xs text-neutral-300 whitespace-pre-line leading-relaxed bg-neutral-950 p-3 rounded-xl border border-neutral-850">
+            <p className="text-xs text-neutral-700 whitespace-pre-line leading-relaxed bg-[#F6F7F9] p-3 rounded-xl border border-neutral-200">
               {item.content}
             </p>
           </div>
@@ -333,24 +333,24 @@ export const AdminAIKnowledgeManager: React.FC = () => {
       </div>
 
       {/* Custom AI Instructions Box */}
-      <div className="p-5 rounded-3xl bg-neutral-900 border border-neutral-800 space-y-3">
-        <div className="flex items-center justify-between">
+      <div className="p-5 rounded-2xl bg-white border border-neutral-200 shadow-xs space-y-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-amber-400" />
-            <h3 className="text-sm font-black text-white">تعليمات إضافية وتوجيهات خاصة للمساعد الذكي (System Prompt Customization)</h3>
+            <Sparkles className="w-5 h-5 text-amber-600" />
+            <h3 className="text-sm font-black text-neutral-950">تعليمات إضافية وتوجيهات خاصة للمساعد الذكي (System Prompt Customization)</h3>
           </div>
           <button
             type="button"
             onClick={handleSaveCustomInstructions}
             disabled={isSaving}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-neutral-950 font-black text-xs transition-all disabled:opacity-50 cursor-pointer"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-500 text-neutral-950 font-black text-xs transition-all disabled:opacity-50 cursor-pointer"
           >
             <Save className="w-4 h-4" />
             <span>{isSaving ? 'جارِ الحفظ...' : 'حفظ التعليمات'}</span>
           </button>
         </div>
 
-        <p className="text-xs text-neutral-400">
+        <p className="text-xs text-neutral-500">
           يمكنك هنا كتابة أي تعليمات خاصة بطريقة رد المساعد، نبرة الصوت، أو عروض ترويجية ترغب في أن يركز عليها الذكاء الاصطناعي.
         </p>
 
@@ -359,22 +359,22 @@ export const AdminAIKnowledgeManager: React.FC = () => {
           value={customInstructions}
           onChange={(e) => setCustomInstructions(e.target.value)}
           placeholder="مثال: ركز دائماً على إبراز عرض التوصيل المجاني للطلبات فوق 99$، وتحدث بأسلوب ودود ومرحب ولهجة يمنية لطيفة عند الحاجة..."
-          className="w-full p-3 rounded-2xl bg-neutral-950 border border-neutral-800 text-white text-xs placeholder:text-neutral-600 focus:outline-none focus:border-amber-400"
+          className="w-full p-3 rounded-2xl bg-[#F6F7F9] border border-neutral-200 text-neutral-950 text-xs placeholder:text-neutral-400 focus:outline-none focus:border-amber-500 focus:bg-white"
         />
       </div>
 
       {/* Add / Edit Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="w-full max-w-lg bg-neutral-900 border border-neutral-800 rounded-3xl p-6 space-y-4 text-right shadow-2xl">
-            <div className="flex items-center justify-between border-b border-neutral-800 pb-3">
-              <h3 className="text-base font-black text-white">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-neutral-950/50 backdrop-blur-sm">
+          <div className="w-full max-w-lg bg-white border border-neutral-200 rounded-3xl p-6 space-y-4 text-right shadow-2xl text-neutral-900">
+            <div className="flex items-center justify-between border-b border-neutral-200 pb-3">
+              <h3 className="text-base font-black text-neutral-950">
                 {editingItemId ? 'تعديل بند في قاعدة معرفة AI' : 'إضافة معلومة جديدة للمساعد الذكي'}
               </h3>
               <button
                 type="button"
                 onClick={() => setIsModalOpen(false)}
-                className="text-neutral-400 hover:text-white text-sm"
+                className="p-1.5 rounded-full bg-neutral-100 text-neutral-500 hover:text-neutral-900 text-sm cursor-pointer"
               >
                 ✕
               </button>
@@ -382,23 +382,23 @@ export const AdminAIKnowledgeManager: React.FC = () => {
 
             <form onSubmit={handleSaveItem} className="space-y-4">
               <div>
-                <label className="block text-xs font-bold text-neutral-300 mb-1.5">العنوان أو الموضوع</label>
+                <label className="block text-xs font-bold text-neutral-700 mb-1.5">العنوان أو الموضوع</label>
                 <input
                   type="text"
                   required
                   value={formTitle}
                   onChange={(e) => setFormTitle(e.target.value)}
                   placeholder="مثال: مواعيد عمل فروع صنعاء وعدن"
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-neutral-950 border border-neutral-800 text-white text-xs focus:outline-none focus:border-amber-400"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#F6F7F9] border border-neutral-200 text-neutral-950 text-xs focus:outline-none focus:border-amber-500 focus:bg-white"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-neutral-300 mb-1.5">القسم / التصنيف</label>
+                <label className="block text-xs font-bold text-neutral-700 mb-1.5">القسم / التصنيف</label>
                 <select
                   value={formCategory}
                   onChange={(e) => setFormCategory(e.target.value as any)}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-neutral-950 border border-neutral-800 text-white text-xs focus:outline-none focus:border-amber-400 cursor-pointer"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#F6F7F9] border border-neutral-200 text-neutral-950 text-xs focus:outline-none focus:border-amber-500 focus:bg-white cursor-pointer"
                 >
                   <option value="store">عن المتجر والفروع</option>
                   <option value="guarantees">الضمانات والمعاينة</option>
@@ -411,14 +411,14 @@ export const AdminAIKnowledgeManager: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-neutral-300 mb-1.5">المحتوى والتفاصيل التي يعتمد عليها الـ AI</label>
+                <label className="block text-xs font-bold text-neutral-700 mb-1.5">المحتوى والتفاصيل التي يعتمد عليها الـ AI</label>
                 <textarea
                   required
                   rows={5}
                   value={formContent}
                   onChange={(e) => setFormContent(e.target.value)}
                   placeholder="اكتب المعلومات والشروحات بدقة ووضوح..."
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-neutral-950 border border-neutral-800 text-white text-xs focus:outline-none focus:border-amber-400"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#F6F7F9] border border-neutral-200 text-neutral-950 text-xs focus:outline-none focus:border-amber-500 focus:bg-white"
                 />
               </div>
 
@@ -430,7 +430,7 @@ export const AdminAIKnowledgeManager: React.FC = () => {
                   onChange={(e) => setFormIsActive(e.target.checked)}
                   className="w-4 h-4 rounded text-amber-500 focus:ring-0 cursor-pointer"
                 />
-                <label htmlFor="form-kb-active" className="text-xs font-bold text-neutral-300 cursor-pointer">
+                <label htmlFor="form-kb-active" className="text-xs font-bold text-neutral-700 cursor-pointer">
                   تفعيل هذا البند وجعله متاحاً للمساعد الذكي فوراً
                 </label>
               </div>
@@ -438,14 +438,14 @@ export const AdminAIKnowledgeManager: React.FC = () => {
               <div className="flex items-center gap-2 pt-2">
                 <button
                   type="submit"
-                  className="flex-1 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-neutral-950 font-black text-xs transition-all cursor-pointer"
+                  className="flex-1 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-500 text-neutral-950 font-black text-xs transition-all cursor-pointer"
                 >
                   {editingItemId ? 'حفظ التعديلات' : 'إضافة البند'}
                 </button>
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2.5 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-xs font-bold cursor-pointer"
+                  className="px-4 py-2.5 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-700 text-xs font-bold cursor-pointer"
                 >
                   إلغاء
                 </button>

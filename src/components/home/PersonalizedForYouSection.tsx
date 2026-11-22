@@ -74,14 +74,14 @@ export const PersonalizedForYouSection: React.FC<PersonalizedForYouSectionProps>
       {/* Section Header */}
       <div className="flex items-end justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 text-purple-400 text-xs font-black tracking-wider uppercase mb-1">
-            <Wand2 className="w-4 h-4 text-purple-400" />
+          <div className="flex items-center gap-2 text-amber-700 text-xs font-black tracking-wider uppercase mb-1">
+            <Wand2 className="w-4 h-4 text-amber-600" />
             <span>توصيات الذكاء الاصطناعي الذكية</span>
           </div>
-          <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+          <h2 className="text-2xl sm:text-3xl font-black text-neutral-900 tracking-tight">
             مختارات لك
           </h2>
-          <p className="text-xs sm:text-sm text-neutral-400 mt-1">
+          <p className="text-xs sm:text-sm text-neutral-500 mt-1">
             اقتراحات مخصصة تناسب ذوقك وتفضيلاتك في {userCity}
           </p>
         </div>
@@ -90,7 +90,7 @@ export const PersonalizedForYouSection: React.FC<PersonalizedForYouSectionProps>
           <button
             type="button"
             onClick={onViewAll}
-            className="flex items-center gap-1.5 text-xs font-bold text-amber-400 hover:text-amber-300 transition-colors whitespace-nowrap group pb-1"
+            className="flex items-center gap-1.5 text-xs font-bold text-amber-700 hover:text-amber-800 transition-colors whitespace-nowrap group pb-1 cursor-pointer"
           >
             <span>عرض الكل</span>
             <ArrowLeft className="w-3.5 h-3.5 transform group-hover:-translate-x-1 transition-transform" />

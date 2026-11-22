@@ -240,19 +240,19 @@ export const AdminFooterManager: React.FC<AdminFooterManagerProps> = ({ onNaviga
   return (
     <div className="space-y-6 text-right select-none pb-12" dir="rtl">
       {/* Header & Global Action Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-neutral-900 border border-neutral-800 shadow-xl">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-white border border-neutral-200 shadow-xs">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+          <div className="w-12 h-12 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-600 shrink-0">
             <Sliders className="w-6 h-6" />
           </div>
           <div>
-            <h2 className="text-lg sm:text-xl font-black text-white flex items-center gap-2">
+            <h2 className="text-lg sm:text-xl font-black text-neutral-950 flex items-center gap-2 flex-wrap">
               <span>إدارة التذييل والمحتوى السفلي</span>
-              <span className="text-xs px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30 font-bold">
+              <span className="text-xs px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200 font-bold tabular-nums">
                 تحكم كامل 100%
               </span>
             </h2>
-            <p className="text-xs text-neutral-400 mt-0.5">
+            <p className="text-xs text-neutral-500 mt-0.5">
               تحكم كامل في جميع الروابط، الشعار، شريط الإجراءات السفلي، شارات الثقة، ونصوص الحقوق من Firestore
             </p>
           </div>
@@ -262,7 +262,7 @@ export const AdminFooterManager: React.FC<AdminFooterManagerProps> = ({ onNaviga
           <button
             type="button"
             onClick={handleResetDefaults}
-            className="px-3 py-2 rounded-xl bg-neutral-800 hover:bg-neutral-750 text-neutral-300 hover:text-white border border-neutral-700 text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer"
+            className="px-3.5 py-2.5 rounded-xl bg-[#F6F7F9] hover:bg-neutral-200 text-neutral-700 hover:text-neutral-950 border border-neutral-200 text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer"
           >
             <RotateCcw className="w-3.5 h-3.5" />
             <span>استعادة الافتراضي</span>
@@ -272,10 +272,10 @@ export const AdminFooterManager: React.FC<AdminFooterManagerProps> = ({ onNaviga
             type="button"
             onClick={() => handleSave(config)}
             disabled={isSaving}
-            className={`px-5 py-2.5 rounded-xl font-black text-xs sm:text-sm flex items-center gap-2 transition-all cursor-pointer shadow-lg active:scale-95 ${
+            className={`px-5 py-2.5 rounded-xl font-black text-xs sm:text-sm flex items-center gap-2 transition-all cursor-pointer shadow-xs active:scale-95 ${
               saveSuccess
-                ? 'bg-emerald-500 text-white'
-                : 'bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-neutral-950 shadow-amber-500/20'
+                ? 'bg-emerald-600 text-white'
+                : 'bg-amber-400 hover:bg-amber-500 text-neutral-950'
             }`}
           >
             {saveSuccess ? (
@@ -295,50 +295,50 @@ export const AdminFooterManager: React.FC<AdminFooterManagerProps> = ({ onNaviga
 
       {/* Main Enable / Disable Toggles */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div className="p-4 rounded-2xl bg-neutral-900/90 border border-neutral-800 flex items-center justify-between">
+        <div className="p-4 rounded-2xl bg-white border border-neutral-200 shadow-xs flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${config.isEnabled ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'}`}>
+            <div className={`w-9 h-9 rounded-xl flex items-center justify-center border ${config.isEnabled ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-rose-50 text-rose-600 border-rose-200'}`}>
               <ShieldCheck className="w-5 h-5" />
             </div>
             <div>
-              <div className="text-sm font-black text-white">تفعيل التذييل (Footer) بالكامل</div>
-              <div className="text-xs text-neutral-400">إظهار أو إخفاء قسم التذييل في جميع الصفحات</div>
+              <div className="text-sm font-black text-neutral-950">تفعيل التذييل (Footer) بالكامل</div>
+              <div className="text-xs text-neutral-500">إظهار أو إخفاء قسم التذييل في جميع الصفحات</div>
             </div>
           </div>
           <button
             type="button"
             onClick={() => updateConfigField('isEnabled', !config.isEnabled)}
             className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors cursor-pointer ${
-              config.isEnabled ? 'bg-emerald-500' : 'bg-neutral-800'
+              config.isEnabled ? 'bg-emerald-500' : 'bg-neutral-300'
             }`}
           >
             <span
-              className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+              className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-xs transition-transform ${
                 config.isEnabled ? 'translate-x-6' : 'translate-x-1'
               }`}
             />
           </button>
         </div>
 
-        <div className="p-4 rounded-2xl bg-neutral-900/90 border border-neutral-800 flex items-center justify-between">
+        <div className="p-4 rounded-2xl bg-white border border-neutral-200 shadow-xs flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${config.showBottomLinksBar ? 'bg-amber-500/20 text-amber-400' : 'bg-neutral-800 text-neutral-500'}`}>
+            <div className={`w-9 h-9 rounded-xl flex items-center justify-center border ${config.showBottomLinksBar ? 'bg-amber-50 text-amber-600 border-amber-200' : 'bg-neutral-100 text-neutral-400 border-neutral-200'}`}>
               <LinkIcon className="w-5 h-5" />
             </div>
             <div>
-              <div className="text-sm font-black text-white">شريط الإجراءات والروابط السفلي</div>
-              <div className="text-xs text-neutral-400">شريط الخريطة، الشعار، الدليل، وأسعار الصرف</div>
+              <div className="text-sm font-black text-neutral-950">شريط الإجراءات والروابط السفلي</div>
+              <div className="text-xs text-neutral-500">شريط الخريطة، الشعار، الدليل، وأسعار الصرف</div>
             </div>
           </div>
           <button
             type="button"
             onClick={() => updateConfigField('showBottomLinksBar', !config.showBottomLinksBar)}
             className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors cursor-pointer ${
-              config.showBottomLinksBar ? 'bg-amber-500' : 'bg-neutral-800'
+              config.showBottomLinksBar ? 'bg-amber-400' : 'bg-neutral-300'
             }`}
           >
             <span
-              className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+              className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-xs transition-transform ${
                 config.showBottomLinksBar ? 'translate-x-6' : 'translate-x-1'
               }`}
             />
@@ -347,14 +347,14 @@ export const AdminFooterManager: React.FC<AdminFooterManagerProps> = ({ onNaviga
       </div>
 
       {/* Sub Navigation Tabs */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none border-b border-neutral-800">
+      <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none border-b border-neutral-200">
         <button
           type="button"
           onClick={() => setActiveSubSection('bottomLinks')}
-          className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-black whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer ${
+          className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-black whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer tabular-nums ${
             activeSubSection === 'bottomLinks'
-              ? 'bg-amber-500 text-neutral-950 shadow-md'
-              : 'bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-white'
+              ? 'bg-amber-400 text-neutral-950 shadow-xs'
+              : 'bg-white border border-neutral-200 text-neutral-600 hover:text-neutral-950 hover:border-neutral-300'
           }`}
         >
           <LinkIcon className="w-4 h-4" />
@@ -366,8 +366,8 @@ export const AdminFooterManager: React.FC<AdminFooterManagerProps> = ({ onNaviga
           onClick={() => setActiveSubSection('brand')}
           className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-black whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer ${
             activeSubSection === 'brand'
-              ? 'bg-amber-500 text-neutral-950 shadow-md'
-              : 'bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-white'
+              ? 'bg-amber-400 text-neutral-950 shadow-xs'
+              : 'bg-white border border-neutral-200 text-neutral-600 hover:text-neutral-950 hover:border-neutral-300'
           }`}
         >
           <Sparkles className="w-4 h-4" />
@@ -377,10 +377,10 @@ export const AdminFooterManager: React.FC<AdminFooterManagerProps> = ({ onNaviga
         <button
           type="button"
           onClick={() => setActiveSubSection('badges')}
-          className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-black whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer ${
+          className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-black whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer tabular-nums ${
             activeSubSection === 'badges'
-              ? 'bg-amber-500 text-neutral-950 shadow-md'
-              : 'bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-white'
+              ? 'bg-amber-400 text-neutral-950 shadow-xs'
+              : 'bg-white border border-neutral-200 text-neutral-600 hover:text-neutral-950 hover:border-neutral-300'
           }`}
         >
           <ShieldCheck className="w-4 h-4" />
@@ -392,8 +392,8 @@ export const AdminFooterManager: React.FC<AdminFooterManagerProps> = ({ onNaviga
           onClick={() => setActiveSubSection('columns')}
           className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-black whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer ${
             activeSubSection === 'columns'
-              ? 'bg-amber-500 text-neutral-950 shadow-md'
-              : 'bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-white'
+              ? 'bg-amber-400 text-neutral-950 shadow-xs'
+              : 'bg-white border border-neutral-200 text-neutral-600 hover:text-neutral-950 hover:border-neutral-300'
           }`}
         >
           <Phone className="w-4 h-4" />
@@ -405,8 +405,8 @@ export const AdminFooterManager: React.FC<AdminFooterManagerProps> = ({ onNaviga
           onClick={() => setActiveSubSection('copyright')}
           className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-black whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer ${
             activeSubSection === 'copyright'
-              ? 'bg-amber-500 text-neutral-950 shadow-md'
-              : 'bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-white'
+              ? 'bg-amber-400 text-neutral-950 shadow-xs'
+              : 'bg-white border border-neutral-200 text-neutral-600 hover:text-neutral-950 hover:border-neutral-300'
           }`}
         >
           <CheckCircle2 className="w-4 h-4" />
@@ -419,13 +419,13 @@ export const AdminFooterManager: React.FC<AdminFooterManagerProps> = ({ onNaviga
       {/* ========================================================================= */}
       {activeSubSection === 'bottomLinks' && (
         <div className="space-y-4">
-          <div className="flex items-center justify-between gap-4 p-4 rounded-2xl bg-neutral-900/60 border border-neutral-800">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl bg-white border border-neutral-200 shadow-xs">
             <div>
-              <h3 className="text-sm font-black text-white flex items-center gap-2">
+              <h3 className="text-sm font-black text-neutral-950 flex items-center gap-2 tabular-nums">
                 <span>عناصر شريط الإجراءات السفلي</span>
-                <span className="text-xs text-amber-400">({config.bottomLinks?.length || 0} عنصر)</span>
+                <span className="text-xs text-amber-700">({config.bottomLinks?.length || 0} عنصر)</span>
               </h3>
-              <p className="text-xs text-neutral-400 mt-0.5">
+              <p className="text-xs text-neutral-500 mt-0.5">
                 يمكنك إعادة الترتيب، تغيير الأيقونة، نوع الإجراء (خريطة، فيديو سينمائي، دليل، أسعار الصرف، واتساب، رابط خارجي)، أو إضافة روابط جديدة.
               </p>
             </div>
@@ -446,7 +446,7 @@ export const AdminFooterManager: React.FC<AdminFooterManagerProps> = ({ onNaviga
                 });
                 setIsAddingLink(true);
               }}
-              className="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-neutral-950 font-black text-xs flex items-center gap-1.5 transition-all cursor-pointer shadow-md"
+              className="px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-500 text-neutral-950 font-black text-xs flex items-center gap-1.5 transition-all cursor-pointer shadow-xs shrink-0"
             >
               <Plus className="w-4 h-4" />
               <span>إضافة عنصر جديد</span>
@@ -460,8 +460,8 @@ export const AdminFooterManager: React.FC<AdminFooterManagerProps> = ({ onNaviga
                 key={item.id}
                 className={`p-4 rounded-2xl border transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
                   item.isActive
-                    ? 'bg-neutral-900/90 border-neutral-800 hover:border-neutral-700'
-                    : 'bg-neutral-950/60 border-neutral-850 opacity-60'
+                    ? 'bg-white border-neutral-200 hover:border-neutral-300 shadow-xs'
+                    : 'bg-[#F6F7F9] border-neutral-200/70 opacity-65'
                 }`}
               >
                 <div className="flex items-center gap-3">
@@ -471,7 +471,7 @@ export const AdminFooterManager: React.FC<AdminFooterManagerProps> = ({ onNaviga
                       type="button"
                       onClick={() => handleMoveLink(index, 'up')}
                       disabled={index === 0}
-                      className="p-1 rounded bg-neutral-800 hover:bg-neutral-700 text-neutral-300 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+                      className="p-1 rounded bg-[#F6F7F9] hover:bg-neutral-200 border border-neutral-200 text-neutral-600 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
                       title="تحريك للأعلى"
                     >
                       <ArrowUp className="w-3.5 h-3.5" />
@@ -480,7 +480,7 @@ export const AdminFooterManager: React.FC<AdminFooterManagerProps> = ({ onNaviga
                       type="button"
                       onClick={() => handleMoveLink(index, 'down')}
                       disabled={index === config.bottomLinks.length - 1}
-                      className="p-1 rounded bg-neutral-800 hover:bg-neutral-700 text-neutral-300 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+                      className="p-1 rounded bg-[#F6F7F9] hover:bg-neutral-200 border border-neutral-200 text-neutral-600 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
                       title="تحريك للأسفل"
                     >
                       <ArrowDown className="w-3.5 h-3.5" />
@@ -488,25 +488,25 @@ export const AdminFooterManager: React.FC<AdminFooterManagerProps> = ({ onNaviga
                   </div>
 
                   {/* Icon preview */}
-                  <div className="w-10 h-10 rounded-xl bg-neutral-950 border border-neutral-800 flex items-center justify-center text-amber-400 flex-shrink-0">
+                  <div className="w-10 h-10 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-600 flex-shrink-0">
                     <DynamicLucideIcon name={item.icon} className="w-5 h-5" />
                   </div>
 
                   {/* Info */}
                   <div>
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-sm font-black text-white">{item.titleAr || 'بدون عنوان'}</span>
+                      <span className="text-sm font-black text-neutral-950">{item.titleAr || 'بدون عنوان'}</span>
                       {item.badge && (
-                        <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30 text-[10px] font-bold">
+                        <span className="px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200 text-[10px] font-bold">
                           {item.badge}
                         </span>
                       )}
-                      <span className="text-[10px] px-2 py-0.5 rounded-md bg-neutral-800 text-neutral-300 border border-neutral-700 font-mono">
+                      <span className="text-[10px] px-2 py-0.5 rounded-md bg-[#F6F7F9] text-neutral-600 border border-neutral-200 font-mono">
                         {item.linkType}
                       </span>
                     </div>
                     {item.target && (
-                      <div className="text-xs text-neutral-400 mt-0.5 font-mono dir-ltr text-right truncate max-w-sm">
+                      <div className="text-xs text-neutral-500 mt-0.5 font-mono dir-ltr text-right truncate max-w-sm">
                         {item.target}
                       </div>
                     )}
@@ -520,8 +520,8 @@ export const AdminFooterManager: React.FC<AdminFooterManagerProps> = ({ onNaviga
                     onClick={() => handleToggleLinkActive(item.id)}
                     className={`px-2.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 border transition-all cursor-pointer ${
                       item.isActive
-                        ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/20'
-                        : 'bg-neutral-800 text-neutral-400 border-neutral-700 hover:bg-neutral-750'
+                        ? 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'
+                        : 'bg-neutral-100 text-neutral-500 border-neutral-200 hover:bg-neutral-200'
                     }`}
                   >
                     {item.isActive ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
@@ -534,7 +534,7 @@ export const AdminFooterManager: React.FC<AdminFooterManagerProps> = ({ onNaviga
                       setEditingLink({ ...item });
                       setIsAddingLink(false);
                     }}
-                    className="p-2 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-amber-400 border border-neutral-750 transition-all cursor-pointer"
+                    className="p-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 transition-all cursor-pointer"
                     title="تعديل العنصر"
                   >
                     <Edit3 className="w-4 h-4" />
@@ -543,7 +543,7 @@ export const AdminFooterManager: React.FC<AdminFooterManagerProps> = ({ onNaviga
                   <button
                     type="button"
                     onClick={() => handleDeleteLink(item.id)}
-                    className="p-2 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 transition-all cursor-pointer"
+                    className="p-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 transition-all cursor-pointer"
                     title="حذف العنصر"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -559,33 +559,33 @@ export const AdminFooterManager: React.FC<AdminFooterManagerProps> = ({ onNaviga
       {/* SECTION 2: BRAND & IDENTITY */}
       {/* ========================================================================= */}
       {activeSubSection === 'brand' && (
-        <div className="p-5 rounded-2xl bg-neutral-900/90 border border-neutral-800 space-y-6">
-          <div className="border-b border-neutral-800 pb-4">
-            <h3 className="text-sm sm:text-base font-black text-white flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-amber-400" />
+        <div className="p-5 sm:p-6 rounded-2xl bg-white border border-neutral-200 shadow-xs space-y-6">
+          <div className="border-b border-neutral-200 pb-4">
+            <h3 className="text-sm sm:text-base font-black text-neutral-950 flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-amber-600" />
               <span>إعدادات الشعار، الاسم، والسلوجان</span>
             </h3>
-            <p className="text-xs text-neutral-400 mt-1">
+            <p className="text-xs text-neutral-500 mt-1">
               خصص نصوص الهوية التي تظهر في التذييل وشريط السفلي
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {/* Show Logo Toggle */}
-            <div className="p-4 rounded-xl bg-neutral-950/60 border border-neutral-800 flex items-center justify-between md:col-span-2">
+            <div className="p-4 rounded-xl bg-[#F6F7F9] border border-neutral-200 flex items-center justify-between md:col-span-2">
               <div>
-                <div className="text-sm font-bold text-white">إظهار شعار ضَجّة في التذييل</div>
-                <div className="text-xs text-neutral-400">إظهار الأيقونة التفاعلية أو الشعار المخصص</div>
+                <div className="text-sm font-bold text-neutral-950">إظهار شعار ضَجّة في التذييل</div>
+                <div className="text-xs text-neutral-500">إظهار الأيقونة التفاعلية أو الشعار المخصص</div>
               </div>
               <button
                 type="button"
                 onClick={() => updateConfigField('showLogo', !config.showLogo)}
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors cursor-pointer ${
-                  config.showLogo ? 'bg-amber-500' : 'bg-neutral-800'
+                  config.showLogo ? 'bg-amber-400' : 'bg-neutral-300'
                 }`}
               >
                 <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-xs transition-transform ${
                     config.showLogo ? 'translate-x-6' : 'translate-x-1'
                   }`}
                 />
@@ -593,17 +593,17 @@ export const AdminFooterManager: React.FC<AdminFooterManagerProps> = ({ onNaviga
             </div>
 
             {/* Custom Logo Upload & URL */}
-            <div className="md:col-span-2 space-y-2 p-4 rounded-xl bg-neutral-950/70 border border-neutral-800">
+            <div className="md:col-span-2 space-y-2 p-4 rounded-xl bg-[#F6F7F9] border border-neutral-200">
               <div className="flex items-center justify-between">
-                <label className="text-xs font-bold text-neutral-300 flex items-center gap-2">
-                  <ImageIcon className="w-4 h-4 text-amber-400" />
+                <label className="text-xs font-bold text-neutral-700 flex items-center gap-2">
+                  <ImageIcon className="w-4 h-4 text-amber-600" />
                   <span>شعار التذييل المخصص (Custom Footer Logo)</span>
                 </label>
                 {config.customLogoUrl && (
                   <button
                     type="button"
                     onClick={() => updateConfigField('customLogoUrl', '')}
-                    className="text-[11px] text-rose-400 hover:text-rose-300 font-bold flex items-center gap-1 cursor-pointer"
+                    className="text-[11px] text-rose-600 hover:text-rose-700 font-bold flex items-center gap-1 cursor-pointer"
                   >
                     <Trash2 className="w-3 h-3" />
                     <span>العودة لشعار Dajjah SVG الافتراضي</span>
@@ -625,14 +625,14 @@ export const AdminFooterManager: React.FC<AdminFooterManagerProps> = ({ onNaviga
                   value={config.customLogoUrl || ''}
                   onChange={(e) => updateConfigField('customLogoUrl', e.target.value)}
                   placeholder="رابط مباشر للشعار: https://... أو اضغط رفع صورة"
-                  className="w-full sm:flex-1 px-3.5 py-2.5 rounded-xl bg-neutral-900 border border-neutral-800 text-white text-xs focus:border-amber-400 outline-none"
+                  className="w-full sm:flex-1 px-3.5 py-2.5 rounded-xl bg-white border border-neutral-200 text-neutral-950 text-xs focus:border-amber-500 outline-none"
                 />
 
                 <button
                   type="button"
                   onClick={() => logoFileInputRef.current?.click()}
                   disabled={isUploadingLogo}
-                  className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/30 text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer whitespace-nowrap"
+                  className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer whitespace-nowrap"
                 >
                   <Upload className="w-4 h-4" />
                   <span>{isUploadingLogo ? 'جاري الرفع...' : 'رفع صورة شعار'}</span>
@@ -640,9 +640,9 @@ export const AdminFooterManager: React.FC<AdminFooterManagerProps> = ({ onNaviga
               </div>
 
               {/* Logo Preview box */}
-              <div className="mt-2 p-3 rounded-lg bg-neutral-900 border border-neutral-800/80 flex items-center justify-between">
-                <span className="text-[11px] text-neutral-400">معاينة الشعار المعتمد في التذييل:</span>
-                <div className="h-8 flex items-center justify-center px-3 py-1 bg-neutral-950 rounded border border-neutral-800">
+              <div className="mt-2 p-3 rounded-lg bg-white border border-neutral-200 flex items-center justify-between">
+                <span className="text-[11px] text-neutral-500">معاينة الشعار المعتمد في التذييل:</span>
+                <div className="h-8 flex items-center justify-center px-3 py-1 bg-[#F6F7F9] rounded border border-neutral-200">
                   {config.customLogoUrl ? (
                     <img
                       src={config.customLogoUrl}
@@ -658,61 +658,61 @@ export const AdminFooterManager: React.FC<AdminFooterManagerProps> = ({ onNaviga
 
             {/* Brand Name Arabic */}
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-neutral-300">اسم المتجر / المنصة (بالعربي)</label>
+              <label className="text-xs font-bold text-neutral-700">اسم المتجر / المنصة (بالعربي)</label>
               <input
                 type="text"
                 value={config.brandNameAr}
                 onChange={(e) => updateConfigField('brandNameAr', e.target.value)}
                 placeholder="ضَجّة مول"
-                className="w-full px-3.5 py-2.5 rounded-xl bg-neutral-950 border border-neutral-800 text-white text-xs focus:border-amber-400 outline-none"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-[#F6F7F9] border border-neutral-200 text-neutral-950 text-xs focus:border-amber-500 focus:bg-white outline-none"
               />
             </div>
 
             {/* Brand Name English */}
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-neutral-300">اسم المتجر (بالإنجليزي)</label>
+              <label className="text-xs font-bold text-neutral-700">اسم المتجر (بالإنجليزي)</label>
               <input
                 type="text"
                 value={config.brandNameEn || ''}
                 onChange={(e) => updateConfigField('brandNameEn', e.target.value)}
                 placeholder="Dajjah Mall"
-                className="w-full px-3.5 py-2.5 rounded-xl bg-neutral-950 border border-neutral-800 text-white text-xs focus:border-amber-400 outline-none"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-[#F6F7F9] border border-neutral-200 text-neutral-950 text-xs focus:border-amber-500 focus:bg-white outline-none"
               />
             </div>
 
             {/* Slogan Arabic */}
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-neutral-300">الشعار اللفظي / السلوجان (بالعربي)</label>
+              <label className="text-xs font-bold text-neutral-700">الشعار اللفظي / السلوجان (بالعربي)</label>
               <input
                 type="text"
                 value={config.sloganAr}
                 onChange={(e) => updateConfigField('sloganAr', e.target.value)}
                 placeholder="ضَجّة في وجه الغلاء"
-                className="w-full px-3.5 py-2.5 rounded-xl bg-neutral-950 border border-neutral-800 text-white text-xs focus:border-amber-400 outline-none"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-[#F6F7F9] border border-neutral-200 text-neutral-950 text-xs focus:border-amber-500 focus:bg-white outline-none"
               />
             </div>
 
             {/* Slogan English */}
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-neutral-300">الشعار اللفظي (بالإنجليزي)</label>
+              <label className="text-xs font-bold text-neutral-700">الشعار اللفظي (بالإنجليزي)</label>
               <input
                 type="text"
                 value={config.sloganEn || ''}
                 onChange={(e) => updateConfigField('sloganEn', e.target.value)}
                 placeholder="Dajjah Against High Prices"
-                className="w-full px-3.5 py-2.5 rounded-xl bg-neutral-950 border border-neutral-800 text-white text-xs focus:border-amber-400 outline-none"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-[#F6F7F9] border border-neutral-200 text-neutral-950 text-xs focus:border-amber-500 focus:bg-white outline-none"
               />
             </div>
 
             {/* About Text Arabic */}
             <div className="md:col-span-2 space-y-1.5">
-              <label className="text-xs font-bold text-neutral-300">النص التعريفي / نبذة عن ضَجّة مول</label>
+              <label className="text-xs font-bold text-neutral-700">النص التعريفي / نبذة عن ضَجّة مول</label>
               <textarea
                 rows={3}
                 value={config.aboutTextAr}
                 onChange={(e) => updateConfigField('aboutTextAr', e.target.value)}
                 placeholder="المنصة اليمنية الأولى لتجارة الأزياء..."
-                className="w-full px-3.5 py-2.5 rounded-xl bg-neutral-950 border border-neutral-800 text-white text-xs focus:border-amber-400 outline-none resize-none leading-relaxed"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-[#F6F7F9] border border-neutral-200 text-neutral-950 text-xs focus:border-amber-500 focus:bg-white outline-none resize-none leading-relaxed"
               />
             </div>
           </div>
@@ -724,13 +724,13 @@ export const AdminFooterManager: React.FC<AdminFooterManagerProps> = ({ onNaviga
       {/* ========================================================================= */}
       {activeSubSection === 'badges' && (
         <div className="space-y-4">
-          <div className="p-4 rounded-2xl bg-neutral-900/60 border border-neutral-800 flex items-center justify-between">
+          <div className="p-4 rounded-2xl bg-white border border-neutral-200 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <h3 className="text-sm font-black text-white flex items-center gap-2">
+              <h3 className="text-sm font-black text-neutral-950 flex items-center gap-2 tabular-nums">
                 <span>شارات الثقة والضمانات (3-Item Trust Grid)</span>
-                <span className="text-xs text-amber-400">({config.trustBadges?.length || 0})</span>
+                <span className="text-xs text-amber-700">({config.trustBadges?.length || 0})</span>
               </h3>
-              <p className="text-xs text-neutral-400 mt-0.5">
+              <p className="text-xs text-neutral-500 mt-0.5">
                 تظهر في أعلى التذييل لتثبيت الثقة (معاينة قبل الدفع، استرجاع سهل، توصيل لكافة المدن...)
               </p>
             </div>
@@ -750,25 +750,25 @@ export const AdminFooterManager: React.FC<AdminFooterManagerProps> = ({ onNaviga
                 });
                 setIsAddingBadge(true);
               }}
-              className="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-neutral-950 font-black text-xs flex items-center gap-1.5 transition-all cursor-pointer shadow-md"
+              className="px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-500 text-neutral-950 font-black text-xs flex items-center gap-1.5 transition-all cursor-pointer shadow-xs shrink-0"
             >
               <Plus className="w-4 h-4" />
               <span>إضافة شارة ضمان جديدة</span>
             </button>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
             {config.trustBadges?.map((badge, idx) => (
               <div
                 key={badge.id}
                 className={`p-4 rounded-2xl border transition-all flex flex-col justify-between gap-3 ${
                   badge.isActive
-                    ? 'bg-neutral-900/90 border-neutral-800 hover:border-amber-500/40'
-                    : 'bg-neutral-950/60 border-neutral-850 opacity-60'
+                    ? 'bg-white border-neutral-200 hover:border-amber-300 shadow-xs'
+                    : 'bg-[#F6F7F9] border-neutral-200/70 opacity-65'
                 }`}
               >
                 <div className="flex items-center justify-between">
-                  <div className="p-2.5 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                  <div className="p-2.5 rounded-xl bg-amber-50 text-amber-600 border border-amber-200">
                     <DynamicLucideIcon name={badge.icon} className="w-5 h-5" />
                   </div>
                   <div className="flex items-center gap-1">
@@ -776,7 +776,7 @@ export const AdminFooterManager: React.FC<AdminFooterManagerProps> = ({ onNaviga
                       type="button"
                       onClick={() => handleMoveBadge(idx, 'up')}
                       disabled={idx === 0}
-                      className="p-1 rounded bg-neutral-800 hover:bg-neutral-700 text-neutral-300 disabled:opacity-30 cursor-pointer"
+                      className="p-1 rounded bg-[#F6F7F9] hover:bg-neutral-200 border border-neutral-200 text-neutral-600 disabled:opacity-30 cursor-pointer"
                     >
                       <ArrowUp className="w-3.5 h-3.5" />
                     </button>
@@ -784,7 +784,7 @@ export const AdminFooterManager: React.FC<AdminFooterManagerProps> = ({ onNaviga
                       type="button"
                       onClick={() => handleMoveBadge(idx, 'down')}
                       disabled={idx === config.trustBadges.length - 1}
-                      className="p-1 rounded bg-neutral-800 hover:bg-neutral-700 text-neutral-300 disabled:opacity-30 cursor-pointer"
+                      className="p-1 rounded bg-[#F6F7F9] hover:bg-neutral-200 border border-neutral-200 text-neutral-600 disabled:opacity-30 cursor-pointer"
                     >
                       <ArrowDown className="w-3.5 h-3.5" />
                     </button>
@@ -792,16 +792,18 @@ export const AdminFooterManager: React.FC<AdminFooterManagerProps> = ({ onNaviga
                 </div>
 
                 <div>
-                  <div className="text-sm font-black text-white">{badge.titleAr}</div>
-                  <div className="text-xs text-neutral-400 mt-0.5">{badge.subtitleAr}</div>
+                  <div className="text-sm font-black text-neutral-950">{badge.titleAr}</div>
+                  <div className="text-xs text-neutral-500 mt-0.5">{badge.subtitleAr}</div>
                 </div>
 
-                <div className="flex items-center justify-between pt-2 border-t border-neutral-800">
+                <div className="flex items-center justify-between pt-2.5 border-t border-neutral-200">
                   <button
                     type="button"
                     onClick={() => handleToggleBadgeActive(badge.id)}
-                    className={`px-2 py-1 rounded-lg text-[11px] font-bold flex items-center gap-1 cursor-pointer ${
-                      badge.isActive ? 'text-emerald-400 bg-emerald-500/10' : 'text-neutral-500 bg-neutral-800'
+                    className={`px-2.5 py-1 rounded-lg text-[11px] font-bold flex items-center gap-1 cursor-pointer border ${
+                      badge.isActive
+                        ? 'text-emerald-700 bg-emerald-50 border-emerald-200'
+                        : 'text-neutral-500 bg-neutral-100 border-neutral-200'
                     }`}
                   >
                     {badge.isActive ? <Eye className="w-3 h-3" /> : <EyeOff className="w-3 h-3" />}
@@ -815,14 +817,14 @@ export const AdminFooterManager: React.FC<AdminFooterManagerProps> = ({ onNaviga
                         setEditingBadge({ ...badge });
                         setIsAddingBadge(false);
                       }}
-                      className="p-1.5 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-amber-400 cursor-pointer"
+                      className="p-1.5 rounded-lg bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-700 cursor-pointer"
                     >
                       <Edit3 className="w-3.5 h-3.5" />
                     </button>
                     <button
                       type="button"
                       onClick={() => handleDeleteBadge(badge.id)}
-                      className="p-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 cursor-pointer"
+                      className="p-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-600 cursor-pointer"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
@@ -841,20 +843,20 @@ export const AdminFooterManager: React.FC<AdminFooterManagerProps> = ({ onNaviga
         <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* WhatsApp button */}
-            <div className="p-4 rounded-2xl bg-neutral-900/90 border border-neutral-800 space-y-3">
+            <div className="p-4 rounded-2xl bg-white border border-neutral-200 shadow-xs space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
-                  <MessageCircle className="w-5 h-5 text-emerald-400" />
-                  <span className="text-sm font-black text-white">زر واتساب المبيعات السريع</span>
+                  <MessageCircle className="w-5 h-5 text-emerald-600" />
+                  <span className="text-sm font-black text-neutral-950">زر واتساب المبيعات السريع</span>
                 </div>
                 <button
                   type="button"
                   onClick={() => updateConfigField('showWhatsappButton', !config.showWhatsappButton)}
                   className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors cursor-pointer ${
-                    config.showWhatsappButton ? 'bg-emerald-500' : 'bg-neutral-800'
+                    config.showWhatsappButton ? 'bg-emerald-500' : 'bg-neutral-300'
                   }`}
                 >
-                  <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${config.showWhatsappButton ? 'translate-x-4' : 'translate-x-1'}`} />
+                  <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow-xs transition-transform ${config.showWhatsappButton ? 'translate-x-4' : 'translate-x-1'}`} />
                 </button>
               </div>
               <input
@@ -862,25 +864,25 @@ export const AdminFooterManager: React.FC<AdminFooterManagerProps> = ({ onNaviga
                 value={config.whatsappButtonTextAr || ''}
                 onChange={(e) => updateConfigField('whatsappButtonTextAr', e.target.value)}
                 placeholder="واتساب المبيعات"
-                className="w-full px-3 py-2 rounded-xl bg-neutral-950 border border-neutral-800 text-white text-xs outline-none focus:border-amber-400"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-[#F6F7F9] border border-neutral-200 text-neutral-950 text-xs outline-none focus:border-amber-500 focus:bg-white"
               />
             </div>
 
             {/* Support button */}
-            <div className="p-4 rounded-2xl bg-neutral-900/90 border border-neutral-800 space-y-3">
+            <div className="p-4 rounded-2xl bg-white border border-neutral-200 shadow-xs space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
-                  <Phone className="w-5 h-5 text-amber-400" />
-                  <span className="text-sm font-black text-white">زر خدمة العملاء 24/7</span>
+                  <Phone className="w-5 h-5 text-amber-600" />
+                  <span className="text-sm font-black text-neutral-950">زر خدمة العملاء 24/7</span>
                 </div>
                 <button
                   type="button"
                   onClick={() => updateConfigField('showSupportButton', !config.showSupportButton)}
                   className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors cursor-pointer ${
-                    config.showSupportButton ? 'bg-amber-500' : 'bg-neutral-800'
+                    config.showSupportButton ? 'bg-amber-400' : 'bg-neutral-300'
                   }`}
                 >
-                  <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${config.showSupportButton ? 'translate-x-4' : 'translate-x-1'}`} />
+                  <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow-xs transition-transform ${config.showSupportButton ? 'translate-x-4' : 'translate-x-1'}`} />
                 </button>
               </div>
               <input
@@ -888,25 +890,25 @@ export const AdminFooterManager: React.FC<AdminFooterManagerProps> = ({ onNaviga
                 value={config.supportButtonTextAr || ''}
                 onChange={(e) => updateConfigField('supportButtonTextAr', e.target.value)}
                 placeholder="خدمة العملاء 24/7"
-                className="w-full px-3 py-2 rounded-xl bg-neutral-950 border border-neutral-800 text-white text-xs outline-none focus:border-amber-400"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-[#F6F7F9] border border-neutral-200 text-neutral-950 text-xs outline-none focus:border-amber-500 focus:bg-white"
               />
             </div>
 
             {/* Policies Column */}
-            <div className="p-4 rounded-2xl bg-neutral-900/90 border border-neutral-800 space-y-3">
+            <div className="p-4 rounded-2xl bg-white border border-neutral-200 shadow-xs space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
-                  <FileText className="w-5 h-5 text-amber-400" />
-                  <span className="text-sm font-black text-white">عمود السياسات والشروط</span>
+                  <FileText className="w-5 h-5 text-amber-600" />
+                  <span className="text-sm font-black text-neutral-950">عمود السياسات والشروط</span>
                 </div>
                 <button
                   type="button"
                   onClick={() => updateConfigField('showPoliciesColumn', !config.showPoliciesColumn)}
                   className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors cursor-pointer ${
-                    config.showPoliciesColumn ? 'bg-amber-500' : 'bg-neutral-800'
+                    config.showPoliciesColumn ? 'bg-amber-400' : 'bg-neutral-300'
                   }`}
                 >
-                  <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${config.showPoliciesColumn ? 'translate-x-4' : 'translate-x-1'}`} />
+                  <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow-xs transition-transform ${config.showPoliciesColumn ? 'translate-x-4' : 'translate-x-1'}`} />
                 </button>
               </div>
               <input
@@ -914,13 +916,13 @@ export const AdminFooterManager: React.FC<AdminFooterManagerProps> = ({ onNaviga
                 value={config.policiesColumnTitleAr || ''}
                 onChange={(e) => updateConfigField('policiesColumnTitleAr', e.target.value)}
                 placeholder="السياسات والشروط"
-                className="w-full px-3 py-2 rounded-xl bg-neutral-950 border border-neutral-800 text-white text-xs outline-none focus:border-amber-400"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-[#F6F7F9] border border-neutral-200 text-neutral-950 text-xs outline-none focus:border-amber-500 focus:bg-white"
               />
               {onNavigateTab && (
                 <button
                   type="button"
                   onClick={() => onNavigateTab('policies')}
-                  className="text-xs text-amber-400 hover:underline flex items-center gap-1 cursor-pointer font-bold"
+                  className="text-xs text-amber-700 hover:underline flex items-center gap-1 cursor-pointer font-bold"
                 >
                   <span>الانتقال لتبويب إدارة نصوص السياسات بالتفصيل</span>
                   <ChevronLeft className="w-3 h-3" />
@@ -929,20 +931,20 @@ export const AdminFooterManager: React.FC<AdminFooterManagerProps> = ({ onNaviga
             </div>
 
             {/* Social Column */}
-            <div className="p-4 rounded-2xl bg-neutral-900/90 border border-neutral-800 space-y-3">
+            <div className="p-4 rounded-2xl bg-white border border-neutral-200 shadow-xs space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
-                  <ExternalLink className="w-5 h-5 text-amber-400" />
-                  <span className="text-sm font-black text-white">عمود قنوات التواصل الاجتماعي</span>
+                  <ExternalLink className="w-5 h-5 text-amber-600" />
+                  <span className="text-sm font-black text-neutral-950">عمود قنوات التواصل الاجتماعي</span>
                 </div>
                 <button
                   type="button"
                   onClick={() => updateConfigField('showSocialColumn', !config.showSocialColumn)}
                   className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors cursor-pointer ${
-                    config.showSocialColumn ? 'bg-amber-500' : 'bg-neutral-800'
+                    config.showSocialColumn ? 'bg-amber-400' : 'bg-neutral-300'
                   }`}
                 >
-                  <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${config.showSocialColumn ? 'translate-x-4' : 'translate-x-1'}`} />
+                  <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow-xs transition-transform ${config.showSocialColumn ? 'translate-x-4' : 'translate-x-1'}`} />
                 </button>
               </div>
               <input
@@ -950,13 +952,13 @@ export const AdminFooterManager: React.FC<AdminFooterManagerProps> = ({ onNaviga
                 value={config.socialColumnTitleAr || ''}
                 onChange={(e) => updateConfigField('socialColumnTitleAr', e.target.value)}
                 placeholder="قنواتنا ومتابعتنا"
-                className="w-full px-3 py-2 rounded-xl bg-neutral-950 border border-neutral-800 text-white text-xs outline-none focus:border-amber-400"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-[#F6F7F9] border border-neutral-200 text-neutral-950 text-xs outline-none focus:border-amber-500 focus:bg-white"
               />
               {onNavigateTab && (
                 <button
                   type="button"
                   onClick={() => onNavigateTab('social')}
-                  className="text-xs text-amber-400 hover:underline flex items-center gap-1 cursor-pointer font-bold"
+                  className="text-xs text-amber-700 hover:underline flex items-center gap-1 cursor-pointer font-bold"
                 >
                   <span>الانتقال لتبويب إدارة قنوات التواصل</span>
                   <ChevronLeft className="w-3 h-3" />
@@ -971,114 +973,114 @@ export const AdminFooterManager: React.FC<AdminFooterManagerProps> = ({ onNaviga
       {/* SECTION 5: COPYRIGHT, SECURITY & DEVELOPER SIGNATURE */}
       {/* ========================================================================= */}
       {activeSubSection === 'copyright' && (
-        <div className="p-5 rounded-2xl bg-neutral-900/90 border border-neutral-800 space-y-6">
-          <div className="border-b border-neutral-800 pb-4">
-            <h3 className="text-sm sm:text-base font-black text-white flex items-center gap-2">
-              <CheckCircle2 className="w-5 h-5 text-amber-400" />
+        <div className="p-5 sm:p-6 rounded-2xl bg-white border border-neutral-200 shadow-xs space-y-6">
+          <div className="border-b border-neutral-200 pb-4">
+            <h3 className="text-sm sm:text-base font-black text-neutral-950 flex items-center gap-2">
+              <CheckCircle2 className="w-5 h-5 text-amber-600" />
               <span>حقوق الملكية، بوابات الدفع، وتوقيع المطور</span>
             </h3>
-            <p className="text-xs text-neutral-400 mt-1">
+            <p className="text-xs text-neutral-500 mt-1">
               إدارة نصوص حقوق النشر السفلية والشارات الأمنية وتوقيع التحقق
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {/* Show Copyright */}
-            <div className="p-4 rounded-xl bg-neutral-950/60 border border-neutral-800 flex items-center justify-between">
+            <div className="p-4 rounded-xl bg-[#F6F7F9] border border-neutral-200 flex items-center justify-between">
               <div>
-                <div className="text-sm font-bold text-white">إظهار نص حقوق الملكية</div>
-                <div className="text-xs text-neutral-400">سطر الحقوق المحفوظة في أسفل التذييل</div>
+                <div className="text-sm font-bold text-neutral-950">إظهار نص حقوق الملكية</div>
+                <div className="text-xs text-neutral-500">سطر الحقوق المحفوظة في أسفل التذييل</div>
               </div>
               <button
                 type="button"
                 onClick={() => updateConfigField('showCopyright', !config.showCopyright)}
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors cursor-pointer ${
-                  config.showCopyright ? 'bg-amber-500' : 'bg-neutral-800'
+                  config.showCopyright ? 'bg-amber-400' : 'bg-neutral-300'
                 }`}
               >
-                <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${config.showCopyright ? 'translate-x-6' : 'translate-x-1'}`} />
+                <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-xs transition-transform ${config.showCopyright ? 'translate-x-6' : 'translate-x-1'}`} />
               </button>
             </div>
 
             {/* Auto update year */}
-            <div className="p-4 rounded-xl bg-neutral-950/60 border border-neutral-800 flex items-center justify-between">
+            <div className="p-4 rounded-xl bg-[#F6F7F9] border border-neutral-200 flex items-center justify-between">
               <div>
-                <div className="text-sm font-bold text-white">تحديث السنة تلقائياً ({new Date().getFullYear()})</div>
-                <div className="text-xs text-neutral-400">تحديث سنة الحقوق تلقائياً مع مرور الأعوام</div>
+                <div className="text-sm font-bold text-neutral-950 tabular-nums">تحديث السنة تلقائياً ({new Date().getFullYear()})</div>
+                <div className="text-xs text-neutral-500">تحديث سنة الحقوق تلقائياً مع مرور الأعوام</div>
               </div>
               <button
                 type="button"
                 onClick={() => updateConfigField('autoUpdateYear', !config.autoUpdateYear)}
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors cursor-pointer ${
-                  config.autoUpdateYear ? 'bg-emerald-500' : 'bg-neutral-800'
+                  config.autoUpdateYear ? 'bg-emerald-500' : 'bg-neutral-300'
                 }`}
               >
-                <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${config.autoUpdateYear ? 'translate-x-6' : 'translate-x-1'}`} />
+                <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-xs transition-transform ${config.autoUpdateYear ? 'translate-x-6' : 'translate-x-1'}`} />
               </button>
             </div>
 
             {/* Copyright Text */}
             <div className="md:col-span-2 space-y-1.5">
-              <label className="text-xs font-bold text-neutral-300">نص حقوق الملكية</label>
+              <label className="text-xs font-bold text-neutral-700">نص حقوق الملكية</label>
               <input
                 type="text"
                 value={config.copyrightTextAr}
                 onChange={(e) => updateConfigField('copyrightTextAr', e.target.value)}
                 placeholder="جميع الحقوق محفوظة لمنصة ضَجّة مول — صنعاء • عدن • اليمن"
-                className="w-full px-3.5 py-2.5 rounded-xl bg-neutral-950 border border-neutral-800 text-white text-xs focus:border-amber-400 outline-none"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-[#F6F7F9] border border-neutral-200 text-neutral-950 text-xs focus:border-amber-500 focus:bg-white outline-none"
               />
             </div>
 
             {/* Show Developer Signature */}
-            <div className="p-4 rounded-xl bg-neutral-950/60 border border-neutral-800 flex items-center justify-between">
+            <div className="p-4 rounded-xl bg-[#F6F7F9] border border-neutral-200 flex items-center justify-between">
               <div>
-                <div className="text-sm font-bold text-white">إظهار توقيع المطور والمنصة</div>
-                <div className="text-xs text-neutral-400">شارة Nasr مع علامة التحقق الزرقاء المعتمدة</div>
+                <div className="text-sm font-bold text-neutral-950">إظهار توقيع المطور والمنصة</div>
+                <div className="text-xs text-neutral-500">شارة Nasr مع علامة التحقق الزرقاء المعتمدة</div>
               </div>
               <button
                 type="button"
                 onClick={() => updateConfigField('showDeveloperSignature', !config.showDeveloperSignature)}
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors cursor-pointer ${
-                  config.showDeveloperSignature ? 'bg-amber-500' : 'bg-neutral-800'
+                  config.showDeveloperSignature ? 'bg-amber-400' : 'bg-neutral-300'
                 }`}
               >
-                <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${config.showDeveloperSignature ? 'translate-x-6' : 'translate-x-1'}`} />
+                <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-xs transition-transform ${config.showDeveloperSignature ? 'translate-x-6' : 'translate-x-1'}`} />
               </button>
             </div>
 
             {/* Signature Name */}
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-neutral-300">اسم المطور / التوقيع</label>
+              <label className="text-xs font-bold text-neutral-700">اسم المطور / التوقيع</label>
               <input
                 type="text"
                 value={config.developerSignatureName || ''}
                 onChange={(e) => updateConfigField('developerSignatureName', e.target.value)}
                 placeholder="Nasr"
-                className="w-full px-3.5 py-2.5 rounded-xl bg-neutral-950 border border-neutral-800 text-white text-xs focus:border-amber-400 outline-none"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-[#F6F7F9] border border-neutral-200 text-neutral-950 text-xs focus:border-amber-500 focus:bg-white outline-none"
               />
             </div>
 
             {/* Payment Info */}
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-neutral-300">نص العملة المعتمدة</label>
+              <label className="text-xs font-bold text-neutral-700">نص العملة المعتمدة</label>
               <input
                 type="text"
                 value={config.paymentTextNorthSouthAr || ''}
                 onChange={(e) => updateConfigField('paymentTextNorthSouthAr', e.target.value)}
                 placeholder="الريال اليمني المعتمد (شمال وجنوب)"
-                className="w-full px-3.5 py-2.5 rounded-xl bg-neutral-950 border border-neutral-800 text-white text-xs focus:border-amber-400 outline-none"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-[#F6F7F9] border border-neutral-200 text-neutral-950 text-xs focus:border-amber-500 focus:bg-white outline-none"
               />
             </div>
 
             {/* Payment Gateways Text */}
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-neutral-300">نص بوابات الدفع</label>
+              <label className="text-xs font-bold text-neutral-700">نص بوابات الدفع</label>
               <input
                 type="text"
                 value={config.paymentGatewaysTextAr || ''}
                 onChange={(e) => updateConfigField('paymentGatewaysTextAr', e.target.value)}
                 placeholder="بوابات دفع محلية مشفرة"
-                className="w-full px-3.5 py-2.5 rounded-xl bg-neutral-950 border border-neutral-800 text-white text-xs focus:border-amber-400 outline-none"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-[#F6F7F9] border border-neutral-200 text-neutral-950 text-xs focus:border-amber-500 focus:bg-white outline-none"
               />
             </div>
           </div>
@@ -1089,66 +1091,66 @@ export const AdminFooterManager: React.FC<AdminFooterManagerProps> = ({ onNaviga
       {/* MODAL: EDIT / ADD LINK */}
       {/* ========================================================================= */}
       {editingLink && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="w-full max-w-lg bg-neutral-900 border border-neutral-800 rounded-2xl p-5 sm:p-6 space-y-4 shadow-2xl animate-in fade-in zoom-in-95 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between border-b border-neutral-800 pb-3">
-              <h3 className="text-base font-black text-white flex items-center gap-2">
-                <LinkIcon className="w-5 h-5 text-amber-400" />
+        <div className="fixed inset-0 z-50 bg-neutral-950/50 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="w-full max-w-lg bg-white border border-neutral-200 rounded-3xl p-5 sm:p-6 space-y-4 shadow-2xl animate-in fade-in zoom-in-95 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-neutral-200 pb-3">
+              <h3 className="text-base font-black text-neutral-950 flex items-center gap-2">
+                <LinkIcon className="w-5 h-5 text-amber-600" />
                 <span>{isAddingLink ? 'إضافة عنصر جديد لشريط الإجراءات' : 'تعديل عنصر شريط الإجراءات'}</span>
               </h3>
               <button
                 type="button"
                 onClick={() => setEditingLink(null)}
-                className="p-1 rounded-lg text-neutral-400 hover:text-white cursor-pointer"
+                className="p-1.5 rounded-lg bg-[#F6F7F9] hover:bg-neutral-200 text-neutral-500 hover:text-neutral-950 cursor-pointer"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4" />
               </button>
             </div>
 
             <div className="space-y-3">
               {/* Title Ar */}
               <div className="space-y-1">
-                <label className="text-xs font-bold text-neutral-300">العنوان (بالعربي) *</label>
+                <label className="text-xs font-bold text-neutral-700">العنوان (بالعربي) *</label>
                 <input
                   type="text"
                   value={editingLink.titleAr}
                   onChange={(e) => setEditingLink({ ...editingLink, titleAr: e.target.value })}
                   placeholder="خريطة الفروع والمستودعات"
-                  className="w-full px-3 py-2 rounded-xl bg-neutral-950 border border-neutral-800 text-white text-xs focus:border-amber-400 outline-none"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#F6F7F9] border border-neutral-200 text-neutral-950 text-xs focus:border-amber-500 focus:bg-white outline-none"
                 />
               </div>
 
               {/* Title En */}
               <div className="space-y-1">
-                <label className="text-xs font-bold text-neutral-300">العنوان (بالإنجليزي - اختياري)</label>
+                <label className="text-xs font-bold text-neutral-700">العنوان (بالإنجليزي - اختياري)</label>
                 <input
                   type="text"
                   value={editingLink.titleEn || ''}
                   onChange={(e) => setEditingLink({ ...editingLink, titleEn: e.target.value })}
                   placeholder="Branches & Map"
-                  className="w-full px-3 py-2 rounded-xl bg-neutral-950 border border-neutral-800 text-white text-xs focus:border-amber-400 outline-none"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#F6F7F9] border border-neutral-200 text-neutral-950 text-xs focus:border-amber-500 focus:bg-white outline-none"
                 />
               </div>
 
               {/* Badge */}
               <div className="space-y-1">
-                <label className="text-xs font-bold text-neutral-300">شارة جانبية تمييزية (مثل: (OpenStreetMap) أو (جديد))</label>
+                <label className="text-xs font-bold text-neutral-700">شارة جانبية تمييزية (مثل: (OpenStreetMap) أو (جديد))</label>
                 <input
                   type="text"
                   value={editingLink.badge || ''}
                   onChange={(e) => setEditingLink({ ...editingLink, badge: e.target.value })}
                   placeholder="(OpenStreetMap)"
-                  className="w-full px-3 py-2 rounded-xl bg-neutral-950 border border-neutral-800 text-white text-xs focus:border-amber-400 outline-none"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#F6F7F9] border border-neutral-200 text-neutral-950 text-xs focus:border-amber-500 focus:bg-white outline-none"
                 />
               </div>
 
               {/* Link Action Type */}
               <div className="space-y-1">
-                <label className="text-xs font-bold text-neutral-300">نوع الإجراء أو الرابط *</label>
+                <label className="text-xs font-bold text-neutral-700">نوع الإجراء أو الرابط *</label>
                 <select
                   value={editingLink.linkType}
                   onChange={(e) => setEditingLink({ ...editingLink, linkType: e.target.value as FooterActionType })}
-                  className="w-full px-3 py-2 rounded-xl bg-neutral-950 border border-neutral-800 text-white text-xs focus:border-amber-400 outline-none"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#F6F7F9] border border-neutral-200 text-neutral-950 text-xs focus:border-amber-500 focus:bg-white outline-none"
                 >
                   <option value="action_store_locator">🗺️ خريطة الفروع والمستودعات (OpenStreetMap)</option>
                   <option value="action_splash">🎬 إعادة عرض شعار ضَجّة السينمائي</option>
@@ -1170,7 +1172,7 @@ export const AdminFooterManager: React.FC<AdminFooterManagerProps> = ({ onNaviga
               {/* Target / Destination */}
               {['page', 'category', 'product', 'policy', 'whatsapp', 'phone', 'email', 'external', 'map'].includes(editingLink.linkType) && (
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-neutral-300">الهدف / المعرف / الرابط (Target)</label>
+                  <label className="text-xs font-bold text-neutral-700">الهدف / المعرف / الرابط (Target)</label>
                   <input
                     type="text"
                     value={editingLink.target || ''}
@@ -1184,15 +1186,15 @@ export const AdminFooterManager: React.FC<AdminFooterManagerProps> = ({ onNaviga
                         ? 'categories / brands / wishlist / cart'
                         : 'معرف الهدف'
                     }
-                    className="w-full px-3 py-2 rounded-xl bg-neutral-950 border border-neutral-800 text-white text-xs focus:border-amber-400 outline-none font-mono"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#F6F7F9] border border-neutral-200 text-neutral-950 text-xs focus:border-amber-500 focus:bg-white outline-none font-mono"
                   />
                 </div>
               )}
 
               {/* Icon Selector */}
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-neutral-300">اختيار الأيقونة</label>
-                <div className="grid grid-cols-6 sm:grid-cols-8 gap-2 p-2 rounded-xl bg-neutral-950 border border-neutral-800 max-h-36 overflow-y-auto">
+                <label className="text-xs font-bold text-neutral-700">اختيار الأيقونة</label>
+                <div className="grid grid-cols-6 sm:grid-cols-8 gap-2 p-2.5 rounded-xl bg-[#F6F7F9] border border-neutral-200 max-h-36 overflow-y-auto">
                   {AVAILABLE_ICONS.map((iconName) => (
                     <button
                       key={iconName}
@@ -1200,8 +1202,8 @@ export const AdminFooterManager: React.FC<AdminFooterManagerProps> = ({ onNaviga
                       onClick={() => setEditingLink({ ...editingLink, icon: iconName })}
                       className={`p-2 rounded-lg flex items-center justify-center transition-all cursor-pointer ${
                         editingLink.icon === iconName
-                          ? 'bg-amber-500 text-neutral-950 font-bold scale-110 shadow-md'
-                          : 'bg-neutral-900 text-neutral-400 hover:text-white hover:bg-neutral-850'
+                          ? 'bg-amber-400 text-neutral-950 font-bold scale-105 shadow-xs'
+                          : 'bg-white border border-neutral-200 text-neutral-600 hover:text-neutral-950 hover:border-neutral-300'
                       }`}
                       title={iconName}
                     >
@@ -1212,25 +1214,25 @@ export const AdminFooterManager: React.FC<AdminFooterManagerProps> = ({ onNaviga
               </div>
 
               {/* Open in new tab toggle */}
-              <div className="flex items-center justify-between p-3 rounded-xl bg-neutral-950 border border-neutral-800">
-                <span className="text-xs text-neutral-300 font-bold">فتح الرابط في علامة تبويب جديدة</span>
+              <div className="flex items-center justify-between p-3 rounded-xl bg-[#F6F7F9] border border-neutral-200">
+                <span className="text-xs text-neutral-700 font-bold">فتح الرابط في علامة تبويب جديدة</span>
                 <button
                   type="button"
                   onClick={() => setEditingLink({ ...editingLink, openInNewTab: !editingLink.openInNewTab })}
                   className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors cursor-pointer ${
-                    editingLink.openInNewTab ? 'bg-amber-500' : 'bg-neutral-800'
+                    editingLink.openInNewTab ? 'bg-amber-400' : 'bg-neutral-300'
                   }`}
                 >
-                  <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${editingLink.openInNewTab ? 'translate-x-4' : 'translate-x-1'}`} />
+                  <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow-xs transition-transform ${editingLink.openInNewTab ? 'translate-x-4' : 'translate-x-1'}`} />
                 </button>
               </div>
             </div>
 
-            <div className="flex items-center justify-end gap-2 pt-3 border-t border-neutral-800">
+            <div className="flex items-center justify-end gap-2 pt-3 border-t border-neutral-200">
               <button
                 type="button"
                 onClick={() => setEditingLink(null)}
-                className="px-4 py-2 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-xs font-bold cursor-pointer"
+                className="px-4 py-2 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-700 text-xs font-bold cursor-pointer"
               >
                 إلغاء
               </button>
@@ -1238,7 +1240,7 @@ export const AdminFooterManager: React.FC<AdminFooterManagerProps> = ({ onNaviga
                 type="button"
                 onClick={() => handleSaveLink(editingLink)}
                 disabled={!editingLink.titleAr}
-                className="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 disabled:opacity-40 text-neutral-950 font-black text-xs cursor-pointer"
+                className="px-5 py-2 rounded-xl bg-amber-400 hover:bg-amber-500 disabled:opacity-40 text-neutral-950 font-black text-xs cursor-pointer shadow-xs"
               >
                 حفظ العنصر
               </button>
@@ -1251,49 +1253,49 @@ export const AdminFooterManager: React.FC<AdminFooterManagerProps> = ({ onNaviga
       {/* MODAL: EDIT / ADD BADGE */}
       {/* ========================================================================= */}
       {editingBadge && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="w-full max-w-md bg-neutral-900 border border-neutral-800 rounded-2xl p-5 sm:p-6 space-y-4 shadow-2xl animate-in fade-in zoom-in-95">
-            <div className="flex items-center justify-between border-b border-neutral-800 pb-3">
-              <h3 className="text-base font-black text-white flex items-center gap-2">
-                <ShieldCheck className="w-5 h-5 text-amber-400" />
+        <div className="fixed inset-0 z-50 bg-neutral-950/50 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="w-full max-w-md bg-white border border-neutral-200 rounded-3xl p-5 sm:p-6 space-y-4 shadow-2xl animate-in fade-in zoom-in-95">
+            <div className="flex items-center justify-between border-b border-neutral-200 pb-3">
+              <h3 className="text-base font-black text-neutral-950 flex items-center gap-2">
+                <ShieldCheck className="w-5 h-5 text-amber-600" />
                 <span>{isAddingBadge ? 'إضافة شارة ثقة جديدة' : 'تعديل شارة الثقة والضمان'}</span>
               </h3>
               <button
                 type="button"
                 onClick={() => setEditingBadge(null)}
-                className="p-1 rounded-lg text-neutral-400 hover:text-white cursor-pointer"
+                className="p-1.5 rounded-lg bg-[#F6F7F9] hover:bg-neutral-200 text-neutral-500 hover:text-neutral-950 cursor-pointer"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4" />
               </button>
             </div>
 
             <div className="space-y-3">
               <div className="space-y-1">
-                <label className="text-xs font-bold text-neutral-300">العنوان الرئيسي (بالعربي) *</label>
+                <label className="text-xs font-bold text-neutral-700">العنوان الرئيسي (بالعربي) *</label>
                 <input
                   type="text"
                   value={editingBadge.titleAr}
                   onChange={(e) => setEditingBadge({ ...editingBadge, titleAr: e.target.value })}
                   placeholder="معاينة قبل الدفع"
-                  className="w-full px-3 py-2 rounded-xl bg-neutral-950 border border-neutral-800 text-white text-xs focus:border-amber-400 outline-none"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#F6F7F9] border border-neutral-200 text-neutral-950 text-xs focus:border-amber-500 focus:bg-white outline-none"
                 />
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-bold text-neutral-300">الوصف الفرعي (بالعربي) *</label>
+                <label className="text-xs font-bold text-neutral-700">الوصف الفرعي (بالعربي) *</label>
                 <input
                   type="text"
                   value={editingBadge.subtitleAr}
                   onChange={(e) => setEditingBadge({ ...editingBadge, subtitleAr: e.target.value })}
                   placeholder="افحص طلبك بنفسك"
-                  className="w-full px-3 py-2 rounded-xl bg-neutral-950 border border-neutral-800 text-white text-xs focus:border-amber-400 outline-none"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#F6F7F9] border border-neutral-200 text-neutral-950 text-xs focus:border-amber-500 focus:bg-white outline-none"
                 />
               </div>
 
               {/* Icon Selector */}
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-neutral-300">اختيار الأيقونة</label>
-                <div className="grid grid-cols-6 gap-2 p-2 rounded-xl bg-neutral-950 border border-neutral-800 max-h-32 overflow-y-auto">
+                <label className="text-xs font-bold text-neutral-700">اختيار الأيقونة</label>
+                <div className="grid grid-cols-6 gap-2 p-2.5 rounded-xl bg-[#F6F7F9] border border-neutral-200 max-h-32 overflow-y-auto">
                   {AVAILABLE_ICONS.map((iconName) => (
                     <button
                       key={iconName}
@@ -1301,8 +1303,8 @@ export const AdminFooterManager: React.FC<AdminFooterManagerProps> = ({ onNaviga
                       onClick={() => setEditingBadge({ ...editingBadge, icon: iconName })}
                       className={`p-2 rounded-lg flex items-center justify-center transition-all cursor-pointer ${
                         editingBadge.icon === iconName
-                          ? 'bg-amber-500 text-neutral-950 font-bold scale-110 shadow-md'
-                          : 'bg-neutral-900 text-neutral-400 hover:text-white hover:bg-neutral-850'
+                          ? 'bg-amber-400 text-neutral-950 font-bold scale-105 shadow-xs'
+                          : 'bg-white border border-neutral-200 text-neutral-600 hover:text-neutral-950 hover:border-neutral-300'
                       }`}
                       title={iconName}
                     >
@@ -1313,11 +1315,11 @@ export const AdminFooterManager: React.FC<AdminFooterManagerProps> = ({ onNaviga
               </div>
             </div>
 
-            <div className="flex items-center justify-end gap-2 pt-3 border-t border-neutral-800">
+            <div className="flex items-center justify-end gap-2 pt-3 border-t border-neutral-200">
               <button
                 type="button"
                 onClick={() => setEditingBadge(null)}
-                className="px-4 py-2 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-xs font-bold cursor-pointer"
+                className="px-4 py-2 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-700 text-xs font-bold cursor-pointer"
               >
                 إلغاء
               </button>
@@ -1325,7 +1327,7 @@ export const AdminFooterManager: React.FC<AdminFooterManagerProps> = ({ onNaviga
                 type="button"
                 onClick={() => handleSaveBadge(editingBadge)}
                 disabled={!editingBadge.titleAr || !editingBadge.subtitleAr}
-                className="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 disabled:opacity-40 text-neutral-950 font-black text-xs cursor-pointer"
+                className="px-5 py-2 rounded-xl bg-amber-400 hover:bg-amber-500 disabled:opacity-40 text-neutral-950 font-black text-xs cursor-pointer shadow-xs"
               >
                 حفظ الشارة
               </button>

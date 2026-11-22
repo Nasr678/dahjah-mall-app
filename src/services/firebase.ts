@@ -1,6 +1,11 @@
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import { 
-  getAuth, 
+  getAuth,
+  initializeAuth,
+  indexedDBLocalPersistence,
+  browserLocalPersistence,
+  browserSessionPersistence,
+  browserPopupRedirectResolver,
   signInWithEmailAndPassword, 
   createUserWithEmailAndPassword, 
   signInWithPopup,
@@ -9,6 +14,8 @@ import {
   signOut, 
   onAuthStateChanged,
   updateProfile,
+  Auth,
+  PopupRedirectResolver,
   User as FirebaseUser
 } from 'firebase/auth';
 import { 
@@ -21,12 +28,14 @@ import {
   collection, 
   doc, 
   getDoc, 
+  getDocFromServer,
   getDocs, 
   setDoc, 
   updateDoc, 
   deleteDoc, 
   query, 
   where, 
+  limit,
   onSnapshot,
   Unsubscribe,
   writeBatch,
@@ -40,20 +49,97 @@ import { DEFAULT_EXCHANGE_RATES, getRegionFromCity } from './currencyService';
 
 // Production Firebase Configuration for dahjahmall
 export const firebaseConfig = {
-  apiKey: appletConfig.apiKey?.startsWith("AIzaSyCt") ? appletConfig.apiKey : "AIzaSyCtZE3oEttNgQxktucrMWSw",
-  authDomain: "dahjahmall.firebaseapp.com",
-  projectId: "dahjahmall",
-  storageBucket: "dahjahmall.firebasestorage.app",
-  messagingSenderId: "884142305809",
-  appId: appletConfig.appId?.startsWith("1:884142305809") ? appletConfig.appId : "1:884142305809:web:3a0826380a",
+  apiKey: appletConfig.apiKey || "AIzaSyCtzE3oEttNgQxktucrMWSw7WGyVid2tBg",
+  authDomain: appletConfig.authDomain || "dahjahmall.firebaseapp.com",
+  projectId: appletConfig.projectId || "dahjahmall",
+  storageBucket: appletConfig.storageBucket || "dahjahmall.firebasestorage.app",
+  messagingSenderId: appletConfig.messagingSenderId || "884142305809",
+  appId: appletConfig.appId || "1:884142305809:web:3ae3858bcf6a5beed5f7b0",
   firestoreDatabaseId: appletConfig.firestoreDatabaseId || "(default)",
 };
 
 // Initialize Firebase App
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
 
-// Firebase Services (per Firebase skill specification)
-export const auth = getAuth(app);
+/**
+ * Guarded PopupRedirectResolver to prevent Firebase Auth v12 race condition
+ * where _PopupOperation.onAuthEvent throws "INTERNAL ASSERTION FAILED: Pending promise was never set"
+ * if the popup promise was already settled by cancellation, origin validation, or timeout.
+ */
+let SafePopupResolver: PopupRedirectResolver = browserPopupRedirectResolver;
+if (typeof browserPopupRedirectResolver === 'function') {
+  try {
+    class GuardedBrowserPopupRedirectResolver extends (browserPopupRedirectResolver as unknown as new () => any) {
+      async _initialize(authInstance: any) {
+        const manager = await super._initialize(authInstance);
+        if (manager && typeof manager.registerConsumer === 'function' && !manager.__dajjahPatched) {
+          const origRegisterConsumer = manager.registerConsumer.bind(manager);
+          manager.registerConsumer = (consumer: any) => {
+            if (!consumer || !consumer.pendingPromise) {
+              return;
+            }
+            if (!consumer.__dajjahGuarded) {
+              consumer.__dajjahGuarded = true;
+              if (typeof consumer.resolve === 'function') {
+                const origResolve = consumer.resolve.bind(consumer);
+                consumer.resolve = (cred: any) => {
+                  if (!consumer.pendingPromise) return;
+                  return origResolve(cred);
+                };
+              }
+              if (typeof consumer.reject === 'function') {
+                const origReject = consumer.reject.bind(consumer);
+                consumer.reject = (err: any) => {
+                  if (!consumer.pendingPromise) return;
+                  return origReject(err);
+                };
+              }
+              if (typeof consumer.onAuthEvent === 'function') {
+                const origOnAuthEvent = consumer.onAuthEvent.bind(consumer);
+                consumer.onAuthEvent = async (event: any) => {
+                  if (!consumer.pendingPromise) return;
+                  try {
+                    await origOnAuthEvent(event);
+                  } catch (err: any) {
+                    const msg = String(err?.message || err || '');
+                    if (msg.includes('Pending promise was never set')) {
+                      return;
+                    }
+                    if (consumer.pendingPromise && typeof consumer.reject === 'function') {
+                      consumer.reject(err);
+                    }
+                  }
+                };
+              }
+            }
+            return origRegisterConsumer(consumer);
+          };
+          manager.__dajjahPatched = true;
+        }
+        return manager;
+      }
+    }
+    SafePopupResolver = GuardedBrowserPopupRedirectResolver as unknown as PopupRedirectResolver;
+  } catch {
+    SafePopupResolver = browserPopupRedirectResolver;
+  }
+}
+
+// Firebase Auth Initialization with explicit persistence fallback chain
+let authInstance: Auth;
+try {
+  authInstance = initializeAuth(app, {
+    persistence: [
+      indexedDBLocalPersistence,
+      browserLocalPersistence,
+      browserSessionPersistence,
+    ],
+    popupRedirectResolver: SafePopupResolver,
+  });
+} catch {
+  authInstance = getAuth(app);
+}
+export const auth = authInstance;
 
 // Suppress transient backend unreachable and offline warning messages in client console
 try {
@@ -104,6 +190,21 @@ export async function withFirestoreTimeout<T>(promise: Promise<T>, timeoutMs = 2
   } catch {
     clearTimeout(timer);
     return fallbackValue;
+  }
+}
+
+/**
+ * Validates connection to Cloud Firestore per Firebase skill specification
+ */
+export async function testFirebaseConnection(): Promise<{ connected: boolean; mode: 'online' | 'offline'; error?: string }> {
+  try {
+    await getDocFromServer(doc(db, 'test', 'connection'));
+    return { connected: true, mode: 'online' };
+  } catch (err: any) {
+    if (isOfflineError(err)) {
+      return { connected: true, mode: 'offline' };
+    }
+    return { connected: false, mode: 'offline', error: err?.message || String(err) };
   }
 }
 
@@ -284,6 +385,11 @@ export function translateAuthError(error: any): string {
     return 'تسجيل الدخول عبر Google غير مدعوم في متصفح WebView الداخلي. يرجى تسجيل الدخول بالبريد الإلكتروني وكلمة المرور فوراً.';
   }
 
+  // Web storage unsupported (partitioned/blocked third-party storage in iframe or strict privacy browser)
+  if (code === 'auth/web-storage-unsupported' || msg.includes('web-storage-unsupported')) {
+    return 'المتصفح الحالي يقيّد مساحة التخزين للنوافذ المنبثقة. يرجى فتح التطبيق في نافذة مستقلة أو تسجيل الدخول بالبريد الإلكتروني وكلمة المرور.';
+  }
+
   // Account exists with different credential
   if (code === 'auth/account-exists-with-different-credential' || msg.includes('account-exists-with-different-credential')) {
     return 'يوجد حساب مسجل بالفعل بهذا البريد عبر مزود خدمة آخر. يرجى تسجيل الدخول بالبريد وكلمة المرور.';
@@ -339,6 +445,9 @@ let activeGoogleLoginPromise: Promise<UserProfile> | null = null;
 export const firebaseAuthService = {
   // Register with Email & Password
   async registerWithEmail(email: string, pass: string, name: string, phone: string, city: string): Promise<UserProfile> {
+    if (typeof auth.authStateReady === 'function') {
+      await auth.authStateReady();
+    }
     const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
     const firebaseUser = userCredential.user;
 
@@ -392,6 +501,9 @@ export const firebaseAuthService = {
 
   // Login with Email & Password
   async loginWithEmail(email: string, pass: string): Promise<UserProfile> {
+    if (typeof auth.authStateReady === 'function') {
+      await auth.authStateReady();
+    }
     const userCredential = await signInWithEmailAndPassword(auth, email, pass);
     const firebaseUser = userCredential.user;
 
@@ -455,12 +567,15 @@ export const firebaseAuthService = {
 
     activeGoogleLoginPromise = (async () => {
       try {
+        if (typeof auth.authStateReady === 'function') {
+          await auth.authStateReady();
+        }
         const provider = new GoogleAuthProvider();
         provider.setCustomParameters({ prompt: 'select_account' });
 
         let result: any;
         try {
-          result = await signInWithPopup(auth, provider);
+          result = await signInWithPopup(auth, provider, SafePopupResolver);
         } catch (popupError: any) {
           const code = popupError?.code || '';
           const msg = String(popupError?.message || '');
@@ -482,6 +597,12 @@ export const firebaseAuthService = {
           ) {
             const err: any = new Error('حدث تعارض أثناء فتح نافذة تسجيل الدخول. يرجى المحاولة مرة أخرى أو استخدام تسجيل الدخول بالبريد الإلكتروني.');
             err.code = 'auth/internal-error';
+            throw err;
+          }
+
+          if (code === 'auth/web-storage-unsupported' || msg.includes('web-storage-unsupported')) {
+            const err: any = new Error('المتصفح الحالي يقيّد مساحة التخزين للنوافذ المنبثقة. يرجى استخدام تسجيل الدخول بالبريد الإلكتروني وكلمة المرور.');
+            err.code = 'auth/web-storage-unsupported';
             throw err;
           }
 
@@ -953,13 +1074,27 @@ export async function uploadBrandImage(file: File, type: 'logo' | 'cover' = 'log
   }
 }
 
+let cachedSupportsWebP: boolean | null = null;
+function supportsWebPEncode(): boolean {
+  if (cachedSupportsWebP !== null) return cachedSupportsWebP;
+  try {
+    const c = document.createElement('canvas');
+    c.width = 2;
+    c.height = 2;
+    cachedSupportsWebP = c.toDataURL('image/webp').startsWith('data:image/webp');
+  } catch {
+    cachedSupportsWebP = false;
+  }
+  return cachedSupportsWebP;
+}
+
 /**
- * Client-side ultra-fast image compression
+ * Client-side ultra-fast image compression (prefers WebP when supported for ~30% smaller files)
  * Uses URL.createObjectURL and HTML5 canvas to scale and compress in milliseconds
  */
 export async function compressImage(file: File, maxWidth = 1080, quality = 0.78): Promise<Blob> {
-  // If already small (< 100KB), return as is without re-encoding
-  if (file.size < 100 * 1024 && (file.type === 'image/jpeg' || file.type === 'image/webp' || file.type === 'image/png')) {
+  // If already small (< 90KB) and WebP/JPEG, return as is without re-encoding
+  if (file.size < 90 * 1024 && (file.type === 'image/webp' || file.type === 'image/jpeg')) {
     return file;
   }
 
@@ -994,6 +1129,7 @@ export async function compressImage(file: File, maxWidth = 1080, quality = 0.78)
       ctx.imageSmoothingQuality = 'medium';
       ctx.drawImage(img, 0, 0, width, height);
 
+      const targetMime = supportsWebPEncode() ? 'image/webp' : 'image/jpeg';
       canvas.toBlob(
         (blob) => {
           if (blob && blob.size > 0) {
@@ -1002,7 +1138,7 @@ export async function compressImage(file: File, maxWidth = 1080, quality = 0.78)
             resolve(file);
           }
         },
-        'image/jpeg',
+        targetMime,
         quality
       );
     };
@@ -1021,12 +1157,14 @@ export async function compressImage(file: File, maxWidth = 1080, quality = 0.78)
  */
 export async function uploadProductImage(file: File): Promise<string> {
   const compressedBlob = await compressImage(file, 1080, 0.78);
-  const filename = `products/${Date.now()}_${Math.random().toString(36).substring(2, 8)}.jpg`;
+  const isWebP = compressedBlob.type === 'image/webp';
+  const ext = isWebP ? 'webp' : 'jpg';
+  const filename = `products/${Date.now()}_${Math.random().toString(36).substring(2, 8)}.${ext}`;
   const storageRef = ref(storage, filename);
 
   try {
     const uploadTask = uploadBytes(storageRef, compressedBlob, {
-      contentType: 'image/jpeg',
+      contentType: isWebP ? 'image/webp' : 'image/jpeg',
     });
 
     // 6s timeout race to prevent admin dashboard from hanging on slow or offline network
@@ -1211,20 +1349,23 @@ export const firestoreOrderService = {
         await setDoc(docRef, cleanOrderData);
       } catch (fallbackErr) {
         if (!isOfflineError(fallbackErr)) {
-          console.warn('Fallback setDoc error:', fallbackErr);
+          handleFirestoreError(fallbackErr, OperationType.CREATE, `orders/${order.id}`);
+          throw fallbackErr;
         }
       }
     }
   },
 
-  // Get orders for a user
+  // Get orders for a user (bounded to latest 50 to avoid excessive reads)
   async getUserOrders(userId: string): Promise<Order[]> {
     try {
       const q = query(
         collection(db, 'orders'),
-        where('userId', '==', userId)
+        where('userId', '==', userId),
+        limit(50)
       );
-      const querySnapshot = await getDocs(q);
+      const querySnapshot = await withFirestoreTimeout(getDocs(q), 3000, null);
+      if (!querySnapshot) return [];
       const orders: Order[] = [];
       querySnapshot.forEach((d) => {
         orders.push(d.data() as Order);
@@ -1250,7 +1391,29 @@ export const firestoreOrderService = {
       if (!isOfflineError(err)) {
         console.warn('Error updating order status in Firestore:', err);
       }
+      throw err;
     }
+  },
+
+  // Customer order cancellation with strict state guard (only 'received' orders can be cancelled)
+  async cancelCustomerOrder(orderId: string, userId: string): Promise<void> {
+    const docRef = doc(db, 'orders', orderId);
+    const snap = await getDoc(docRef);
+    if (!snap.exists()) {
+      throw new Error('الطلب غير موجود في النظام.');
+    }
+    const orderData = snap.data() as Order;
+    const isAppAdmin = auth.currentUser?.email?.toLowerCase() === 'nsralnaty93@gmail.com' && auth.currentUser?.emailVerified === true;
+    if (orderData.userId !== userId && !isAppAdmin) {
+      throw new Error('غير مصرح لك بإلغاء هذا الطلب.');
+    }
+    if (orderData.status !== 'received') {
+      throw new Error('لا يمكن إلغاء الطلب لأنه بدأ بالفعل في مرحلة التجهيز أو خرج للتوصيل أو تم تسليمه.');
+    }
+    await updateDoc(docRef, sanitizeForFirestore({
+      status: 'cancelled',
+      updatedAt: new Date().toISOString(),
+    }));
   }
 };
 
@@ -1493,12 +1656,13 @@ export const firestoreReviewService = {
     return fullReview;
   },
 
-  // Get reviews for a specific product
+  // Get reviews for a specific product (bounded to 50)
   async getProductReviews(productId: string): Promise<ReviewItem[]> {
     try {
       const q = query(
         collection(db, 'reviews'),
-        where('productId', '==', productId)
+        where('productId', '==', productId),
+        limit(50)
       );
       const querySnapshot = await withFirestoreTimeout(getDocs(q), 2500, null);
       if (querySnapshot && !querySnapshot.empty) {
@@ -1520,10 +1684,10 @@ export const firestoreReviewService = {
     }
   },
 
-  // Real-time reviews listener for a product
+  // Real-time reviews listener for a product (bounded to 50)
   subscribeToProductReviews(productId: string, callback: (reviews: ReviewItem[]) => void): Unsubscribe {
     try {
-      const q = query(collection(db, 'reviews'), where('productId', '==', productId));
+      const q = query(collection(db, 'reviews'), where('productId', '==', productId), limit(50));
       return onSnapshot(q, (snapshot) => {
         const list: ReviewItem[] = [];
         snapshot.forEach((d) => {

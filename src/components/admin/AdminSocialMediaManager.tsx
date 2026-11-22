@@ -41,14 +41,14 @@ export const getSocialIconComponent = (iconKey: string) => {
 
 export const getSocialBrandColor = (iconKey: string) => {
   const key = (iconKey || '').toLowerCase();
-  if (key.includes('whatsapp')) return { bg: 'bg-emerald-500/20', text: 'text-emerald-400', border: 'border-emerald-500/30' };
-  if (key.includes('telegram')) return { bg: 'bg-sky-500/20', text: 'text-sky-400', border: 'border-sky-500/30' };
-  if (key.includes('facebook')) return { bg: 'bg-blue-500/20', text: 'text-blue-400', border: 'border-blue-500/30' };
-  if (key.includes('tiktok')) return { bg: 'bg-rose-500/20', text: 'text-rose-400', border: 'border-rose-500/30' };
-  if (key.includes('instagram')) return { bg: 'bg-pink-500/20', text: 'text-pink-400', border: 'border-pink-500/30' };
-  if (key.includes('youtube')) return { bg: 'bg-red-500/20', text: 'text-red-400', border: 'border-red-500/30' };
-  if (key.includes('snapchat')) return { bg: 'bg-yellow-500/20', text: 'text-yellow-400', border: 'border-yellow-500/30' };
-  return { bg: 'bg-amber-500/20', text: 'text-amber-400', border: 'border-amber-500/30' };
+  if (key.includes('whatsapp')) return { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200' };
+  if (key.includes('telegram')) return { bg: 'bg-sky-50', text: 'text-sky-700', border: 'border-sky-200' };
+  if (key.includes('facebook')) return { bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-200' };
+  if (key.includes('tiktok')) return { bg: 'bg-rose-50', text: 'text-rose-700', border: 'border-rose-200' };
+  if (key.includes('instagram')) return { bg: 'bg-pink-50', text: 'text-pink-700', border: 'border-pink-200' };
+  if (key.includes('youtube')) return { bg: 'bg-red-50', text: 'text-red-700', border: 'border-red-200' };
+  if (key.includes('snapchat')) return { bg: 'bg-yellow-50', text: 'text-yellow-700', border: 'border-yellow-200' };
+  return { bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200' };
 };
 
 export const AdminSocialMediaManager: React.FC = () => {
@@ -167,13 +167,15 @@ export const AdminSocialMediaManager: React.FC = () => {
   return (
     <div className="space-y-6 text-right select-none" id="admin-social-media-manager">
       {/* Header */}
-      <div className="p-4 rounded-2xl bg-neutral-900 border border-neutral-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="p-5 rounded-2xl bg-white border border-neutral-200 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h3 className="text-base font-black text-white flex items-center gap-2">
-            <Share2 className="w-5 h-5 text-amber-400" />
+          <h3 className="text-base font-black text-neutral-950 flex items-center gap-2">
+            <span className="w-8 h-8 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center shrink-0">
+              <Share2 className="w-4 h-4 text-amber-600" />
+            </span>
             <span>إدارة قنوات التواصل الاجتماعي (Social Media Channels)</span>
           </h3>
-          <p className="text-xs text-neutral-400 mt-0.5">
+          <p className="text-xs text-neutral-500 mt-1">
             إضافة وتعديل وحذف منصات التواصل التي تظهر في تذييل التطبيق (واتساب، تيليجرام، فيسبوك، تيك توك، وغيرها).
           </p>
         </div>
@@ -181,7 +183,7 @@ export const AdminSocialMediaManager: React.FC = () => {
         <button
           type="button"
           onClick={handleOpenAdd}
-          className="px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-neutral-950 font-black text-xs flex items-center gap-2 cursor-pointer shadow-md transition-all whitespace-nowrap"
+          className="px-4 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-500 text-neutral-950 font-black text-xs flex items-center gap-2 cursor-pointer shadow-xs transition-all whitespace-nowrap"
         >
           <Plus className="w-4 h-4" />
           <span>إضافة قناة جديدة</span>
@@ -193,33 +195,33 @@ export const AdminSocialMediaManager: React.FC = () => {
         <div
           className={`p-3.5 rounded-xl flex items-center gap-2 text-xs font-bold ${
             msg.type === 'success'
-              ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
-              : 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
+              ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+              : 'bg-rose-50 text-rose-700 border border-rose-200'
           }`}
         >
-          {msg.type === 'success' ? <CheckCircle2 className="w-4 h-4" /> : <AlertCircle className="w-4 h-4" />}
+          {msg.type === 'success' ? <CheckCircle2 className="w-4 h-4 shrink-0" /> : <AlertCircle className="w-4 h-4 shrink-0" />}
           <span>{msg.text}</span>
         </div>
       )}
 
       {/* Items List */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
         {items.map((item, index) => {
           return (
             <div
               key={item.id}
-              className={`p-4 rounded-2xl bg-neutral-900 border ${
-                item.enabled ? 'border-neutral-800' : 'border-neutral-800/40 opacity-60'
+              className={`p-4 rounded-2xl bg-white border shadow-xs ${
+                item.enabled ? 'border-neutral-200' : 'border-neutral-200/70 opacity-60'
               } flex items-center justify-between gap-3`}
             >
               <div className="flex items-center gap-3 min-w-0">
-                <div className="w-10 h-10 rounded-xl bg-neutral-950 border border-neutral-800 flex items-center justify-center flex-shrink-0 shadow-sm p-1.5">
+                <div className="w-10 h-10 rounded-xl bg-[#F6F7F9] border border-neutral-200 flex items-center justify-center flex-shrink-0 p-1.5">
                   <SocialBrandIcon platform={item.icon || item.name} className="w-7 h-7" />
                 </div>
                 <div className="min-w-0">
                   <div className="flex items-center gap-2">
-                    <h4 className="text-sm font-black text-white truncate">{item.name}</h4>
-                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-neutral-800 text-neutral-400 font-mono">
+                    <h4 className="text-sm font-black text-neutral-950 truncate">{item.name}</h4>
+                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#F6F7F9] border border-neutral-200 text-neutral-500 font-mono tabular-nums">
                       #{item.order || index + 1}
                     </span>
                   </div>
@@ -227,7 +229,7 @@ export const AdminSocialMediaManager: React.FC = () => {
                     href={item.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-[11px] text-neutral-400 hover:text-amber-400 truncate flex items-center gap-1 mt-0.5"
+                    className="text-[11px] text-neutral-500 hover:text-amber-700 truncate flex items-center gap-1 mt-0.5"
                   >
                     <span className="truncate">{item.url}</span>
                     <ExternalLink className="w-3 h-3 flex-shrink-0" />
@@ -241,7 +243,7 @@ export const AdminSocialMediaManager: React.FC = () => {
                   type="button"
                   disabled={index === 0}
                   onClick={() => handleMoveOrder(index, 'up')}
-                  className="p-1.5 rounded-lg bg-neutral-800 hover:bg-neutral-700 disabled:opacity-30 text-neutral-300 cursor-pointer"
+                  className="p-1.5 rounded-lg bg-[#F6F7F9] hover:bg-neutral-200 border border-neutral-200 disabled:opacity-30 text-neutral-600 cursor-pointer"
                   title="تحريك لأعلى"
                 >
                   <ArrowUp className="w-3.5 h-3.5" />
@@ -250,7 +252,7 @@ export const AdminSocialMediaManager: React.FC = () => {
                   type="button"
                   disabled={index === items.length - 1}
                   onClick={() => handleMoveOrder(index, 'down')}
-                  className="p-1.5 rounded-lg bg-neutral-800 hover:bg-neutral-700 disabled:opacity-30 text-neutral-300 cursor-pointer"
+                  className="p-1.5 rounded-lg bg-[#F6F7F9] hover:bg-neutral-200 border border-neutral-200 disabled:opacity-30 text-neutral-600 cursor-pointer"
                   title="تحريك لأسفل"
                 >
                   <ArrowDown className="w-3.5 h-3.5" />
@@ -260,8 +262,10 @@ export const AdminSocialMediaManager: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => handleToggleEnable(item.id)}
-                  className={`p-1.5 rounded-lg text-xs font-bold transition-colors cursor-pointer ${
-                    item.enabled ? 'bg-emerald-500/20 text-emerald-400' : 'bg-neutral-800 text-neutral-500'
+                  className={`p-1.5 rounded-lg text-xs font-bold border transition-colors cursor-pointer ${
+                    item.enabled
+                      ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                      : 'bg-neutral-100 text-neutral-400 border-neutral-200'
                   }`}
                   title={item.enabled ? 'مفعل — اضغط للتعطيل' : 'معطل — اضغط للتفعيل'}
                 >
@@ -272,7 +276,7 @@ export const AdminSocialMediaManager: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => handleOpenEdit(item)}
-                  className="p-1.5 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-amber-400 cursor-pointer"
+                  className="p-1.5 rounded-lg bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-700 cursor-pointer"
                   title="تعديل"
                 >
                   <Edit3 className="w-4 h-4" />
@@ -282,7 +286,7 @@ export const AdminSocialMediaManager: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => handleDelete(item.id)}
-                  className="p-1.5 rounded-lg bg-neutral-800 hover:bg-rose-900/40 text-neutral-400 hover:text-rose-400 cursor-pointer"
+                  className="p-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-600 cursor-pointer"
                   title="حذف"
                 >
                   <Trash2 className="w-4 h-4" />
@@ -295,16 +299,16 @@ export const AdminSocialMediaManager: React.FC = () => {
 
       {/* Edit / Add Modal */}
       {isModalOpen && editingItem && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="w-full max-w-lg bg-neutral-900 border border-neutral-800 rounded-3xl p-6 space-y-4 shadow-2xl">
-            <div className="flex items-center justify-between pb-3 border-b border-neutral-800">
-              <h4 className="text-base font-black text-white">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-neutral-950/50 backdrop-blur-sm">
+          <div className="w-full max-w-lg bg-white border border-neutral-200 rounded-3xl p-6 space-y-4 shadow-2xl">
+            <div className="flex items-center justify-between pb-3 border-b border-neutral-200">
+              <h4 className="text-base font-black text-neutral-950">
                 {items.some((i) => i.id === editingItem.id) ? 'تعديل قناة تواصل' : 'إضافة قناة تواصل جديدة'}
               </h4>
               <button
                 type="button"
                 onClick={() => setIsModalOpen(false)}
-                className="text-neutral-400 hover:text-white"
+                className="w-8 h-8 rounded-lg bg-[#F6F7F9] hover:bg-neutral-200 flex items-center justify-center text-neutral-500 hover:text-neutral-950 cursor-pointer"
               >
                 ✕
               </button>
@@ -312,7 +316,7 @@ export const AdminSocialMediaManager: React.FC = () => {
 
             <form onSubmit={handleSaveModal} className="space-y-4 text-xs">
               <div>
-                <label className="block text-neutral-400 font-bold mb-1">
+                <label className="block text-neutral-700 font-bold mb-1">
                   اسم المنصة أو القناة <span className="text-rose-500">*</span>
                 </label>
                 <input
@@ -321,12 +325,12 @@ export const AdminSocialMediaManager: React.FC = () => {
                   placeholder="مثال: مجتمع واتساب الرسمي"
                   value={editingItem.name}
                   onChange={(e) => setEditingItem({ ...editingItem, name: e.target.value })}
-                  className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-2 text-white font-bold"
+                  className="w-full bg-[#F6F7F9] border border-neutral-200 rounded-xl px-3.5 py-2.5 text-neutral-950 font-bold focus:outline-none focus:border-amber-500 focus:bg-white transition-colors"
                 />
               </div>
 
               <div>
-                <label className="block text-neutral-400 font-bold mb-1">
+                <label className="block text-neutral-700 font-bold mb-1">
                   نوع المنصة / الأيقونة <span className="text-rose-500">*</span>
                 </label>
                 <div className="grid grid-cols-4 gap-2">
@@ -348,8 +352,8 @@ export const AdminSocialMediaManager: React.FC = () => {
                         onClick={() => setEditingItem({ ...editingItem, icon: plat.id })}
                         className={`p-2 rounded-xl flex flex-col items-center gap-1.5 border transition-all cursor-pointer ${
                           isSelected
-                            ? 'bg-amber-400/20 border-amber-400 text-amber-400 font-black scale-105'
-                            : 'bg-neutral-950 border-neutral-800 text-neutral-400 hover:text-white'
+                            ? 'bg-amber-50 border-amber-400 text-amber-800 font-black scale-105 shadow-xs'
+                            : 'bg-[#F6F7F9] border-neutral-200 text-neutral-600 hover:text-neutral-950 hover:border-neutral-300'
                         }`}
                       >
                         <SocialBrandIcon platform={plat.id} className="w-6 h-6" />
@@ -361,7 +365,7 @@ export const AdminSocialMediaManager: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-neutral-400 font-bold mb-1">
+                <label className="block text-neutral-700 font-bold mb-1">
                   رابط القناة (URL) <span className="text-rose-500">*</span>
                 </label>
                 <input
@@ -370,35 +374,35 @@ export const AdminSocialMediaManager: React.FC = () => {
                   placeholder="https://..."
                   value={editingItem.url}
                   onChange={(e) => setEditingItem({ ...editingItem, url: e.target.value })}
-                  className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-2 text-white font-mono text-left"
+                  className="w-full bg-[#F6F7F9] border border-neutral-200 rounded-xl px-3.5 py-2.5 text-neutral-950 font-mono text-left focus:outline-none focus:border-amber-500 focus:bg-white transition-colors"
                   dir="ltr"
                 />
               </div>
 
               <div className="flex items-center gap-3 pt-2">
-                <label className="flex items-center gap-2 cursor-pointer text-white font-bold">
+                <label className="flex items-center gap-2 cursor-pointer text-neutral-950 font-bold">
                   <input
                     type="checkbox"
                     checked={editingItem.enabled}
                     onChange={(e) => setEditingItem({ ...editingItem, enabled: e.target.checked })}
-                    className="w-4 h-4 rounded text-amber-400 bg-neutral-950 border-neutral-800"
+                    className="w-4 h-4 rounded accent-amber-500 border-neutral-300"
                   />
                   <span>تفعيل وعرض القناة في الموقع</span>
                 </label>
               </div>
 
-              <div className="pt-4 border-t border-neutral-800 flex justify-end gap-2">
+              <div className="pt-4 border-t border-neutral-200 flex justify-end gap-2">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 rounded-xl bg-neutral-800 text-neutral-300 hover:text-white"
+                  className="px-4 py-2 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-700 font-bold cursor-pointer"
                 >
                   إلغاء
                 </button>
                 <button
                   type="submit"
                   disabled={isSaving}
-                  className="px-5 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-neutral-950 font-black flex items-center gap-1.5 shadow-md"
+                  className="px-5 py-2 rounded-xl bg-amber-400 hover:bg-amber-500 text-neutral-950 font-black flex items-center gap-1.5 shadow-xs cursor-pointer"
                 >
                   <Save className="w-4 h-4" />
                   <span>{isSaving ? 'جاري الحفظ...' : 'حفظ'}</span>

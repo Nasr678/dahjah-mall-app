@@ -130,20 +130,20 @@ export const TrendsScreen: React.FC<TrendsScreenProps> = ({
   }, [products, activeMainSubTab, activeHashtag]);
 
   return (
-    <div className="w-full min-h-screen bg-neutral-950 pb-24 text-neutral-100">
-      {/* 1. Transparent Header with Icons matching SHEIN Screen 2 */}
-      <div className="sticky top-0 z-30 bg-neutral-950/90 backdrop-blur-xl border-b border-neutral-850 px-3.5 py-2.5 flex items-center justify-between shadow-sm">
+    <div className="w-full min-h-screen bg-[#F6F7F9] pb-24 text-neutral-900">
+      {/* 1. Header with Icons */}
+      <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-xl border-b border-neutral-200 px-3.5 py-2.5 flex items-center justify-between shadow-sm">
         <div className="flex items-center gap-2">
           <button
             type="button"
             onClick={onBackToHome}
-            className="p-1.5 rounded-xl bg-neutral-900 border border-neutral-850 text-neutral-300 hover:text-white"
+            className="p-1.5 rounded-xl bg-[#F6F7F9] border border-neutral-200 text-neutral-700 hover:text-neutral-950 transition-colors cursor-pointer"
           >
             <ArrowRight className="w-4 h-4" />
           </button>
           <div className="flex items-center gap-1.5">
-            <Flame className="w-4 h-4 text-amber-400 fill-amber-400" />
-            <span className="text-sm font-black tracking-tight text-white">ترندات والبراندات</span>
+            <Flame className="w-4 h-4 text-amber-600 fill-amber-500" />
+            <span className="text-sm font-black tracking-tight text-neutral-950">ترندات والبراندات</span>
           </div>
         </div>
 
@@ -151,24 +151,23 @@ export const TrendsScreen: React.FC<TrendsScreenProps> = ({
           <button
             type="button"
             onClick={onOpenSearch}
-            className="p-2 rounded-full hover:bg-neutral-900 text-neutral-300 hover:text-white transition-colors"
+            className="p-2 rounded-full hover:bg-[#F6F7F9] text-neutral-700 hover:text-neutral-950 transition-colors cursor-pointer"
           >
             <Search className="w-4 h-4" />
           </button>
           <button
             type="button"
             onClick={onOpenAI}
-            className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 text-xs font-bold hover:bg-amber-500/30 transition-colors"
+            className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-xs font-bold hover:bg-amber-100 transition-colors cursor-pointer"
           >
-            <Bot className="w-3.5 h-3.5 text-amber-400" />
+            <Bot className="w-3.5 h-3.5 text-amber-600" />
             <span>مساعد AI</span>
           </button>
         </div>
       </div>
 
-      {/* 2. Top Editorial Lookbook Hero Banner matching Image 2 */}
+      {/* 2. Top Editorial Lookbook Hero Banner */}
       <div className="relative w-full overflow-hidden">
-        {/* Background Image with Blur */}
         <div className="relative h-64 sm:h-72 w-full">
           <CachedImage
             src={currentLookbook.bgImage}
@@ -176,42 +175,42 @@ export const TrendsScreen: React.FC<TrendsScreenProps> = ({
             preset="banner"
             priority={true}
             containerClassName="w-full h-full"
-            className="w-full h-full object-cover brightness-60"
+            className="w-full h-full object-cover brightness-90"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/40 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/65 via-neutral-950/20 to-transparent" />
 
-          {/* Floating Frosted Glass Lookbook Box matching Image 2 */}
-          <div className="absolute inset-x-3 bottom-3 sm:inset-x-6 sm:bottom-4 p-3.5 sm:p-4 rounded-2xl bg-neutral-900/85 backdrop-blur-md border border-neutral-750/80 shadow-2xl space-y-3">
+          {/* Floating Frosted Light Lookbook Box */}
+          <div className="absolute inset-x-3 bottom-3 sm:inset-x-6 sm:bottom-4 p-3.5 sm:p-4 rounded-2xl bg-white/95 backdrop-blur-md border border-white shadow-xl space-y-3">
             {/* Header: Tag + Description + Counter */}
             <div className="flex items-start justify-between">
               <div className="space-y-0.5 text-right">
                 <div className="flex items-center gap-1.5">
                   <ChevronLeft 
-                    className="w-4 h-4 text-neutral-400 cursor-pointer hover:text-white"
+                    className="w-4 h-4 text-neutral-500 cursor-pointer hover:text-neutral-950"
                     onClick={() => setActiveCardIndex((prev) => (prev === 0 ? lookbooks.length - 1 : prev - 1))}
                   />
-                  <h2 className="text-sm sm:text-base font-black text-white tracking-wide">
+                  <h2 className="text-sm sm:text-base font-black text-neutral-950 tracking-wide">
                     {currentLookbook.arabicTag}
                   </h2>
                 </div>
-                <p className="text-[11px] sm:text-xs text-neutral-300 font-medium line-clamp-1">
+                <p className="text-[11px] sm:text-xs text-neutral-600 font-medium line-clamp-1">
                   {currentLookbook.description}
                 </p>
               </div>
 
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-neutral-800 text-neutral-400 border border-neutral-700">
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#F6F7F9] text-neutral-700 border border-neutral-200 tabular-nums">
                 {activeCardIndex + 1} / {lookbooks.length}
               </span>
             </div>
 
-            {/* 3 Floating Product Preview Cards ($20.67, $3.00, $10.80) matching SHEIN */}
+            {/* 3 Floating Product Preview Cards */}
             <div className="grid grid-cols-3 gap-2">
               {currentLookbook.items.map((item) => (
                 <div
                   key={item.id}
-                  className="group relative rounded-xl overflow-hidden bg-white/95 p-1 border border-white/80 shadow-md text-center flex flex-col items-center"
+                  className="group relative rounded-xl overflow-hidden bg-white p-1 border border-neutral-200 shadow-sm text-center flex flex-col items-center"
                 >
-                  <div className="w-full aspect-[4/5] rounded-lg overflow-hidden bg-neutral-100">
+                  <div className="w-full aspect-[4/5] rounded-lg overflow-hidden bg-[#F6F7F9]">
                     <CachedImage
                       src={item.image}
                       alt={item.brand}
@@ -224,7 +223,7 @@ export const TrendsScreen: React.FC<TrendsScreenProps> = ({
                     <span className="text-[9px] font-bold text-neutral-700 truncate max-w-[50%]">
                       {item.brand}
                     </span>
-                    <span className="text-[10px] font-black text-neutral-950 bg-amber-400/90 px-1 rounded-sm">
+                    <span className="text-[10px] font-black text-neutral-950 bg-amber-400 px-1.5 rounded-sm tabular-nums">
                       {item.price}
                     </span>
                   </div>
@@ -235,23 +234,23 @@ export const TrendsScreen: React.FC<TrendsScreenProps> = ({
         </div>
       </div>
 
-      {/* 3. Subtabs Bar: [Trends Store] | [Trending Picks] matching Image 2 */}
-      <div className="w-full bg-neutral-950 border-b border-neutral-850 px-4 pt-3 flex items-center justify-around">
+      {/* 3. Subtabs Bar */}
+      <div className="w-full bg-white border-b border-neutral-200 px-4 pt-3 flex items-center justify-around">
         <button
           type="button"
           onClick={() => setActiveMainSubTab('trends_store')}
           className={`relative pb-2.5 text-xs sm:text-sm font-black transition-all cursor-pointer ${
             activeMainSubTab === 'trends_store'
-              ? 'text-white'
-              : 'text-neutral-400 hover:text-neutral-200'
+              ? 'text-neutral-950'
+              : 'text-neutral-500 hover:text-neutral-800'
           }`}
         >
           <div className="flex items-center gap-1.5">
-            <Crown className="w-4 h-4 text-amber-400" />
+            <Crown className="w-4 h-4 text-amber-600" />
             <span>متجر الماركات (Trends Store)</span>
           </div>
           {activeMainSubTab === 'trends_store' && (
-            <span className="absolute bottom-0 inset-x-0 h-0.5 bg-amber-400 rounded-full" />
+            <span className="absolute bottom-0 inset-x-0 h-0.5 bg-amber-500 rounded-full" />
           )}
         </button>
 
@@ -260,8 +259,8 @@ export const TrendsScreen: React.FC<TrendsScreenProps> = ({
           onClick={() => setActiveMainSubTab('trending_picks')}
           className={`relative pb-2.5 text-xs sm:text-sm font-black transition-all cursor-pointer ${
             activeMainSubTab === 'trending_picks'
-              ? 'text-white'
-              : 'text-neutral-400 hover:text-neutral-200'
+              ? 'text-neutral-950'
+              : 'text-neutral-500 hover:text-neutral-800'
           }`}
         >
           <div className="flex items-center gap-1.5">
@@ -269,13 +268,13 @@ export const TrendsScreen: React.FC<TrendsScreenProps> = ({
             <span>مختارات الترند (Trending Picks)</span>
           </div>
           {activeMainSubTab === 'trending_picks' && (
-            <span className="absolute bottom-0 inset-x-0 h-0.5 bg-amber-400 rounded-full" />
+            <span className="absolute bottom-0 inset-x-0 h-0.5 bg-amber-500 rounded-full" />
           )}
         </button>
       </div>
 
-      {/* 4. Hashtag Filter Pills matching Image 2 */}
-      <div className="px-3 sm:px-4 py-2.5 bg-neutral-950 overflow-x-auto no-scrollbar flex items-center gap-2">
+      {/* 4. Hashtag Filter Pills */}
+      <div className="px-3 sm:px-4 py-2.5 bg-[#F6F7F9] border-b border-neutral-200/60 overflow-x-auto no-scrollbar flex items-center gap-2">
         {hashtags.map((tag) => {
           const isSelected = activeHashtag === tag.id;
           return (
@@ -285,8 +284,8 @@ export const TrendsScreen: React.FC<TrendsScreenProps> = ({
               onClick={() => setActiveHashtag(tag.id)}
               className={`px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
                 isSelected
-                  ? 'bg-amber-500 text-neutral-950 font-black shadow-sm'
-                  : 'bg-neutral-900 border border-neutral-800 text-neutral-300 hover:border-neutral-700'
+                  ? 'bg-amber-400 text-neutral-950 font-black shadow-sm'
+                  : 'bg-white border border-neutral-200 text-neutral-700 hover:border-amber-300'
               }`}
             >
               {tag.arabic}
@@ -295,8 +294,8 @@ export const TrendsScreen: React.FC<TrendsScreenProps> = ({
         })}
       </div>
 
-      {/* 5. 2-Column Product Grid matching SHEIN */}
-      <div className="px-3 sm:px-4 pt-2">
+      {/* 5. 2-Column Product Grid */}
+      <div className="px-3 sm:px-4 pt-3">
         {products.length === 0 ? (
           <ProductGridSkeleton count={6} className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5 sm:gap-3.5" />
         ) : (

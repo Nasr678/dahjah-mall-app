@@ -119,7 +119,7 @@ export const AppFooterBottomBar: React.FC<AppFooterBottomBarProps> = React.memo(
   return (
     <footer 
       id="app-bottom-bar-footer"
-      className="w-full bg-neutral-950 border-t border-neutral-800/80 py-8 px-4 text-center text-xs text-neutral-500 select-none"
+      className="w-full bg-white border-t border-neutral-200/85 py-8 pb-24 md:pb-8 px-4 text-center text-xs text-neutral-500 select-none"
     >
       <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
         {/* Brand & Logo block */}
@@ -133,7 +133,6 @@ export const AppFooterBottomBar: React.FC<AppFooterBottomBarProps> = React.memo(
                   className="h-6 w-auto object-contain max-w-[120px] rounded"
                   loading="lazy"
                   onError={(e) => {
-                    // Fallback to SVG if image fails
                     e.currentTarget.style.display = 'none';
                   }}
                 />
@@ -142,35 +141,35 @@ export const AppFooterBottomBar: React.FC<AppFooterBottomBarProps> = React.memo(
               )}
             </>
           )}
-          <span className="font-bold text-amber-400">{footerConfig.brandNameAr || 'ضَجّة مول'}</span>
-          <span>—</span>
-          <span className="text-neutral-400">{footerConfig.sloganAr || 'ضَجّة في وجه الغلاء'}</span>
+          <span className="font-black text-amber-700">{footerConfig.brandNameAr || 'ضَجّة مول'}</span>
+          <span className="text-neutral-300">—</span>
+          <span className="text-neutral-600">{footerConfig.sloganAr || 'ضَجّة في وجه الغلاء'}</span>
         </div>
 
         {/* Dynamic Action Links */}
         {activeBottomLinks.length > 0 && (
-          <div className="flex items-center flex-wrap justify-center gap-2.5 sm:gap-3.5 text-neutral-400">
+          <div className="flex items-center flex-wrap justify-center gap-2.5 sm:gap-3.5 text-neutral-600">
             {activeBottomLinks.map((item, index) => (
               <React.Fragment key={item.id}>
-                {index > 0 && <span className="text-neutral-700 select-none">•</span>}
+                {index > 0 && <span className="text-neutral-300 select-none">•</span>}
                 <button
                   type="button"
                   onClick={() => handleLinkClick(item)}
-                  className={`hover:text-amber-400 transition-colors text-[11px] flex items-center gap-1 cursor-pointer ${
+                  className={`hover:text-amber-700 transition-colors text-[11px] flex items-center gap-1 cursor-pointer font-medium ${
                     item.linkType === 'action_store_locator'
-                      ? 'bg-neutral-900 border border-neutral-800 px-2.5 py-1 rounded-xl text-amber-300 hover:border-amber-500/40 shadow-sm'
-                      : 'underline decoration-neutral-700 hover:decoration-amber-400'
+                      ? 'bg-amber-50 border border-amber-300/70 px-2.5 py-1 rounded-xl text-amber-900 hover:bg-amber-100 shadow-2xs'
+                      : 'underline decoration-neutral-300 hover:decoration-amber-600'
                   }`}
                 >
                   {item.icon && (
                     <DynamicLucideIcon 
                       name={item.icon} 
-                      className={`w-3.5 h-3.5 ${item.linkType === 'action_currency_admin' ? 'text-amber-400' : 'text-neutral-400'}`} 
+                      className={`w-3.5 h-3.5 ${item.linkType === 'action_currency_admin' ? 'text-amber-600' : 'text-neutral-500'}`} 
                     />
                   )}
                   <span>{item.titleAr}</span>
                   {item.badge && (
-                    <span className="text-[10px] text-amber-500 font-bold">{item.badge}</span>
+                    <span className="text-[10px] text-amber-700 font-bold">{item.badge}</span>
                   )}
                 </button>
               </React.Fragment>
@@ -180,17 +179,17 @@ export const AppFooterBottomBar: React.FC<AppFooterBottomBarProps> = React.memo(
 
         {/* Copyright & Verified signature */}
         {footerConfig.showCopyright !== false && (
-          <div className="flex items-center justify-center flex-wrap gap-1.5 text-[11px] text-neutral-400">
+          <div className="flex items-center justify-center flex-wrap gap-1.5 text-[11px] text-neutral-500">
             <span>
               {footerConfig.copyrightTextAr || 'جميع الحقوق محفوظة لمنصة ضَجّة مول — صنعاء • عدن • اليمن'} © {currentYear}
             </span>
             {footerConfig.showDeveloperSignature !== false && (
               <>
-                <span className="text-neutral-700 select-none">—</span>
-                <span className="inline-flex items-center gap-1 font-serif italic text-amber-300 font-black text-xs px-1.5 py-0.5 rounded-md bg-neutral-900 border border-amber-500/30 shadow-sm">
+                <span className="text-neutral-300 select-none">—</span>
+                <span className="inline-flex items-center gap-1 font-serif italic text-amber-800 font-black text-xs px-2 py-0.5 rounded-md bg-amber-50 border border-amber-300/70 shadow-2xs">
                   <span>{footerConfig.developerSignatureName || 'Nasr'}</span>
                   {footerConfig.developerVerifiedBadge !== false && (
-                    <svg className="w-3.5 h-3.5 text-sky-400 fill-sky-400 inline-block drop-shadow-[0_0_4px_rgba(56,189,248,0.5)]" viewBox="0 0 24 24" aria-label="Verified">
+                    <svg className="w-3.5 h-3.5 text-sky-500 fill-sky-500 inline-block" viewBox="0 0 24 24" aria-label="Verified">
                       <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
                     </svg>
                   )}

@@ -3,6 +3,11 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
+    // Default deny-all catch-all (First Pillar of Hardened Rules)
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
     // Helper functions for authentication and security
     function isAuthenticated() {
       return request.auth != null;
@@ -12,21 +17,39 @@ service cloud.firestore {
       return isAuthenticated() && request.auth.uid == userId;
     }
 
+    // Hardened Admin Check: Verifies identity, prevents email spoofing by mandating email_verified
     function isAppAdmin() {
       return isAuthenticated() && (
-        (request.auth.token.keys().hasAll(['email']) && request.auth.token.email == 'nsralnaty93@gmail.com') ||
+        (request.auth.token.keys().hasAll(['email']) && 
+         request.auth.token.email == 'nsralnaty93@gmail.com' &&
+         request.auth.token.keys().hasAll(['email_verified']) &&
+         request.auth.token.email_verified == true) ||
         (request.auth.token.keys().hasAll(['role']) && request.auth.token.role == 'admin') ||
         (request.auth.token.keys().hasAll(['admin']) && request.auth.token.admin == true) ||
+        (exists(/databases/$(database)/documents/admins/$(request.auth.uid))) ||
         (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin')
       );
+    }
+
+    // Test connection document for initial boot health check
+    match /test/{docId} {
+      allow read: if true;
+      allow write: if isAppAdmin();
+    }
+
+    // Dedicated Admins Collection (Restricted strictly to system admins)
+    match /admins/{adminId} {
+      allow read: if isAuthenticated();
+      allow write: if isAppAdmin();
     }
 
     // =========================================================
     // 1. PUBLIC CATALOG DATA (Products, Categories, Stores, Banners)
     // =========================================================
     
-    // Products: Public read for all users; create/update/delete strictly for Admins
+    // Products: Public read for all users; create/update/delete strictly for Admins.
+    // Prevents direct client tampering with prices or inventory stocks.
     match /products/{productId} {
       allow read: if true;
       allow write: if isAppAdmin();
@@ -165,14 +188,15 @@ service cloud.firestore {
       allow read: if isOwnerUser(userId) || isAppAdmin();
 
       // Normal users cannot set their role to admin
-      allow create: if isAuthenticated() && (
-        (request.resource.data.role != 'admin' && request.resource.data.role != 'owner') ||
-        request.auth.token.email == 'nsralnaty93@gmail.com'
+      allow create: if isAuthenticated() && isOwnerUser(userId) && (
+        (!request.resource.data.keys().hasAny(['role', 'isAdmin'])) ||
+        (request.resource.data.role == 'customer') ||
+        isAppAdmin()
       );
 
       // Normal users cannot change their role attribute; Admins have full update
       allow update: if (isOwnerUser(userId) && 
-        (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['role']))) || isAppAdmin();
+        (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'isAdmin', 'memberTier']))) || isAppAdmin();
 
       allow delete: if isAppAdmin();
 
@@ -207,15 +231,20 @@ service cloud.firestore {
         (resource.data.userId == request.auth.uid) || isAppAdmin()
       );
 
-      // Authenticated users can create orders for themselves
+      // Authenticated users can create orders for themselves with valid total and items
       allow create: if isAuthenticated() && (
-        request.resource.data.userId == request.auth.uid
+        request.resource.data.userId == request.auth.uid &&
+        request.resource.data.totalYER is number &&
+        request.resource.data.totalYER >= 0 &&
+        request.resource.data.items is list &&
+        request.resource.data.items.size() > 0
       );
 
       // Status updates only allowed by Admin or user cancelling their own new order
+      // Customer can ONLY cancel if order status is still 'received' (cannot cancel 'processing', 'out_for_delivery', or 'delivered')
       allow update: if isAppAdmin() || (
         isOwnerUser(resource.data.userId) && 
-        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status']) &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'updatedAt']) &&
         request.resource.data.status == 'cancelled' &&
         resource.data.status == 'received'
       );
@@ -233,4 +262,3 @@ service cloud.firestore {
     }
   }
 }
-

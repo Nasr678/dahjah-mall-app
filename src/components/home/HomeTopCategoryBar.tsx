@@ -38,11 +38,11 @@ export const HomeTopCategoryBar: React.FC<HomeTopCategoryBarProps> = memo(({
   }, [activeTabId]);
 
   return (
-    <div className="w-full bg-neutral-950/98 border-b border-neutral-850 sticky top-[50px] sm:top-[54px] z-40 backdrop-blur-xl shadow-md transition-all">
+    <div className="w-full bg-white/95 border-b border-neutral-200/80 sticky top-[54px] sm:top-[58px] z-40 backdrop-blur-xl shadow-[0_4px_14px_rgba(15,23,42,0.03)] transition-all">
       <div className="max-w-7xl mx-auto px-2 sm:px-4">
         <nav 
           ref={navRef}
-          className="flex items-center gap-1 sm:gap-2 overflow-x-auto no-scrollbar py-2 scroll-smooth text-right whitespace-nowrap"
+          className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar py-2 scroll-smooth text-right whitespace-nowrap"
           aria-label="أقسام المتجر الرئيسية"
         >
           {topTabs.map((item) => {
@@ -54,15 +54,15 @@ export const HomeTopCategoryBar: React.FC<HomeTopCategoryBarProps> = memo(({
                 id={`top-cat-tab-${item.id}`}
                 type="button"
                 onClick={() => onSelectCategory(item.categoryId)}
-                className={`relative flex-shrink-0 px-3.5 sm:px-4 py-1 rounded-full text-xs sm:text-sm font-black whitespace-nowrap transition-all duration-200 cursor-pointer ${
+                className={`relative flex-shrink-0 px-3.5 sm:px-4 py-1.5 rounded-full text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 cursor-pointer ${
                   isSelected
-                    ? 'text-amber-400 font-black bg-neutral-850 border border-amber-400/50 shadow-sm'
-                    : 'text-neutral-300 hover:text-white hover:bg-neutral-900 border border-transparent'
+                    ? 'text-amber-800 font-black bg-amber-50 border border-amber-400/50 shadow-xs'
+                    : 'text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100 border border-transparent'
                 }`}
               >
                 <span>{item.name}</span>
                 {isSelected && (
-                  <span className="absolute bottom-0 inset-x-3 h-0.5 bg-amber-400 rounded-full" />
+                  <span className="absolute bottom-0 inset-x-3 h-0.5 bg-amber-500 rounded-full" />
                 )}
               </button>
             );

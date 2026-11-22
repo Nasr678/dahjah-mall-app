@@ -5,30 +5,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>ضَجّة مول | المنصة الرائدة للتسوق الإلكتروني</title>
     <meta name="description" content="ضَجّة مول — ضَجّة في وجه الغلاء. المنصة العالمية للتجارة والتسوق الإلكتروني في اليمن والعالم." />
-    <meta name="theme-color" content="#121118" />
+    <meta name="theme-color" content="#F6F7F9" />
+    <meta name="color-scheme" content="light" />
+    <meta name="supported-color-schemes" content="light" />
+    <meta name="format-detection" content="telephone=no" />
     <style>
       :root {
-        color-scheme: dark;
+        color-scheme: light;
       }
-      html, body, #root {
+      html {
         margin: 0;
+        padding: 0;
         min-height: 100%;
-        height: 100%;
-        background: #07060a;
+        background: #f6f7f9;
       }
       body {
-        font-family: Tahoma, Arial, sans-serif;
-        background: #07060a;
-        color: #f5f5f4;
+        margin: 0;
+        padding: 0;
+        min-height: 100%;
+        background: #f6f7f9;
+        color: #171717;
+        font-family: 'Tajawal', 'Cairo', Tahoma, Arial, sans-serif;
         overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
+      }
+      #root {
+        min-height: 100%;
+        display: flex;
+        flex-direction: column;
+        background: #f6f7f9;
       }
       * { box-sizing: border-box; }
     </style>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   </head>
-  <body class="bg-neutral-950 text-neutral-100 font-cairo antialiased selection:bg-amber-500 selection:text-neutral-950 overflow-x-hidden min-h-screen">
+  <body class="bg-[#F6F7F9] text-neutral-900 font-tajawal antialiased selection:bg-amber-400/30 selection:text-neutral-950 overflow-x-hidden min-h-screen">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

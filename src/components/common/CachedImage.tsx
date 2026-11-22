@@ -60,25 +60,6 @@ export const CachedImage: React.FC<CachedImageProps> = memo(({
         setHasError(true);
       }
     }
-
-    // Background browser CacheStorage warm-up for persistent offline capability
-    if (typeof window !== 'undefined' && 'caches' in window && optimizedSrc.startsWith('http')) {
-      try {
-        window.caches.open('dajjah-image-cache-v1').then((cache) => {
-          cache.match(optimizedSrc).then((matched) => {
-            if (!matched) {
-              fetch(optimizedSrc, { mode: 'no-cors' })
-                .then((res) => {
-                  if (res) cache.put(optimizedSrc, res);
-                })
-                .catch(() => {});
-            }
-          }).catch(() => {});
-        }).catch(() => {});
-      } catch {
-        // Safe fallback for environments with restricted CacheStorage
-      }
-    }
   }, [optimizedSrc]);
 
   const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {

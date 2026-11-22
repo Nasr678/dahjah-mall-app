@@ -46,8 +46,11 @@ export default defineConfig(({ command }) => {
         output: {
           manualChunks(id) {
             if (id.includes('node_modules')) {
-              if (id.includes('leaflet') || id.includes('maps') || id.includes('@vis.gl') || id.includes('motion') || id.includes('framer-motion')) {
-                return 'vendor-ui-interactive';
+              if (id.includes('leaflet')) {
+                return 'vendor-leaflet';
+              }
+              if (id.includes('motion')) {
+                return 'vendor-motion';
               }
               if (id.includes('firebase/storage')) {
                 return 'vendor-firebase-storage';

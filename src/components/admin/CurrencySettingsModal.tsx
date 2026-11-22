@@ -66,35 +66,35 @@ export const CurrencySettingsModal: React.FC<CurrencySettingsModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-[9995] flex items-center justify-center p-3 sm:p-4 bg-neutral-950/85 backdrop-blur-xl overflow-y-auto">
-      <div className="relative w-full max-w-lg bg-neutral-900 border border-neutral-800 rounded-3xl shadow-2xl text-white my-auto overflow-hidden flex flex-col">
+    <div className="fixed inset-0 z-[9995] flex items-center justify-center p-3 sm:p-4 bg-neutral-950/50 backdrop-blur-sm overflow-y-auto">
+      <div className="relative w-full max-w-lg bg-white border border-neutral-200 rounded-3xl shadow-2xl text-neutral-900 my-auto overflow-hidden flex flex-col">
         {/* Modal Header */}
-        <div className="p-4 sm:p-5 border-b border-neutral-800 flex items-center justify-between bg-neutral-950/80 backdrop-blur-md">
+        <div className="p-4 sm:p-5 border-b border-neutral-200 flex items-center justify-between bg-white">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/30">
+            <div className="p-2.5 rounded-2xl bg-amber-50 text-amber-700 border border-amber-200">
               <Coins className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-base sm:text-lg font-black text-white">نظام العملات والصرف (اليمن)</h3>
-              <p className="text-xs text-neutral-400">الريال اليمني الشمالي، الجنوبي، والعملات الدولية</p>
+              <h3 className="text-base sm:text-lg font-black text-neutral-950">نظام العملات والصرف (اليمن)</h3>
+              <p className="text-xs text-neutral-500">الريال اليمني الشمالي، الجنوبي، والعملات الدولية</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-2 rounded-xl bg-neutral-800/80 hover:bg-neutral-800 text-neutral-400 hover:text-white transition-colors"
+            className="p-2 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-500 hover:text-neutral-900 transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Tab Navigation */}
-        <div className="p-4 border-b border-neutral-800 bg-neutral-950 flex gap-2">
+        <div className="p-3 sm:p-4 border-b border-neutral-200 bg-[#F6F7F9] flex gap-2">
           <button
             onClick={() => setActiveTab('select')}
-            className={`flex-1 py-2 px-3 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1.5 ${
+            className={`flex-1 py-2 px-3 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
               activeTab === 'select'
-                ? 'bg-amber-500 text-neutral-950 shadow-md'
-                : 'text-neutral-400 hover:text-white bg-neutral-900/60'
+                ? 'bg-amber-400 text-neutral-950 shadow-sm'
+                : 'text-neutral-600 hover:text-neutral-950 bg-white border border-neutral-200'
             }`}
           >
             <Coins className="w-3.5 h-3.5" />
@@ -102,10 +102,10 @@ export const CurrencySettingsModal: React.FC<CurrencySettingsModalProps> = ({
           </button>
           <button
             onClick={() => setActiveTab('rates')}
-            className={`flex-1 py-2 px-3 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1.5 ${
+            className={`flex-1 py-2 px-3 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
               activeTab === 'rates'
-                ? 'bg-amber-500 text-neutral-950 shadow-md'
-                : 'text-neutral-400 hover:text-white bg-neutral-900/60'
+                ? 'bg-amber-400 text-neutral-950 shadow-sm'
+                : 'text-neutral-600 hover:text-neutral-950 bg-white border border-neutral-200'
             }`}
           >
             <Sliders className="w-3.5 h-3.5" />
@@ -117,8 +117,8 @@ export const CurrencySettingsModal: React.FC<CurrencySettingsModalProps> = ({
         <div className="p-4 sm:p-6 overflow-y-auto max-h-[70vh] space-y-4">
           {activeTab === 'select' ? (
             <div className="space-y-3">
-              <div className="p-3 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs flex items-start gap-2">
-                <Info className="w-4 h-4 flex-shrink-0 mt-0.5" />
+              <div className="p-3 rounded-2xl bg-amber-50 border border-amber-200 text-amber-800 text-xs flex items-start gap-2">
+                <Info className="w-4 h-4 flex-shrink-0 mt-0.5 text-amber-600" />
                 <span>
                   اختر العملة المناسبة لمنطقتك. سيتم حساب جميع الأسعار وسلة التسوق تلقائياً وفقاً للعملة المحددة دون خلط.
                 </span>
@@ -134,44 +134,44 @@ export const CurrencySettingsModal: React.FC<CurrencySettingsModalProps> = ({
                       onSelectCurrency(code);
                       onClose();
                     }}
-                    className={`w-full p-4 rounded-2xl border text-right transition-all flex items-center justify-between group ${
+                    className={`w-full p-4 rounded-2xl border text-right transition-all flex items-center justify-between group cursor-pointer ${
                       isSelected
-                        ? 'bg-amber-500/20 border-amber-500 text-white shadow-lg shadow-amber-500/10'
-                        : 'bg-neutral-950 border-neutral-800 text-neutral-300 hover:border-neutral-700 hover:bg-neutral-950/80'
+                        ? 'bg-amber-50/80 border-amber-400 text-neutral-950 shadow-sm'
+                        : 'bg-[#F6F7F9] border-neutral-200 text-neutral-700 hover:border-neutral-300 hover:bg-white'
                     }`}
                   >
                     <div className="flex items-center gap-3">
                       <div
                         className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-xs border ${
                           isSelected
-                            ? 'bg-amber-500 text-neutral-950 border-amber-400'
-                            : 'bg-neutral-900 text-neutral-400 border-neutral-800'
+                            ? 'bg-amber-400 text-neutral-950 border-amber-500'
+                            : 'bg-white text-neutral-600 border-neutral-200'
                         }`}
                       >
                         {conf.symbol.split(' ')[0]}
                       </div>
                       <div>
-                        <div className="text-sm font-black flex items-center gap-2">
+                        <div className="text-sm font-black flex items-center gap-2 text-neutral-950">
                           <span>{conf.name}</span>
                           {code === 'YER_NORTH' && (
-                            <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 font-bold border border-blue-500/30">
+                            <span className="text-[10px] px-2 py-0.5 rounded-full bg-sky-50 text-sky-700 font-bold border border-sky-200">
                               الأساس (صنعاء)
                             </span>
                           )}
                           {code === 'YER_SOUTH' && (
-                            <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30">
+                            <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-bold border border-emerald-200">
                               عدن والمحافظات الجنوبية
                             </span>
                           )}
                         </div>
-                        <div className="text-xs text-neutral-400 mt-0.5">
+                        <div className="text-xs text-neutral-500 mt-0.5 tabular-nums">
                           مثال: 20,000 ريال شمالي = {formatPriceWithCurrency(20000, code, rates)}
                         </div>
                       </div>
                     </div>
 
                     {isSelected && (
-                      <div className="p-1 rounded-full bg-amber-500 text-neutral-950">
+                      <div className="p-1 rounded-full bg-amber-400 text-neutral-950">
                         <Check className="w-4 h-4" />
                       </div>
                     )}
@@ -181,21 +181,21 @@ export const CurrencySettingsModal: React.FC<CurrencySettingsModalProps> = ({
             </div>
           ) : (
             <form onSubmit={handleSaveCustomRates} className="space-y-4">
-              <div className="p-3 rounded-2xl bg-neutral-950 border border-neutral-800 text-xs text-neutral-300 space-y-1">
-                <div className="font-bold text-amber-400 flex items-center gap-1.5">
+              <div className="p-3.5 rounded-2xl bg-[#F6F7F9] border border-neutral-200 text-xs text-neutral-600 space-y-1">
+                <div className="font-bold text-amber-700 flex items-center gap-1.5">
                   <ShieldCheck className="w-4 h-4" />
                   <span>معادلة الصرف المعتمدة لليمن (ديناميكية وغير ثابتة):</span>
                 </div>
-                <p className="text-neutral-400">
+                <p className="text-neutral-500 leading-relaxed">
                   القيمة الأساسية للمنتجات مسجلة بـ (الريال الشمالي). يمكن لإدارة المتجر أو المستخدم تعديل معامل التحويل للجنوبي في أي وقت:
                 </p>
               </div>
 
               {/* South Yemen Rate Input */}
-              <div className="p-4 rounded-2xl bg-neutral-950 border border-neutral-800 space-y-2">
+              <div className="p-4 rounded-2xl bg-[#F6F7F9] border border-neutral-200 space-y-2">
                 <div className="flex items-center justify-between">
-                  <label className="text-xs font-black text-white">معامل التحويل (ريال شمالي ➔ ريال جنوبي):</label>
-                  <span className="text-xs font-mono font-bold text-amber-400">1 شمالي = {southRate} جنوبي</span>
+                  <label className="text-xs font-black text-neutral-900">معامل التحويل (ريال شمالي ➔ ريال جنوبي):</label>
+                  <span className="text-xs font-mono font-bold text-amber-700 tabular-nums">1 شمالي = {southRate} جنوبي</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <input
@@ -205,44 +205,44 @@ export const CurrencySettingsModal: React.FC<CurrencySettingsModalProps> = ({
                     max="20"
                     value={southRate}
                     onChange={(e) => setSouthRate(parseFloat(e.target.value) || 3.0)}
-                    className="flex-1 bg-neutral-900 border border-neutral-700 rounded-xl py-2 px-3 text-sm text-white font-mono focus:outline-none focus:border-amber-500"
+                    className="flex-1 bg-white border border-neutral-200 rounded-xl py-2 px-3 text-sm text-neutral-950 font-mono tabular-nums focus:outline-none focus:border-amber-500"
                   />
-                  <span className="text-xs text-neutral-400">1,000 شمالي = {(1000 * southRate).toLocaleString()} جنوبي</span>
+                  <span className="text-xs text-neutral-500 tabular-nums">1,000 شمالي = {(1000 * southRate).toLocaleString()} جنوبي</span>
                 </div>
               </div>
 
               {/* USD Rate Input */}
-              <div className="p-4 rounded-2xl bg-neutral-950 border border-neutral-800 space-y-2">
+              <div className="p-4 rounded-2xl bg-[#F6F7F9] border border-neutral-200 space-y-2">
                 <div className="flex items-center justify-between">
-                  <label className="text-xs font-black text-white">سعر صرف الدولار (1 USD بالريال الشمالي):</label>
-                  <span className="text-xs font-mono font-bold text-amber-400">{usdRate} ر.ي</span>
+                  <label className="text-xs font-black text-neutral-900">سعر صرف الدولار (1 USD بالريال الشمالي):</label>
+                  <span className="text-xs font-mono font-bold text-amber-700 tabular-nums">{usdRate} ر.ي</span>
                 </div>
                 <input
                   type="number"
                   step="1"
                   value={usdRate}
                   onChange={(e) => setUsdRate(parseFloat(e.target.value) || 530)}
-                  className="w-full bg-neutral-900 border border-neutral-700 rounded-xl py-2 px-3 text-sm text-white font-mono focus:outline-none focus:border-amber-500"
+                  className="w-full bg-white border border-neutral-200 rounded-xl py-2 px-3 text-sm text-neutral-950 font-mono tabular-nums focus:outline-none focus:border-amber-500"
                 />
               </div>
 
               {/* SAR Rate Input */}
-              <div className="p-4 rounded-2xl bg-neutral-950 border border-neutral-800 space-y-2">
+              <div className="p-4 rounded-2xl bg-[#F6F7F9] border border-neutral-200 space-y-2">
                 <div className="flex items-center justify-between">
-                  <label className="text-xs font-black text-white">سعر صرف الريال السعودي (1 SAR بالريال الشمالي):</label>
-                  <span className="text-xs font-mono font-bold text-amber-400">{sarRate} ر.ي</span>
+                  <label className="text-xs font-black text-neutral-900">سعر صرف الريال السعودي (1 SAR بالريال الشمالي):</label>
+                  <span className="text-xs font-mono font-bold text-amber-700 tabular-nums">{sarRate} ر.ي</span>
                 </div>
                 <input
                   type="number"
                   step="1"
                   value={sarRate}
                   onChange={(e) => setSarRate(parseFloat(e.target.value) || 140)}
-                  className="w-full bg-neutral-900 border border-neutral-700 rounded-xl py-2 px-3 text-sm text-white font-mono focus:outline-none focus:border-amber-500"
+                  className="w-full bg-white border border-neutral-200 rounded-xl py-2 px-3 text-sm text-neutral-950 font-mono tabular-nums focus:outline-none focus:border-amber-500"
                 />
               </div>
 
               {isSavedMessage && (
-                <div className="p-3 rounded-xl bg-emerald-950/60 border border-emerald-800 text-emerald-300 text-xs flex items-center gap-2">
+                <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold flex items-center gap-2">
                   <Check className="w-4 h-4" />
                   <span>تم حفظ وتحديث أسعار الصرف بنجاح! سيتم تطبيقها فوراً.</span>
                 </div>
@@ -252,7 +252,7 @@ export const CurrencySettingsModal: React.FC<CurrencySettingsModalProps> = ({
                 <button
                   type="button"
                   onClick={handleResetDefaults}
-                  className="px-3 py-2 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-xs font-bold transition-all flex items-center gap-1.5"
+                  className="px-3 py-2 rounded-xl bg-neutral-100 hover:bg-neutral-200 text-neutral-700 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
                 >
                   <RefreshCw className="w-3.5 h-3.5" />
                   <span>استعادة المعدلات الافتراضية</span>
@@ -260,7 +260,7 @@ export const CurrencySettingsModal: React.FC<CurrencySettingsModalProps> = ({
 
                 <button
                   type="submit"
-                  className="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-neutral-950 text-xs font-black shadow-lg shadow-amber-500/20 active:scale-95 transition-all flex items-center gap-1.5"
+                  className="px-5 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-500 text-neutral-950 text-xs font-black shadow-sm active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer"
                 >
                   <Check className="w-4 h-4" />
                   <span>تطبيق وحفظ الأسعار</span>
