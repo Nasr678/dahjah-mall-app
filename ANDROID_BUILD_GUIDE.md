@@ -1,65 +1,48 @@
-# دليل تصدير وبناء تطبيق "ضَجّة مول" لهواتف أندرويد (APK)
+# بناء تطبيق الأندرويد
 
-تم تجهيز وهيكلة مشروع **ضَجّة مول** ليكون متوافقاً تماماً كـ **Android Native Project** مع الحفاظ الكامل على كافة التصاميم والألوان والواجهات والمنتجات كما هي.
+## قبل البدء
 
----
+1. انشر الخادم على رابط https ثابت (مثال: Cloud Run).
+2. في مستودع GitHub: Settings ← Secrets and variables ← Actions ← Variables، أضف المتغير `API_BASE_URL` بقيمة رابط الخادم (بدون `/` في النهاية).
+3. افتح `public/privacy.html` و`public/delete-account.html` واستبدل `{{CONTACT_EMAIL}}` ببريد التواصل الحقيقي.
 
-## 1. فحص نوع وبيئة المشروع الحالية
-* **النوع:** تطبيق React 19 + TypeScript + Tailwind CSS مبني باستخدام Vite مع Capacitor لأندرويد.
-* **الهيكلية الأصلية لأندرويد:** تم إنشاء مجلد `/android` كاملاً متضمناً:
-  - ملفات `Gradle` والاعتماديات الخاصة بالأندرويد.
-  - إعدادات `AndroidManifest.xml` مع كافة الصلاحيات اللازمة (الإنترنت، الشبكة، وتحديد الموقع للخرائط والتوصيل).
-  - حزمة التطبيق: `ye.dajjahmall.app`
-  - اسم التطبيق بالعربية: `ضجة مول`
-  - تم تضمين وتوليد كود الويب المترجم في مسار الأصول: `android/app/src/main/assets/public`.
+## نسخة تجريبية (APK)
 
-> **تنبيه شفاف ومهم:** بما أن خادم التطوير السحابي يحتوي على بيئة Node.js فقط ولا يحتوي على حزمة Android SDK أو Java (JDK)، فإن ملف الـ `.apk` النهائي يتم بناؤه على جهازك المحلي عبر Android Studio أو سطر الأوامر، وملفات المشروع جاهزة ومضبوطة بنسبة 100%.
+من تبويب Actions شغّل `Build Dajjah Mall APK`، ثم نزّل الملف من Artifacts.
 
----
+## نسخة النشر في Google Play (AAB موقّع)
 
-## 2. خطوات تصدير وتنزيل ملفات المشروع
-1. في واجهة AI Studio، انقر على زر **Export** أو **Download Code / Repository** لتحميل ملفات المشروع كملف مضغوط `ZIP` إلى جهازك.
-2. قم بفك الضغط عن الملف في مجلد على حاسوبك (مثلاً: `dajjah-mall`).
-
----
-
-## 3. طريقة بناء ملف الـ APK التجريبي (طريقتان سهلتان)
-
-### الطريقة الأولى: باستخدام Android Studio (الأسهل والموصى بها)
-1. افتح برنامج **Android Studio** على جهازك.
-2. اختر **Open an Existing Project**.
-3. حدد مجلد `android` الموجود داخل مجلد المشروع (المسار: `dajjah-mall/android`).
-4. انتظر حتى يكتمل فحص ومزامنة الـ Gradle تلقائياً.
-5. من القائمة العلوية اختر:
-   `Build` ➔ `Build Bundle(s) / APK(s)` ➔ `Build APK(s)`
-6. فور انتهاء البناء (يستغرق دقيقة أو دقيقتين)، ستظهر رسالة في الزاوية تفيد باكتمال البناء مع رابط **locate**، اضغط عليه لتجد ملف:
-   `app-debug.apk`
-7. انقل ملف `app-debug.apk` إلى هاتفك عبر البلوتوث، كابل USB، أو واتساب وقم بتثبيته فوراً.
-
----
-
-### الطريقة الثانية: من موجه الأوامر (Terminal / Command Prompt)
-إذا كان لديك Java و Android SDK مثبتين، يمكنك تشغيل التالي داخل مجلد المشروع:
+1. أنشئ مفتاح التوقيع مرة واحدة واحتفظ به في مكان آمن (فقدانه يمنع تحديث التطبيق):
 
 ```bash
-# الانتقال إلى مجلد أندرويد
-cd android
-
-# على أنظمة Mac / Linux:
-./gradlew assembleDebug
-
-# على أنظمة Windows:
-gradlew.bat assembleDebug
+keytool -genkeypair -v -keystore dajjah-release.jks -alias dajjah \
+  -keyalg RSA -keysize 2048 -validity 10000
+base64 -w 0 dajjah-release.jks
 ```
 
-ستجد ملف الـ APK الجاهز فوراً في المسار:
-`android/app/build/outputs/apk/debug/app-debug.apk`
+2. أضف في Settings ← Secrets and variables ← Actions ← Secrets:
 
----
+| السر | القيمة |
+| --- | --- |
+| `ANDROID_KEYSTORE_BASE64` | ناتج أمر base64 |
+| `ANDROID_KEYSTORE_PASSWORD` | كلمة مرور الملف |
+| `ANDROID_KEY_ALIAS` | `dajjah` |
+| `ANDROID_KEY_PASSWORD` | كلمة مرور المفتاح |
 
-## 4. في حال رغبت بتعديل أو إضافة أي شيء مستقبلاً:
-إذا قمت بتعديل أي كود في واجهة الويب وأردت تحديث كود الأندرويد، نفّذ الأمر التالي:
+3. من Actions شغّل `Build Dajjah Mall Release (AAB)`.
+4. نزّل `app-release.aab` وارفعه في Google Play Console.
+
+رقم الإصدار (`versionCode`) يزيد تلقائياً مع كل تشغيل.
+
+## البناء محلياً
+
 ```bash
-npm run cap:build
+npm install
+VITE_API_BASE_URL=https://your-server npm run cap:build
+npm run cap:open
 ```
-هذا الأمر يبني كود الويب ويحدث تلقائياً مجلد `android`.
+
+## ملاحظات
+
+- مجلد `android/app/src/main/assets/public` يُولَّد تلقائياً ولا يُرفع إلى Git.
+- تسجيل الدخول بحساب Google غير متاح داخل التطبيق، والدخول بالبريد وكلمة المرور متاح.

@@ -17,6 +17,7 @@ export default defineConfig(({ command }) => {
       dedupe: ['react', 'react-dom'],
     },
     optimizeDeps: {
+      entries: ['index.html'],
       include: [
         'react',
         'react-dom',

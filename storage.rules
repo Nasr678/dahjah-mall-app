@@ -1,0 +1,21 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    function isStoreAdmin() {
+      return request.auth != null &&
+        ((request.auth.token.get('email', '') == 'nsralnaty93@gmail.com' &&
+          request.auth.token.get('email_verified', false) == true) ||
+         request.auth.token.get('admin', false) == true ||
+         request.auth.token.get('role', '') == 'admin');
+    }
+
+    match /{allPaths=**} {
+      allow read: if true;
+      allow write: if isStoreAdmin() &&
+        request.resource.size < 8 * 1024 * 1024 &&
+        request.resource.contentType.matches('image/.*');
+      allow delete: if isStoreAdmin();
+    }
+  }
+}

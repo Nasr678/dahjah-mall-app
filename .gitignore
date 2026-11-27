@@ -11,3 +11,8 @@ coverage/
 android/.gradle/
 android/app/build/
 android/local.properties
+server-dist/
+android/app/src/main/assets/public/*
+!android/app/src/main/assets/public/.gitkeep
+*.jks
+*.keystore

@@ -12,14 +12,7 @@ let aiClient: GoogleGenAI | null = null;
 
 function getGeminiClient(): GoogleGenAI | null {
   if (!aiClient && process.env.GEMINI_API_KEY) {
-    aiClient = new GoogleGenAI({
-      apiKey: process.env.GEMINI_API_KEY,
-      httpOptions: {
-        headers: {
-          'User-Agent': 'aistudio-build',
-        },
-      },
-    });
+    aiClient = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
   }
   return aiClient;
 }
@@ -28,7 +21,6 @@ async function startServer() {
   const app = express();
   const PORT = Number(process.env.PORT) || 3000;
 
-  // Lightweight zero-dependency Brotli / Gzip response compression for API & static assets
   app.use((req: Request, res: Response, next: NextFunction) => {
     const acceptEncoding = String(req.headers['accept-encoding'] || '');
     const supportsBr = acceptEncoding.includes('br');
@@ -98,15 +90,70 @@ async function startServer() {
     next();
   });
 
-  app.use(express.json({ limit: '15mb' }));
-  app.use(express.urlencoded({ extended: true, limit: '15mb' }));
+  app.set('trust proxy', 1);
 
-  // Health check API
+  const extraOrigins = (process.env.ALLOWED_ORIGINS || '')
+    .split(',')
+    .map((o) => o.trim())
+    .filter(Boolean);
+  const nativeOrigins = new Set(['https://localhost', 'capacitor://localhost', 'ionic://localhost']);
+  const localDevOrigin = /^https?:\/\/localhost(:\d+)?$/;
+
+  app.use('/api', (req: Request, res: Response, next: NextFunction) => {
+    const origin = req.headers.origin;
+    if (origin) {
+      let sameHost = false;
+      try {
+        sameHost = new URL(origin).host === req.headers.host;
+      } catch {
+        sameHost = false;
+      }
+      const allowed =
+        sameHost || nativeOrigins.has(origin) || localDevOrigin.test(origin) || extraOrigins.includes(origin);
+      if (!allowed) {
+        return res.status(403).json({ error: 'Origin not allowed' });
+      }
+      res.setHeader('Access-Control-Allow-Origin', origin);
+      res.setHeader('Vary', 'Origin');
+      res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+      res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+      res.setHeader('Access-Control-Max-Age', '86400');
+    }
+    if (req.method === 'OPTIONS') return res.sendStatus(204);
+    next();
+  });
+
+  const rateBuckets = new Map<string, number[]>();
+  const rateLimit = (name: string, max: number, windowMs: number) =>
+    (req: Request, res: Response, next: NextFunction) => {
+      const key = `${name}:${req.ip}`;
+      const now = Date.now();
+      const recent = (rateBuckets.get(key) || []).filter((t) => now - t < windowMs);
+      if (recent.length >= max) {
+        res.setHeader('Retry-After', String(Math.ceil(windowMs / 1000)));
+        return res.status(429).json({ error: 'Too many requests' });
+      }
+      recent.push(now);
+      rateBuckets.set(key, recent);
+      next();
+    };
+  setInterval(() => {
+    const cutoff = Date.now() - 15 * 60 * 1000;
+    for (const [key, hits] of rateBuckets) {
+      if (!hits.some((t) => t > cutoff)) rateBuckets.delete(key);
+    }
+  }, 10 * 60 * 1000).unref();
+
+  const jsonSmall = express.json({ limit: '3mb' });
+  const jsonLarge = express.json({ limit: '10mb' });
+  app.use((req: Request, res: Response, next: NextFunction) =>
+    req.path === '/api/visual-search' ? jsonLarge(req, res, next) : jsonSmall(req, res, next)
+  );
+
   app.get('/api/health', (_req: Request, res: Response) => {
     res.json({ status: 'ok', app: 'ضَجّة مول — Dajjah Mall' });
   });
 
-  // Product catalog database for AI grounding & high-performance search
   const catalogData = [
     { 
       id: 'prod-w-1', 
@@ -339,12 +386,10 @@ async function startServer() {
     | 'STORE_INFO'
     | 'OTHER';
 
-  // Fast Deterministic Intent Detector
   function detectIntent(text: string): { intent: UserIntent; extractedFilter?: { maxPrice?: number; color?: string; category?: string; query?: string } } {
     const raw = text.trim();
     const clean = raw.toLowerCase().replace(/[؟?!.,،؛]/g, ' ');
 
-    // 1. CHAT / Greetings / Polite chatter
     const chatPhrases = [
       'كيف حالك', 'شخبارك', 'كيفك', 'عساك بخير', 'عساك طيب', 'كيف الصحة', 'أخبارك', 'علومك', 'شلونك', 'احوالك', 'كيف الامور', 'كيف الحال',
       'اش اخبارك', 'ايش اخبارك', 'كيفك يا خبير', 'حياك الله', 'يا هلا والله', 'يا مرحبا',
@@ -363,7 +408,6 @@ async function startServer() {
       }
     }
 
-    // 2. ORDER_HELP
     if (
       clean.includes('تتبع') || 
       clean.includes('أين طلبي') || 
@@ -379,7 +423,6 @@ async function startServer() {
       return { intent: 'ORDER_HELP' };
     }
 
-    // 3. PAYMENT_HELP
     if (
       clean.includes('طرق الدفع') || 
       clean.includes('طريقة الدفع') || 
@@ -397,7 +440,6 @@ async function startServer() {
       return { intent: 'PAYMENT_HELP' };
     }
 
-    // 4. ACCOUNT_HELP
     if (
       clean.includes('كلمة المرور') || 
       clean.includes('الباسورد') || 
@@ -412,7 +454,6 @@ async function startServer() {
       return { intent: 'ACCOUNT_HELP' };
     }
 
-    // 5. EXCHANGE_RATE_HELP
     if (
       clean.includes('سعر الصرف') ||
       clean.includes('كم الصرف') ||
@@ -424,7 +465,6 @@ async function startServer() {
       return { intent: 'EXCHANGE_RATE_HELP' };
     }
 
-    // 6. STORE_INFO & POLICIES
     if (
       clean.includes('اين فروعكم') || 
       clean.includes('أين فروعكم') || 
@@ -448,7 +488,6 @@ async function startServer() {
       return { intent: 'STORE_INFO' };
     }
 
-    // 7. PRODUCT_IMAGE_REQUEST
     if (
       clean.includes('ارسل لي صور') || 
       clean.includes('أرسل لي صور') || 
@@ -466,7 +505,6 @@ async function startServer() {
       };
     }
 
-    // 8. PRODUCT_DETAILS
     if (
       clean.includes('كم سعر هذا') || 
       clean.includes('بكم هذا') || 
@@ -481,7 +519,6 @@ async function startServer() {
       };
     }
 
-    // 9. PRODUCT_SEARCH — STRICT SPECIFIC APPAREL/PRODUCT KEYWORDS
     const specificApparelKeywords = [
       'فستان', 'فساتين', 'عباية', 'عبايات', 'بلوزة', 'بلوزات', 'تنورة', 'تنانير', 'بنطال', 'بناطل', 'جينز', 'روب', 'بيجاما',
       'حذاء', 'احذية', 'أحذية', 'شوز', 'سنيكرز', 'كعب', 'صندل', 'بوط',
@@ -497,7 +534,6 @@ async function startServer() {
       };
     }
 
-    // 10. GENERAL_KNOWLEDGE (Geography, History, Science, Tech, General questions)
     const isGeneralKnowledgeQuestion = 
       clean.includes('ما عاصمة') || 
       clean.includes('ما هي عاصمة') || 
@@ -525,7 +561,6 @@ async function startServer() {
     let color: string | undefined;
     let category: string | undefined;
 
-    // Price extraction (e.g. 20000 or 20,000 or أقل من 20000)
     const priceMatch = clean.match(/(?:أقل من|اقل من|تحت|بحدود|ميزانية|سعر|بـ|ب)\s*(\d+[\d,]*)/) || clean.match(/(\d{4,6})/);
     if (priceMatch) {
       const num = parseInt(priceMatch[1].replace(/,/g, ''), 10);
@@ -534,7 +569,6 @@ async function startServer() {
       }
     }
 
-    // Color extraction
     const colors = ['أسود', 'اسود', 'أبيض', 'ابيض', 'كحلي', 'وردي', 'ذهبي', 'فضي', 'بني', 'بيج', 'أزرق', 'ازرق', 'أخضر', 'اخضر', 'زمردي', 'عنابي', 'زيتي', 'رمادي'];
     for (const c of colors) {
       if (clean.includes(c)) {
@@ -543,7 +577,6 @@ async function startServer() {
       }
     }
 
-    // Category extraction
     if (clean.includes('فستان') || clean.includes('فساتين') || clean.includes('نسائي') || clean.includes('عباية') || clean.includes('بلوزة') || clean.includes('تنورة') || clean.includes('بنطال')) {
       category = 'نسائي';
     } else if (clean.includes('شنط') || clean.includes('شنطة') || clean.includes('حقيبة') || clean.includes('حقائب')) {
@@ -561,62 +594,84 @@ async function startServer() {
     return { maxPrice, color, category, query: clean };
   }
 
-  // Catalog Search Function with Precise Multi-Factor Ranking
-  function searchCatalog(filters?: { maxPrice?: number; color?: string; category?: string; query?: string }): string[] {
+  const CATEGORY_NAME_MAP: Record<string, string> = {
+    women: 'نسائي',
+    bags: 'شنط',
+    shoes: 'أحذية',
+    boys: 'ولادي',
+    girls: 'بناتي',
+    baby: 'مواليد',
+  };
+
+  type CatalogItem = (typeof catalogData)[number];
+
+  function toCatalog(raw: unknown): CatalogItem[] {
+    if (!Array.isArray(raw) || raw.length === 0) return catalogData;
+    return raw.slice(0, 500).map((p: any) => ({
+      id: String(p.id),
+      name: String(p.name || ''),
+      cat: CATEGORY_NAME_MAP[p.category] || String(p.category || 'عام'),
+      subcat: String(p.subcategory || ''),
+      price: Number(p.priceYER) || 0,
+      orig: Number(p.originalPriceYER) || 0,
+      colors: Array.isArray(p.colors) ? p.colors.map((c: any) => (typeof c === 'string' ? c : String(c?.name || ''))) : [],
+      sizes: Array.isArray(p.sizes) ? p.sizes.map((x: any) => String(x)) : [],
+      stock: Number(p.stock ?? 10),
+      desc: String(p.description || p.name || '').slice(0, 300),
+    }));
+  }
+
+  function searchCatalog(
+    filters?: { maxPrice?: number; color?: string; category?: string; query?: string },
+    items: CatalogItem[] = catalogData
+  ): string[] {
     if (!filters) return [];
     const query = (filters.query || '').toLowerCase();
 
-    const scored = catalogData.map(p => {
+    const scored = items.map(p => {
       let score = 0;
 
-      // Category match
       if (filters.category && (p.cat.includes(filters.category) || filters.category.includes(p.cat))) {
         score += 15;
       }
 
-      // Subcategory direct match
       if (query.includes('فستان') || query.includes('فساتين')) {
-        if (p.subcat === 'فساتين') score += 25;
+        if (p.subcat.includes('فساتين') || p.subcat.includes('فستان')) score += 25;
       }
       if (query.includes('شنط') || query.includes('شنطة') || query.includes('حقيبة') || query.includes('حقائب')) {
-        if (p.cat === 'شنط') score += 25;
+        if (p.cat === 'شنط' || p.subcat.includes('شنط') || p.subcat.includes('حقائب')) score += 25;
       }
       if (query.includes('حذاء') || query.includes('احذية') || query.includes('أحذية') || query.includes('شوز') || query.includes('سنيكرز') || query.includes('كعب')) {
-        if (p.cat === 'أحذية') score += 25;
+        if (p.cat === 'أحذية' || p.subcat.includes('حذاء') || p.subcat.includes('أحذية') || p.subcat.includes('صندل')) score += 25;
       }
-      if (query.includes('سنيكرز') && p.subcat === 'سنيكرز') score += 30;
-      if (query.includes('كعب') && p.subcat === 'كعب سهرة') score += 30;
-      if (query.includes('سفر') && p.subcat === 'سفر') score += 30;
-      if (query.includes('ظهر') && p.subcat === 'ظهر') score += 30;
-      if (query.includes('بلوزة') && p.subcat === 'بلوزات') score += 30;
-      if (query.includes('تنورة') && p.subcat === 'تنانير') score += 30;
-      if (query.includes('بنطال') && p.subcat === 'بناطل') score += 30;
+      if (query.includes('سنيكرز') && p.subcat.includes('سنيكرز')) score += 30;
+      if (query.includes('كعب') && p.subcat.includes('كعب')) score += 30;
+      if (query.includes('سفر') && p.subcat.includes('سفر')) score += 30;
+      if (query.includes('ظهر') && p.subcat.includes('ظهر')) score += 30;
+      if (query.includes('بلوزة') && p.subcat.includes('بلوز')) score += 30;
+      if (query.includes('تنورة') && p.subcat.includes('تنان')) score += 30;
+      if (query.includes('بنطال') && (p.subcat.includes('بنطال') || p.subcat.includes('بناطل'))) score += 30;
       if (query.includes('ولادي') && p.cat === 'ولادي') score += 25;
       if (query.includes('بناتي') && p.cat === 'بناتي') score += 25;
       if ((query.includes('مواليد') || query.includes('بيبي')) && p.cat === 'مواليد') score += 25;
 
-      // Color match
       if (filters.color) {
         const hasColor = p.colors.some(c => c.includes(filters.color!) || filters.color!.includes(c));
         if (hasColor) {
           score += 20;
         } else {
-          // If color was explicitly requested and not matched, penalize
           score -= 10;
         }
       }
 
-      // Price filter
       if (filters.maxPrice) {
         if (p.price <= filters.maxPrice) {
           score += 15;
         } else {
-          // Exceeds requested budget!
           score -= 30;
         }
       }
 
-      // General query token matching
       const tokens = query.split(/\s+/).filter(t => t.length > 2);
       tokens.forEach(t => {
         if (p.name.toLowerCase().includes(t)) score += 5;
@@ -626,7 +681,6 @@ async function startServer() {
       return { id: p.id, score, price: p.price };
     });
 
-    // Filter only items with positive score and sort by score descending
     return scored
       .filter(item => item.score > 0)
       .sort((a, b) => b.score - a.score)
@@ -634,7 +688,6 @@ async function startServer() {
       .map(item => item.id);
   }
 
-  // Fast Instant Responses for Non-Product Queries
   function getFastResponse(intent: UserIntent, cleanMsg: string): { text: string; suggestedProductIds: string[] } | null {
     if (intent === 'CHAT') {
       if (cleanMsg.includes('كيف حالك') || cleanMsg.includes('شخبارك') || cleanMsg.includes('كيفك') || cleanMsg.includes('كيف الصحة') || cleanMsg.includes('أخبارك') || cleanMsg.includes('شلونك')) {
@@ -730,20 +783,27 @@ async function startServer() {
     return null;
   }
 
-  // AI Shopping Concierge API with Intent-First Logic
-  app.post('/api/gemini/assistant', async (req: Request, res: Response) => {
+  app.post('/api/assistant', rateLimit('assistant', 120, 10 * 60 * 1000), async (req: Request, res: Response) => {
     try {
-      const { message, history, customInstructions, knowledgeBase } = req.body;
+      const {
+        message: rawMessage,
+        history,
+        customInstructions: rawInstructions,
+        knowledgeBase: rawKnowledgeBase,
+      } = req.body ?? {};
 
-      if (!message) {
+      if (!rawMessage || typeof rawMessage !== 'string') {
         return res.status(400).json({ error: 'Message is required' });
       }
+
+      const message = rawMessage.slice(0, 2000);
+      const customInstructions = typeof rawInstructions === 'string' ? rawInstructions.slice(0, 4000) : '';
+      const knowledgeBase = Array.isArray(rawKnowledgeBase) ? rawKnowledgeBase.slice(0, 100) : [];
 
       const client = getGeminiClient();
       const detected = detectIntent(message);
       const isProductIntent = detected.intent === 'PRODUCT_SEARCH' || detected.intent === 'PRODUCT_IMAGE_REQUEST' || detected.intent === 'PRODUCT_DETAILS';
 
-      // 1. If it's a simple greeting/fast chat without complex questions, return instant response
       const fastReply = getFastResponse(detected.intent, message.toLowerCase());
       if (fastReply && !isProductIntent && detected.intent === 'CHAT') {
         return res.json({
@@ -754,21 +814,7 @@ async function startServer() {
         });
       }
 
-      // 2. Format catalog text for grounding (use dynamic client catalog if passed, otherwise server default)
-      const activeCatalog = Array.isArray(req.body?.catalog) && req.body.catalog.length > 0
-        ? req.body.catalog.map((p: any) => ({
-            id: p.id,
-            name: p.name,
-            cat: p.category || 'عام',
-            subcat: p.subcategory || '',
-            price: p.priceYER || 0,
-            orig: p.originalPriceYER || 0,
-            colors: Array.isArray(p.colors) ? p.colors.map((c: any) => typeof c === 'string' ? c : c.name) : [],
-            sizes: Array.isArray(p.sizes) ? p.sizes : [],
-            stock: p.stock ?? 10,
-            desc: p.description || p.name
-          }))
-        : catalogData;
+      const activeCatalog = toCatalog(req.body?.catalog);
 
       const catalogStr = activeCatalog.map((p: any) => 
         `- [${p.id}] ${p.name} | القسم: ${p.cat} / ${p.subcat} | السعر: ${p.price} ريال يمني (قبل: ${p.orig}) | الألوان: ${p.colors.join(', ')} | المقاسات: ${p.sizes.join(', ')} | المتوفر: ${p.stock} | ${p.desc}`
@@ -780,7 +826,7 @@ async function startServer() {
           knowledgeBase.filter((k: any) => k.isActive).map((k: any) => `• [${k.category}] ${k.question}: ${k.answer}`).join('\n');
       }
 
-      const systemInstruction = `أنت "ذكاء ضَجّة" (Dajjah AI) — المساعد الذكي الحقيقي لمنصة "ضَجّة مول" في اليمن (شعارنا: "ضَجّة في وجه الغلاء").
+      const systemInstruction = `أنت "مساعد ضَجّة" — المساعد الذكي لمنصة "ضَجّة مول" في اليمن (شعارنا: "ضَجّة في وجه الغلاء").
 
 قواعد جوهرية وأساسية لفهم نية العميل (Intent First):
 1. **المحادثة العامة والترحيب (CHAT)**: إذا قال العميل عبارة ترحيب أو محادثة عامة (مثل: "كيف حالك؟"، "صباح الخير"، "شكراً"، "من أنت؟"، "تصبح على خير")، أجب بلطف وإيجاز إنساني طبيعي، وممنوع منعاً باتاً عرض أي منتجات أو أسعار أو صور أو صفقات أو وضع وسم [PRODUCTS].
@@ -800,12 +846,11 @@ ${catalogStr}
 الالتزام: لا تخترع منتجات غير موجودة في الكتالوج. لا تعرض منتجات ما لم تكن نية العميل صريحة للشراء أو البحث أو الصور.`;
 
       if (!client) {
-        // Fallback when Gemini API key is missing or offline
         let reply = '';
         let matchedProductIds: string[] = [];
 
         if (isProductIntent) {
-          matchedProductIds = searchCatalog(detected.extractedFilter);
+          matchedProductIds = searchCatalog(detected.extractedFilter, activeCatalog);
           
           if (detected.intent === 'PRODUCT_IMAGE_REQUEST') {
             reply = 'إليك تشكيلة مختارة من أجمل الموديلات المتوفرة لدينا بالصور والتفاصيل الكاملة والأسعار المخفضة:';
@@ -837,7 +882,6 @@ ${catalogStr}
         });
       }
 
-      // Build conversation contents with history for multi-turn
       const contents: Array<{ role: 'user' | 'model'; parts: [{ text: string }] }> = [];
 
       if (Array.isArray(history)) {
@@ -845,7 +889,7 @@ ${catalogStr}
           if (h.role && h.text) {
             contents.push({
               role: h.role === 'ai' || h.role === 'model' ? 'model' : 'user',
-              parts: [{ text: h.text }],
+              parts: [{ text: String(h.text).slice(0, 2000) }],
             });
           }
         });
@@ -856,7 +900,6 @@ ${catalogStr}
         parts: [{ text: message }],
       });
 
-      // Generate content with a safe timeout
       const generatePromise = client.models.generateContent({
         model: 'gemini-3.7-flash',
         contents,
@@ -873,7 +916,6 @@ ${catalogStr}
       const response: any = await Promise.race([generatePromise, timeoutPromise]);
       const responseText = response?.text || 'يسعدني دائماً مساعدتك في ضَجّة مول!';
       
-      // Extract suggested product IDs from response
       let cleanedText = responseText;
       let suggestedProductIds: string[] = [];
       const match = responseText.match(/\[PRODUCTS:\s*([a-zA-Z0-9-,\s]+)\]/);
@@ -884,12 +926,10 @@ ${catalogStr}
         cleanedText = responseText.replace(/\[PRODUCTS:\s*[a-zA-Z0-9-,\s]+\]/, '').trim();
       }
 
-      // Fallback deterministic catalog search if it was a product intent and model didn't tag
       if (isProductIntent && suggestedProductIds.length === 0) {
-        suggestedProductIds = searchCatalog(detected.extractedFilter);
+        suggestedProductIds = searchCatalog(detected.extractedFilter, activeCatalog);
       }
 
-      // CRITICAL: If intent is NOT a product intent (e.g. CHAT, ORDER_HELP, etc.), strictly enforce EMPTY products!
       if (!isProductIntent) {
         suggestedProductIds = [];
       }
@@ -919,24 +959,23 @@ ${catalogStr}
 
       return res.json({
         text: fallbackText,
-        suggestedProductIds: isProduct ? searchCatalog(fallbackDetected.extractedFilter) : [],
+        suggestedProductIds: isProduct ? searchCatalog(fallbackDetected.extractedFilter, toCatalog(req.body?.catalog)) : [],
         intent: fallbackDetected.intent,
         modelUsed: 'intent-fallback',
       });
     }
   });
 
-  // Visual Search API with Multimodal Vision Analysis & Catalog Matching
-  app.post('/api/visual-search', async (req: Request, res: Response) => {
+  app.post('/api/visual-search', rateLimit('visual', 40, 10 * 60 * 1000), async (req: Request, res: Response) => {
     try {
       const { image, catalog } = req.body;
 
-      if (!image) {
+      if (!image || typeof image !== 'string') {
         return res.status(400).json({ error: 'Image data is required for visual search' });
       }
 
       const activeCatalog = Array.isArray(catalog) && catalog.length > 0
-        ? catalog.map((p: any) => ({
+        ? catalog.slice(0, 500).map((p: any) => ({
             id: p.id,
             name: p.name,
             cat: p.category || 'عام',
@@ -950,7 +989,6 @@ ${catalogStr}
           }))
         : catalogData;
 
-      // Extract mime type and pure base64 data
       let mimeType = 'image/jpeg';
       let pureBase64 = image;
 
@@ -1049,7 +1087,6 @@ ${catalogStr}
         }
       }
 
-      // Smart heuristic fallback if client is null or vision API timed out
       const fallbackMatches = activeCatalog.slice(0, 4).map((p: any, idx: number) => ({
         productId: p.id,
         similarityPercentage: 92 - idx * 6,
@@ -1072,7 +1109,6 @@ ${catalogStr}
     }
   });
 
-  // Vite development middleware
   if (process.env.NODE_ENV !== 'production') {
     const vite = await createViteServer({
       server: {
@@ -1095,7 +1131,6 @@ ${catalogStr}
       '.svg': 'image/svg+xml; charset=utf-8',
     };
 
-    // Compress JS/CSS/HTML/SVG/JSON assets on the fly with in-memory LRU cache
     app.use((req: Request, res: Response, next: NextFunction) => {
       if (req.method !== 'GET' && req.method !== 'HEAD') return next();
       const cleanUrl = (req.path === '/' ? '/index.html' : req.path).replace(/^\/+/, '');
@@ -1167,6 +1202,12 @@ ${catalogStr}
       res.sendFile(path.join(distPath, 'index.html'));
     });
   }
+
+  app.use((err: any, _req: Request, res: Response, next: NextFunction) => {
+    if (err?.type === 'entity.too.large') return res.status(413).json({ error: 'Payload too large' });
+    if (err?.type === 'entity.parse.failed') return res.status(400).json({ error: 'Invalid JSON' });
+    return next(err);
+  });
 
   const server = app.listen(PORT, '0.0.0.0', () => {
     console.log(`ضَجّة مول server running on http://localhost:${PORT}`);
