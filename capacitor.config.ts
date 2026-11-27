@@ -4,16 +4,15 @@ const config: CapacitorConfig = {
   appId: 'ye.dajjahmall.app',
   appName: 'ضجة مول',
   webDir: 'dist',
-  backgroundColor: '#07060A',
+  backgroundColor: '#F8F9FA',
   server: {
-    androidScheme: 'https',
-    cleartext: true
+    androidScheme: 'https'
   },
   plugins: {
     SplashScreen: {
       launchShowDuration: 0,
       launchAutoHide: true,
-      backgroundColor: '#07060A',
+      backgroundColor: '#F8F9FA',
       androidSplashResourceName: 'splash',
       showSpinner: false
     }

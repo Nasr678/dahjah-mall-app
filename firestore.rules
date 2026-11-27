@@ -3,12 +3,6 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Default deny-all catch-all (First Pillar of Hardened Rules)
-    match /{document=**} {
-      allow read, write: if false;
-    }
-
-    // Helper functions for authentication and security
     function isAuthenticated() {
       return request.auth != null;
     }
@@ -17,7 +11,6 @@ service cloud.firestore {
       return isAuthenticated() && request.auth.uid == userId;
     }
 
-    // Hardened Admin Check: Verifies identity, prevents email spoofing by mandating email_verified
     function isAppAdmin() {
       return isAuthenticated() && (
         (request.auth.token.keys().hasAll(['email']) && 
@@ -32,132 +25,123 @@ service cloud.firestore {
       );
     }
 
-    // Test connection document for initial boot health check
     match /test/{docId} {
       allow read: if true;
       allow write: if isAppAdmin();
     }
 
-    // Dedicated Admins Collection (Restricted strictly to system admins)
     match /admins/{adminId} {
-      allow read: if isAuthenticated();
-      allow write: if isAppAdmin();
+      allow read, write: if isAppAdmin();
     }
 
-    // =========================================================
-    // 1. PUBLIC CATALOG DATA (Products, Categories, Stores, Banners)
-    // =========================================================
     
-    // Products: Public read for all users; create/update/delete strictly for Admins.
-    // Prevents direct client tampering with prices or inventory stocks.
     match /products/{productId} {
       allow read: if true;
       allow write: if isAppAdmin();
     }
 
-    // Categories: Public read; write strictly for Admins
     match /categories/{categoryId} {
       allow read: if true;
       allow write: if isAppAdmin();
     }
 
-    // Brands: Public read; write strictly for Admins (Completely independent from Categories)
     match /brands/{brandId} {
       allow read: if true;
       allow write: if isAppAdmin();
     }
 
-    // Stores: Public read; write strictly for Admins
     match /stores/{storeId} {
       allow read: if true;
       allow write: if isAppAdmin();
     }
 
-    // Currency Settings (YER North / South exchange rates)
     match /currencySettings/{settingId} {
       allow read: if true;
       allow write: if isAppAdmin();
     }
 
-    // Application Settings (general config, home buttons, contact info)
     match /appSettings/{settingId} {
       allow read: if true;
       allow write: if isAppAdmin();
     }
 
-    // Footer Configuration & Bottom Bar Links (Dynamic)
     match /footer_config/{configId} {
       allow read: if true;
       allow write: if isAppAdmin();
     }
 
-    // Store Banners & Promotional Sliders
     match /banners/{bannerId} {
       allow read: if true;
       allow write: if isAppAdmin();
     }
 
-    // Coupons & Vouchers
+    match /reviewReports/{reportId} {
+      allow create: if request.resource.data.keys().hasOnly(['reviewId', 'productId', 'reason', 'userId', 'createdAt']) &&
+                       request.resource.data.reviewId is string &&
+                       request.resource.data.productId is string &&
+                       request.resource.data.reviewId.size() <= 200 &&
+                       request.resource.data.productId.size() <= 200;
+      allow read, update, delete: if isAppAdmin();
+    }
+
+    match /aiReports/{reportId} {
+      allow create: if request.resource.data.keys().hasOnly(['messageText', 'userMessage', 'reason', 'userId', 'createdAt']) &&
+                       request.resource.data.messageText is string &&
+                       request.resource.data.messageText.size() <= 4000 &&
+                       request.resource.data.userMessage is string &&
+                       request.resource.data.userMessage.size() <= 1500;
+      allow read, update, delete: if isAppAdmin();
+    }
+
     match /coupons/{couponId} {
       allow read: if true;
       allow write: if isAppAdmin();
     }
 
-    // Payment Methods (Dynamic)
     match /paymentMethods/{methodId} {
       allow read: if true;
       allow write: if isAppAdmin();
     }
 
-    // Shipping Zones & Fees (Dynamic)
     match /shippingZones/{zoneId} {
       allow read: if true;
       allow write: if isAppAdmin();
     }
 
-    // Policies & Legal Content (Dynamic)
     match /policies/{policyId} {
       allow read: if true;
       allow write: if isAppAdmin();
     }
 
-    // Social Media Channels (Dynamic)
     match /socialMedia/{socialId} {
       allow read: if true;
       allow write: if isAppAdmin();
     }
 
-    // AI Knowledge Base (Dynamic)
     match /aiKnowledge/{knowledgeId} {
-      allow read: if true;
-      allow write: if isAppAdmin();
+      allow read, write: if isAppAdmin();
     }
 
-    // Store Branches & Maps Locations (Dynamic)
     match /branches/{branchId} {
       allow read: if true;
       allow write: if isAppAdmin();
     }
 
-    // Offers & Promos Popup (Dynamic)
     match /popups/{popupId} {
       allow read: if true;
       allow write: if isAppAdmin();
     }
 
-    // Flash Sales & Special Deals
     match /flashSales/{dealId} {
       allow read: if true;
       allow write: if isAppAdmin();
     }
 
-    // Volume Discounts Rules
     match /volumeDiscounts/{discountId} {
       allow read: if true;
       allow write: if isAppAdmin();
     }
 
-    // Product Reviews & Ratings (Customer creation, Admin moderation)
     match /reviews/{reviewId} {
       allow read: if true;
       allow create: if isAuthenticated() && 
@@ -168,80 +152,62 @@ service cloud.firestore {
       allow delete: if isAppAdmin() || (isAuthenticated() && resource.data.userId == request.auth.uid);
     }
 
-    // Abandoned Carts (User isolated or Admin access)
     match /abandonedCarts/{cartId} {
       allow read, write: if isOwnerUser(cartId) || isAppAdmin();
     }
 
-    // Light Analytics (Write allowed for telemetry events, Read/Delete strictly Admin)
     match /analytics/{eventId} {
-      allow create: if true;
-      allow read, update, delete: if isAppAdmin();
+      allow read, write: if isAppAdmin();
     }
 
-    // =========================================================
-    // 2. USER PROFILES & PRIVATE SUBCOLLECTIONS
-    // =========================================================
     
     match /users/{userId} {
-      // User can read their own profile; Admins can read all profiles
       allow read: if isOwnerUser(userId) || isAppAdmin();
 
-      // Normal users cannot set their role to admin
       allow create: if isAuthenticated() && isOwnerUser(userId) && (
         (!request.resource.data.keys().hasAny(['role', 'isAdmin'])) ||
         (request.resource.data.role == 'customer') ||
         isAppAdmin()
       );
 
-      // Normal users cannot change their role attribute; Admins have full update
       allow update: if (isOwnerUser(userId) && 
         (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'isAdmin', 'memberTier']))) || isAppAdmin();
 
-      allow delete: if isAppAdmin();
+      allow delete: if isOwnerUser(userId) || isAppAdmin();
 
-      // User Addresses Subcollection
       match /addresses/{addressId} {
         allow read, write: if isOwnerUser(userId) || isAppAdmin();
       }
 
-      // User Notifications Subcollection
       match /notifications/{notificationId} {
         allow read, write: if isOwnerUser(userId) || isAppAdmin();
       }
     }
 
-    // User Cart (persistent shopping carts)
     match /carts/{userId} {
       allow read, write: if isOwnerUser(userId) || isAppAdmin();
     }
 
-    // User Favorites / Wishlist
     match /favorites/{userId} {
       allow read, write: if isOwnerUser(userId) || isAppAdmin();
     }
 
-    // =========================================================
-    // 3. ORDERS (STRICT INTEGRITY)
-    // =========================================================
     
     match /orders/{orderId} {
-      // Users can only read their own orders; Admins can read all orders
       allow read: if isAuthenticated() && (
         (resource.data.userId == request.auth.uid) || isAppAdmin()
       );
 
-      // Authenticated users can create orders for themselves with valid total and items
       allow create: if isAuthenticated() && (
         request.resource.data.userId == request.auth.uid &&
+        request.resource.data.status == 'received' &&
         request.resource.data.totalYER is number &&
         request.resource.data.totalYER >= 0 &&
         request.resource.data.items is list &&
-        request.resource.data.items.size() > 0
+        request.resource.data.items.size() > 0 &&
+        request.resource.data.items.size() <= 100
       );
 
-      // Status updates only allowed by Admin or user cancelling their own new order
-      // Customer can ONLY cancel if order status is still 'received' (cannot cancel 'processing', 'out_for_delivery', or 'delivered')
       allow update: if isAppAdmin() || (
         isOwnerUser(resource.data.userId) && 
         request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'updatedAt']) &&
@@ -252,9 +218,6 @@ service cloud.firestore {
       allow delete: if isAppAdmin();
     }
 
-    // =========================================================
-    // 4. BROADCAST NOTIFICATIONS
-    // =========================================================
     
     match /notifications/{notificationId} {
       allow read: if true;
